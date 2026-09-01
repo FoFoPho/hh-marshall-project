@@ -12,12 +12,12 @@
 <main class="main-content">
   <h1 class="page-title">Welcome to The Marshall Project</h1>
 
-  {% if module.welcome_video %}
+  {% if welcome_video %}
   <div class="video-wrapper">
     <div class="video-label-bar">WELCOME VIDEO</div>
     <iframe
       class="video-embed"
-      src="{{ youtube_embed(module.welcome_video) }}"
+      src="{{ youtube_embed(welcome_video) }}"
       allowfullscreen
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
     </iframe>
@@ -26,7 +26,7 @@
 
   <p class="welcome-subtitle">Before we begin, tell us a little about yourself.</p>
 
-  <form class="user-form" method="POST" action="{{ url_for('module_start', module_id=module.id) }}">
+  <form class="user-form" method="POST" action="{{ url_for('welcome_start') }}">
     {% if error %}
     <div class="form-error">{{ error }}</div>
     {% endif %}
@@ -48,11 +48,6 @@
         <label class="form-label" for="job_title">Job Title</label>
         <input class="form-input" type="text" id="job_title" name="job_title"
                value="{{ request.form.get('job_title', '') }}">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="email">Email Address</label>
-        <input class="form-input" type="email" id="email" name="email"
-               value="{{ request.form.get('email', '') }}">
       </div>
     </div>
 

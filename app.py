@@ -17,10 +17,14 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
 # Content helpers
 # ---------------------------------------------------------------------------
 
-def load_modules():
+def load_content():
     path = os.path.join(os.path.dirname(__file__), 'content', 'modules.json')
     with open(path) as f:
-        return json.load(f)['modules']
+        return json.load(f)
+
+
+def load_modules():
+    return load_content()['modules']
 
 
 def get_module(module_id):
@@ -72,50 +76,55 @@ app.jinja_env.globals['youtube_embed'] = youtube_embed_url
 
 @app.route('/')
 def index():
-    return render_template('module_select.html', modules=load_modules())
+    welcome_video = load_content().get('welcome_video', '')
+    return render_template('welcome.html', welcome_video=welcome_video)
 
 
-@app.route('/module/<int:module_id>')
-def start_module(module_id):
-    module = get_module(module_id)
-    if not module:
-        return redirect(url_for('index'))
-    session.clear()
-    session['module_id'] = module_id
-    session['current_step'] = 0   # 0 = no steps unlocked yet (welcome not counted)
-    session['completed_sections'] = []
-    session['quiz_failed_section'] = None
-    return render_template('welcome.html', module=module)
-
-
-@app.route('/module/<int:module_id>/start', methods=['POST'])
-def module_start(module_id):
-    module = get_module(module_id)
-    if not module or session.get('module_id') != module_id:
-        return redirect(url_for('index'))
-
+@app.route('/start', methods=['POST'])
+def welcome_start():
     first_name = request.form.get('first_name', '').strip()
     last_name  = request.form.get('last_name', '').strip()
     job_title  = request.form.get('job_title', '').strip()
-    email      = request.form.get('email', '').strip()
 
     if not first_name or not last_name:
-        return render_template('welcome.html', module=module,
+        welcome_video = load_content().get('welcome_video', '')
+        return render_template('welcome.html', welcome_video=welcome_video,
                                error="Please enter your first and last name before continuing.")
 
     session['user'] = {
         'first_name': first_name,
         'last_name':  last_name,
         'job_title':  job_title,
-        'email':      email,
     }
+    return redirect(url_for('modules'))
+
+
+@app.route('/modules')
+def modules():
+    if not session.get('user'):
+        return redirect(url_for('index'))
+    return render_template('module_select.html', modules=load_modules())
+
+
+@app.route('/module/<int:module_id>')
+def start_module(module_id):
+    module = get_module(module_id)
+    if not module or not session.get('user'):
+        return redirect(url_for('index'))
+
+    # Reset module state while preserving user info
+    user = session.get('user')
+    session.clear()
+    session['user'] = user
+    session['module_id'] = module_id
+    session['completed_sections'] = []
+    session['quiz_failed_section'] = None
 
     steps = build_steps(module)
     if not steps:
-        # Module has no sections — go straight to complete
         return redirect(url_for('complete', module_id=module_id))
 
-    session['current_step'] = 1   # step 1 is the first lesson
+    session['current_step'] = 1
     return redirect(url_for('step', module_id=module_id, step_num=1))
 
 
