@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-01  
-**Last session:** Initial build
+**Last updated:** 2026-09-01 (Session 2)  
+**Last session:** Certificate PDF redesign
 
 ---
 
@@ -175,18 +175,42 @@ Font: Barlow Condensed (headings) + Barlow (body) via Google Fonts.
 
 ---
 
+## Certificate PDF
+
+The certificate uses `static/assets/MP Cert Template.png` as a full-page background. Four text fields are overlaid at calibrated positions in `certificate.py`:
+
+| Field | Color | Position constants |
+|---|---|---|
+| Name | Blue `#1B4FBF` | `page_w*0.500, page_h*0.530` |
+| Module title | Black `#111111` | `page_w*0.500, page_h*0.385` |
+| Date | Black | `page_w*0.710, page_h*0.183` |
+| Cert number | Black | `page_w*0.195, page_h*0.068` |
+
+**Cert number format:** `M{module_id}_{initials}_{MMDDYY}_01`  
+Example: `M1_FC_090126_01` (Module 1, Forrest Conner, Sep 01 2026)
+
+To adjust text positions, edit the float constants in `certificate.py`. Page is landscape letter (792×612 pts). Larger y = higher on page.
+
+---
+
 ## Pending / Next Steps
 
 - [ ] Fill in Modules 2, 3, and 4 content in `modules.json`
-- [ ] Add real Marshall Project logo image (`static/assets/logo.png`) and swap SVG text for it
-- [ ] Refine certificate PDF design to match final mockup exactly
+- [ ] Add real Marshall Project logo image to the web UI header (currently text-based)
 - [ ] Deploy to Railway and record URL here
-- [ ] Workshop certificate (cert number format, initials vs full name, signature line)
 - [ ] Consider adding a logo bar / splash screen
 
 ---
 
 ## Session Log
+
+### 2026-09-01 (Session 2) — Certificate Redesign
+
+**What changed:**
+- `certificate.py` fully rewritten — replaced ReportLab-drawn layout with PNG template background (`MP Cert Template.png`) + text overlays
+- Cert number format changed to `M{n}_{initials}_{MMDDYY}_01`
+- `app.py` updated to pass `module_title` (not `module_id`) to the certificate generator
+- Text positions dialed in iteratively; name in blue, module/date/cert number in black
 
 ### 2026-09-01 — Initial Build
 
