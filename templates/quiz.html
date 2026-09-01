@@ -50,8 +50,8 @@
 
 </main>
 
-<!-- Failure banner — always in DOM; shown by JS on wrong answer or by server on quiz_failed -->
-<div class="failure-banner" id="failure-banner"{% if not quiz_failed %} hidden{% endif %}>
+<!-- Failure banner — hidden by default; JS shows it on wrong answer only -->
+<div class="failure-banner" id="failure-banner" style="display:none">
   <div class="banner-icon">
     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </div>
@@ -61,38 +61,29 @@
 <!-- Navigation -->
 <nav class="nav-bar">
 
-  <!-- PREVIOUS — hidden when wrong answer selected or quiz_failed -->
-  <div class="nav-btn-wrap" id="nav-previous-wrap"{% if quiz_failed %} hidden{% endif %}>
+  <!-- PREVIOUS (default) — JS hides this and shows restudy-wrap on wrong answer -->
+  <div class="nav-btn-wrap" id="nav-previous-wrap">
     <a href="{{ prev_url }}" class="nav-btn active" aria-label="Previous">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
     <span class="nav-label">PREVIOUS</span>
   </div>
 
-  <!-- START SECTION OVER — shown when wrong answer selected or quiz_failed -->
-  <div class="nav-btn-wrap" id="nav-restudy-wrap"{% if not quiz_failed %} hidden{% endif %}>
+  <!-- START SECTION OVER — hidden by default; JS shows it on wrong answer -->
+  <div class="nav-btn-wrap" id="nav-restudy-wrap" style="display:none">
     <a href="{{ restudy_url }}" class="nav-btn active" aria-label="Start section over">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
     <span class="nav-label">START SECTION<br>OVER</span>
   </div>
 
-  <!-- NEXT — inactive span when quiz_failed (server protection); button otherwise -->
-  {% if quiz_failed %}
-  <div class="nav-btn-wrap">
-    <span class="nav-btn inactive" aria-label="Next (unavailable)">
-      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-    </span>
-    <span class="nav-label muted">NEXT</span>
-  </div>
-  {% else %}
+  <!-- NEXT — JS enables it only on correct answer -->
   <div class="nav-btn-wrap">
     <button id="nav-next" type="button" form="quiz-form" class="nav-btn inactive" aria-label="Next">
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
     <span class="nav-label">NEXT</span>
   </div>
-  {% endif %}
 
 </nav>
 {% endblock %}

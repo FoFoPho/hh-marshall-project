@@ -3,8 +3,10 @@
 
   // ── Quiz answer selection ─────────────────────────────────
   // Instant green/red feedback on selection.
-  // Wrong answer → shows failure banner + START SECTION OVER button.
-  // NEXT only enables when every question has the correct answer chosen.
+  // Correct answer → NEXT enables.
+  // Wrong answer → option turns red, failure banner appears,
+  //   PREVIOUS swaps to START SECTION OVER, entire quiz locks.
+  //   User must click START SECTION OVER to restudy before retrying.
 
   const quizForm    = document.getElementById('quiz-form');
   const nextBtn     = document.getElementById('nav-next');
@@ -24,29 +26,18 @@
           const radio = label.querySelector('input[type="radio"]');
           const selectedIdx = parseInt(radio.value, 10);
 
-          // Clear state on all options in this question
-          labels.forEach(function (l) {
-            l.classList.remove('correct', 'incorrect', 'selected');
-          });
-
-          // Mark correct or incorrect
           radio.checked = true;
-          label.classList.add(selectedIdx === correctIdx ? 'correct' : 'incorrect');
 
-          // Update banner + nav buttons based on whether any wrong answer exists
-          setWrongState(hasAnyWrong());
-          maybeEnableNext();
+          if (selectedIdx === correctIdx) {
+            label.classList.add('correct');
+            maybeEnableNext();
+          } else {
+            label.classList.add('incorrect');
+            lockQuiz();
+          }
         });
       });
     });
-
-    function hasAnyWrong() {
-      return Array.from(questionLists).some(function (ul) {
-        const correctIdx = parseInt(ul.getAttribute('data-correct'), 10);
-        const checked = ul.querySelector('input[type="radio"]:checked');
-        return checked && parseInt(checked.value, 10) !== correctIdx;
-      });
-    }
 
     function allCorrect() {
       return Array.from(questionLists).every(function (ul) {
@@ -56,10 +47,17 @@
       });
     }
 
-    function setWrongState(wrong) {
-      if (banner)      wrong ? banner.removeAttribute('hidden')      : banner.setAttribute('hidden', '');
-      if (prevWrap)    wrong ? prevWrap.setAttribute('hidden', '')    : prevWrap.removeAttribute('hidden');
-      if (restudyWrap) wrong ? restudyWrap.removeAttribute('hidden') : restudyWrap.setAttribute('hidden', '');
+    function lockQuiz() {
+      // Disable all option clicks so user cannot change their answer
+      quizForm.querySelectorAll('.quiz-option').forEach(function (l) {
+        l.style.pointerEvents = 'none';
+        l.style.cursor = 'default';
+      });
+      // Show failure banner
+      if (banner) banner.style.display = '';
+      // Swap PREVIOUS → START SECTION OVER
+      if (prevWrap)    prevWrap.style.display    = 'none';
+      if (restudyWrap) restudyWrap.style.display = '';
     }
 
     function maybeEnableNext() {
@@ -68,10 +66,6 @@
         nextBtn.classList.remove('inactive');
         nextBtn.classList.add('active');
         nextBtn.setAttribute('type', 'submit');
-      } else {
-        nextBtn.classList.remove('active');
-        nextBtn.classList.add('inactive');
-        nextBtn.setAttribute('type', 'button');
       }
     }
 
