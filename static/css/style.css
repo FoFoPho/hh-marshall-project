@@ -295,9 +295,9 @@ html, body {
 .welcome-subtitle {
   font-size: 15px;
   margin-bottom: 20px;
-  align-self: flex-start;
   max-width: 640px;
   width: 100%;
+  text-align: center;
 }
 
 .user-form {
