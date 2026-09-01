@@ -3,10 +3,14 @@
 
   // ── Quiz answer selection ─────────────────────────────────
   // Instant green/red feedback on selection.
+  // Wrong answer → shows failure banner + START SECTION OVER button.
   // NEXT only enables when every question has the correct answer chosen.
 
-  const quizForm = document.getElementById('quiz-form');
-  const nextBtn  = document.getElementById('nav-next');
+  const quizForm    = document.getElementById('quiz-form');
+  const nextBtn     = document.getElementById('nav-next');
+  const banner      = document.getElementById('failure-banner');
+  const prevWrap    = document.getElementById('nav-previous-wrap');
+  const restudyWrap = document.getElementById('nav-restudy-wrap');
 
   if (quizForm) {
     const questionLists = quizForm.querySelectorAll('.quiz-options');
@@ -25,18 +29,24 @@
             l.classList.remove('correct', 'incorrect', 'selected');
           });
 
-          // Mark selected and apply correct/incorrect
+          // Mark correct or incorrect
           radio.checked = true;
-          if (selectedIdx === correctIdx) {
-            label.classList.add('correct');
-          } else {
-            label.classList.add('incorrect');
-          }
+          label.classList.add(selectedIdx === correctIdx ? 'correct' : 'incorrect');
 
+          // Update banner + nav buttons based on whether any wrong answer exists
+          setWrongState(hasAnyWrong());
           maybeEnableNext();
         });
       });
     });
+
+    function hasAnyWrong() {
+      return Array.from(questionLists).some(function (ul) {
+        const correctIdx = parseInt(ul.getAttribute('data-correct'), 10);
+        const checked = ul.querySelector('input[type="radio"]:checked');
+        return checked && parseInt(checked.value, 10) !== correctIdx;
+      });
+    }
 
     function allCorrect() {
       return Array.from(questionLists).every(function (ul) {
@@ -44,6 +54,12 @@
         const checked = ul.querySelector('input[type="radio"]:checked');
         return checked && parseInt(checked.value, 10) === correctIdx;
       });
+    }
+
+    function setWrongState(wrong) {
+      if (banner)      wrong ? banner.removeAttribute('hidden')      : banner.setAttribute('hidden', '');
+      if (prevWrap)    wrong ? prevWrap.setAttribute('hidden', '')    : prevWrap.removeAttribute('hidden');
+      if (restudyWrap) wrong ? restudyWrap.removeAttribute('hidden') : restudyWrap.setAttribute('hidden', '');
     }
 
     function maybeEnableNext() {
