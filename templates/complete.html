@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Module Complete — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">
+  MODULE COMPLETE <span class="dot"></span> {{ display_num }}
+</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content" style="align-items:center;text-align:center;">
+
+  <div class="complete-check">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+
+  <h1 class="page-title">You Completed Training {{ module.title }}</h1>
+  <p class="complete-subtitle">Your progress has been recorded.</p>
+
+  <div class="cert-card">
+    <div class="cert-card-icon">
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="none"
+           stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+        <rect x="8" y="4" width="32" height="40" rx="2"/>
+        <line x1="15" y1="16" x2="33" y2="16"/>
+        <line x1="15" y1="22" x2="33" y2="22"/>
+        <line x1="15" y1="28" x2="24" y2="28"/>
+        <circle cx="30" cy="36" r="7"/>
+        <polyline points="27 36 29.5 38.5 34 34"/>
+      </svg>
+    </div>
+    <div>
+      <div class="cert-card-label">Certificate of Completion</div>
+      <div class="cert-card-title">Training {{ module.title }}</div>
+    </div>
+  </div>
+
+  <a href="{{ url_for('download_certificate', module_id=module.id) }}"
+     class="download-btn">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Download Certificate
+  </a>
+
+</main>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-btn-wrap">
+    <a href="{{ url_for('index') }}" class="nav-btn active" aria-label="Back to modules">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="nav-label">MODULES</span>
+  </div>
+  <div class="nav-btn-wrap">
+    <a href="{{ url_for('index') }}" class="nav-btn active" aria-label="Next">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+    <span class="nav-label">NEXT</span>
+  </div>
+</nav>
+{% endblock %}

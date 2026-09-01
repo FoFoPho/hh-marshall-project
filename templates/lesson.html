@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ step.section_title }} — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">
+  {{ step.section_title }} <span class="dot"></span> {{ display_num }}
+</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content">
+  <h1 class="page-title">{{ step.section_title }}</h1>
+
+  {% if step.page.video_url %}
+  <div class="video-wrapper">
+    <div class="video-label-bar">{{ step.page.video_label or 'VIDEO' }}</div>
+    <iframe
+      class="video-embed"
+      src="{{ youtube_embed(step.page.video_url) }}"
+      allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+  </div>
+  {% endif %}
+
+  {% if step.page.brief_text %}
+  <div class="brief-block">
+    {% if step.page.brief_label %}
+    <div class="brief-label">{{ step.page.brief_label }}</div>
+    {% endif %}
+    <p class="brief-text">{{ step.page.brief_text }}</p>
+  </div>
+  {% endif %}
+</main>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-btn-wrap">
+    <a href="{{ prev_url }}" class="nav-btn active" aria-label="Previous">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="nav-label">PREVIOUS</span>
+  </div>
+  <div class="nav-btn-wrap">
+    <a href="{{ next_url }}" class="nav-btn active" aria-label="Next">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+    <span class="nav-label">NEXT</span>
+  </div>
+</nav>
+{% endblock %}

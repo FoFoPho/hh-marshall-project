@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Knowledge Check — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">
+  KNOWLEDGE CHECK <span class="dot"></span> {{ display_num }}
+</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content">
+  <h1 class="page-title">{{ step.section_title }}</h1>
+  <div class="section-badge">Knowledge Check</div>
+  <p class="quiz-instruction">Select the best answer.</p>
+
+  {% set questions = step.quiz.questions %}
+
+  <form class="quiz-card" id="quiz-form"
+        method="POST"
+        action="{{ url_for('submit_quiz', module_id=module.id, section_id=step.section_id) }}">
+
+    {% for q in questions %}
+    {% set q_idx = loop.index0 %}
+    {% set letters = ['A', 'B', 'C', 'D', 'E'] %}
+
+    <p class="quiz-question">{{ q.text }}</p>
+
+    <ul class="quiz-options">
+      {% for option in q.options %}
+      {% set o_idx = loop.index0 %}
+      {% set is_correct_choice = (o_idx == q.correct) %}
+
+      <li>
+        <label class="quiz-option
+          {%- if quiz_failed and is_correct_choice %} correct{% endif %}
+          {%- if quiz_failed and not is_correct_choice %} was-wrong{% endif %}">
+          <input type="radio" name="q{{ q_idx }}" value="{{ o_idx }}">
+
+          {% if quiz_failed and is_correct_choice %}
+            <span class="quiz-result-icon check">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          {% elif quiz_failed %}
+            <span class="quiz-radio"></span>
+          {% else %}
+            <span class="quiz-radio"></span>
+          {% endif %}
+
+          <span class="option-letter">{{ letters[o_idx] }}.</span>
+          <span class="option-text">{{ option }}</span>
+        </label>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% if quiz_failed %}
+    <div class="quiz-result-text correct">Correct</div>
+    {% endif %}
+
+    <div class="quiz-counter">QUESTION {{ loop.index }} OF {{ questions | length }}</div>
+
+    {% if not loop.last %}<hr style="border:none;border-top:1px solid var(--gray-light);margin:24px 0;">{% endif %}
+    {% endfor %}
+
+  </form>
+
+</main>
+
+<!-- Failure banner -->
+{% if quiz_failed %}
+<div class="failure-banner">
+  <div class="banner-icon">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </div>
+  <p>Review this lesson again. Make sure there are no words or concepts you don't understand. Then come back and try again.</p>
+</div>
+{% endif %}
+
+<!-- Navigation -->
+<nav class="nav-bar">
+
+  <!-- Left button: START SECTION OVER (on fail) or PREVIOUS -->
+  {% if quiz_failed %}
+  <div class="nav-btn-wrap">
+    <a href="{{ restudy_url }}" class="nav-btn active" aria-label="Start section over">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="nav-label">START SECTION<br>OVER</span>
+  </div>
+  {% else %}
+  <div class="nav-btn-wrap">
+    <a href="{{ prev_url }}" class="nav-btn active" aria-label="Previous">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="nav-label">PREVIOUS</span>
+  </div>
+  {% endif %}
+
+  <!-- Right button: NEXT — disabled until answered, and disabled if failed -->
+  {% if quiz_failed %}
+  <div class="nav-btn-wrap">
+    <span class="nav-btn inactive" aria-label="Next (unavailable)">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </span>
+    <span class="nav-label muted">NEXT</span>
+  </div>
+  {% else %}
+  <div class="nav-btn-wrap">
+    <button id="nav-next" type="submit" form="quiz-form" class="nav-btn inactive" aria-label="Next">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <span class="nav-label">NEXT</span>
+  </div>
+  {% endif %}
+
+</nav>
+{% endblock %}

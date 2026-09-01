@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Select a Module — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">SELECT A MODULE</div>
+{% endblock %}
+
+{% macro module_icon(icon) %}
+{% if icon == 'hardhat' %}
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hard hat -->
+  <path d="M14 48 C14 32 25 18 40 16 C55 18 66 32 66 48" />
+  <path d="M8 48 H72" stroke-width="2.5"/>
+  <path d="M8 48 C8 52 12 54 14 54 H66 C68 54 72 52 72 48" />
+  <path d="M28 16 C28 10 35 8 40 8 C45 8 52 10 52 16" />
+  <line x1="40" y1="8" x2="40" y2="48"/>
+</svg>
+{% elif icon == 'stairs' %}
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Industrial stairs -->
+  <polyline points="12,64 12,50 28,50 28,38 44,38 44,26 60,26 60,14"/>
+  <line x1="60" y1="14" x2="70" y2="14"/>
+  <line x1="12" y1="64" x2="70" y2="64"/>
+  <line x1="70" y1="14" x2="70" y2="64"/>
+  <!-- Handrail -->
+  <polyline points="10,46 10,32 26,32 26,20 42,20 42,10 62,10" stroke-dasharray="0"/>
+</svg>
+{% elif icon == 'crosshair' %}
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Crosshair / target -->
+  <circle cx="40" cy="40" r="26"/>
+  <circle cx="40" cy="40" r="10"/>
+  <line x1="40" y1="8"  x2="40" y2="28"/>
+  <line x1="40" y1="52" x2="40" y2="72"/>
+  <line x1="8"  y1="40" x2="28" y2="40"/>
+  <line x1="52" y1="40" x2="72" y2="40"/>
+</svg>
+{% elif icon == 'forklift' %}
+<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Forklift -->
+  <!-- Body -->
+  <rect x="10" y="36" width="38" height="22" rx="2"/>
+  <!-- Mast -->
+  <line x1="48" y1="58" x2="48" y2="14"/>
+  <line x1="56" y1="58" x2="56" y2="14"/>
+  <!-- Forks -->
+  <line x1="56" y1="34" x2="72" y2="34"/>
+  <line x1="56" y1="42" x2="72" y2="42"/>
+  <!-- Cab window -->
+  <rect x="16" y="42" width="18" height="10" rx="1"/>
+  <!-- Wheels -->
+  <circle cx="20" cy="62" r="6"/>
+  <circle cx="42" cy="62" r="6"/>
+  <!-- Counterweight -->
+  <rect x="6" y="48" width="8" height="10" rx="1"/>
+</svg>
+{% endif %}
+{% endmacro %}
+
+{% block body %}
+<main class="main-content">
+  <h1 class="page-title">Choose Your Training Module</h1>
+  <p class="module-select-intro">
+    These modules are designed to be completed in one sitting and cannot be resumed later.<br>
+    Before starting, please make sure you have two uninterrupted hours available to complete the full module.
+  </p>
+
+  <div class="module-grid">
+    {% for m in modules %}
+    <div>
+      <a href="{{ url_for('start_module', module_id=m.id) }}" class="module-card">
+        <div class="module-number">{{ m.id }}</div>
+        <div class="module-label">{{ m.title }}</div>
+        <div class="module-icon">{{ module_icon(m.icon) }}</div>
+        <div class="module-select-link">Select Module</div>
+      </a>
+      <p class="module-card-footer">Estimated completion time: {{ m.estimated_time }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

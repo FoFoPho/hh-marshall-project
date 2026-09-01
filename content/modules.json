@@ -1,0 +1,64 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "title": "Module 1",
+      "icon": "hardhat",
+      "estimated_time": "2 hours",
+      "welcome_video": "https://www.youtube.com/watch?v=nzK2bL_Kkok&t=10s",
+      "sections": [
+        {
+          "id": "pinch-point-safety",
+          "title": "Pinch Point Safety",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=nzK2bL_Kkok&t=10s",
+              "video_label": "PINCH POINT SAFETY VIDEO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_text": "Pinch points occur where moving parts can trap hands, fingers, or clothing. Stay alert, keep guards in place, and maintain a safe distance whenever equipment is operating."
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Which action best helps prevent a pinch-point injury?",
+                "options": [
+                  "Keep machine guards in place",
+                  "Reach into moving equipment carefully",
+                  "Wear loose clothing around machinery",
+                  "Stand as close as possible while equipment is operating"
+                ],
+                "correct": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Module 2",
+      "icon": "stairs",
+      "estimated_time": "2 hours",
+      "welcome_video": "",
+      "sections": []
+    },
+    {
+      "id": 3,
+      "title": "Module 3",
+      "icon": "crosshair",
+      "estimated_time": "2 hours",
+      "welcome_video": "",
+      "sections": []
+    },
+    {
+      "id": 4,
+      "title": "Module 4",
+      "icon": "forklift",
+      "estimated_time": "2 hours",
+      "welcome_video": "",
+      "sections": []
+    }
+  ]
+}

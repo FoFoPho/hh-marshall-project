@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}The Marshall Project{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <header class="site-header">
+    <a href="{{ url_for('index') }}" class="logo">
+      <span class="logo-the">The</span>
+      <span class="logo-main">Marshall<br>Project</span>
+      <span class="logo-sub">A Hammer Haag Initiative</span>
+    </a>
+    {% block header_right %}{% endblock %}
+  </header>
+
+  {% block body %}{% endblock %}
+
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

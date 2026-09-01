@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">
+  WELCOME <span class="dot"></span> 01
+</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content">
+  <h1 class="page-title">Welcome to The Marshall Project</h1>
+
+  {% if module.welcome_video %}
+  <div class="video-wrapper">
+    <div class="video-label-bar">WELCOME VIDEO</div>
+    <iframe
+      class="video-embed"
+      src="{{ youtube_embed(module.welcome_video) }}"
+      allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+  </div>
+  {% endif %}
+
+  <p class="welcome-subtitle">Before we begin, tell us a little about yourself.</p>
+
+  <form class="user-form" method="POST" action="{{ url_for('module_start', module_id=module.id) }}">
+    {% if error %}
+    <div class="form-error">{{ error }}</div>
+    {% endif %}
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="first_name">First Name</label>
+        <input class="form-input" type="text" id="first_name" name="first_name"
+               value="{{ request.form.get('first_name', '') }}" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="last_name">Last Name</label>
+        <input class="form-input" type="text" id="last_name" name="last_name"
+               value="{{ request.form.get('last_name', '') }}" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="job_title">Job Title</label>
+        <input class="form-input" type="text" id="job_title" name="job_title"
+               value="{{ request.form.get('job_title', '') }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input class="form-input" type="email" id="email" name="email"
+               value="{{ request.form.get('email', '') }}">
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="nav-bar">
+      <div></div><!-- spacer -->
+      <div class="nav-btn-wrap">
+        <button type="submit" class="nav-btn active" aria-label="Next">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="nav-label">NEXT</span>
+      </div>
+    </div>
+  </form>
+</main>
+{% endblock %}
