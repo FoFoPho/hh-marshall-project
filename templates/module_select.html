@@ -69,6 +69,7 @@
   <div class="module-grid">
     {% for m in modules %}
     <div>
+      {% if m.sections | length > 0 %}
       <a href="{{ url_for('start_module', module_id=m.id) }}" class="module-card">
         <div class="module-number">{{ m.id }}</div>
         <div class="module-label">{{ m.title }}</div>
@@ -76,6 +77,15 @@
         <div class="module-select-link">Select Module</div>
       </a>
       <p class="module-card-footer">Estimated completion time: {{ m.estimated_time }}</p>
+      {% else %}
+      <div class="module-card disabled">
+        <div class="module-number">{{ m.id }}</div>
+        <div class="module-label">{{ m.title }}</div>
+        <div class="module-icon">{{ module_icon(m.icon) }}</div>
+        <div class="module-select-link">Select Module</div>
+      </div>
+      <p class="module-card-footer">Coming Soon</p>
+      {% endif %}
     </div>
     {% endfor %}
   </div>

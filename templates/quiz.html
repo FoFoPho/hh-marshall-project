@@ -26,37 +26,20 @@
 
     <p class="quiz-question">{{ q.text }}</p>
 
-    <ul class="quiz-options">
+    <ul class="quiz-options" data-correct="{{ q.correct }}">
       {% for option in q.options %}
       {% set o_idx = loop.index0 %}
-      {% set is_correct_choice = (o_idx == q.correct) %}
 
       <li>
-        <label class="quiz-option
-          {%- if quiz_failed and is_correct_choice %} correct{% endif %}
-          {%- if quiz_failed and not is_correct_choice %} was-wrong{% endif %}">
+        <label class="quiz-option">
           <input type="radio" name="q{{ q_idx }}" value="{{ o_idx }}">
-
-          {% if quiz_failed and is_correct_choice %}
-            <span class="quiz-result-icon check">
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            </span>
-          {% elif quiz_failed %}
-            <span class="quiz-radio"></span>
-          {% else %}
-            <span class="quiz-radio"></span>
-          {% endif %}
-
+          <span class="quiz-radio"></span>
           <span class="option-letter">{{ letters[o_idx] }}.</span>
           <span class="option-text">{{ option }}</span>
         </label>
       </li>
       {% endfor %}
     </ul>
-
-    {% if quiz_failed %}
-    <div class="quiz-result-text correct">Correct</div>
-    {% endif %}
 
     <div class="quiz-counter">QUESTION {{ loop.index }} OF {{ questions | length }}</div>
 

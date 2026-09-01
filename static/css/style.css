@@ -171,6 +171,17 @@ html, body {
   border-color: var(--blue);
 }
 
+.module-card.disabled {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
+
+.module-card.disabled:hover {
+  box-shadow: none;
+  border-color: var(--gray-light);
+}
+
 .module-number {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 900;

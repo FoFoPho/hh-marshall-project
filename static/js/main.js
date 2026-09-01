@@ -2,63 +2,72 @@
   'use strict';
 
   // ── Quiz answer selection ─────────────────────────────────
-  // Highlight the selected option row and enable the NEXT button
-  // when an answer is chosen (only runs on quiz pages).
+  // Instant green/red feedback on selection.
+  // NEXT only enables when every question has the correct answer chosen.
 
-  const quizForm   = document.getElementById('quiz-form');
-  const nextBtn    = document.getElementById('nav-next');
+  const quizForm = document.getElementById('quiz-form');
+  const nextBtn  = document.getElementById('nav-next');
 
   if (quizForm) {
-    const options = quizForm.querySelectorAll('.quiz-option');
+    const questionLists = quizForm.querySelectorAll('.quiz-options');
 
-    options.forEach(function (label) {
-      label.addEventListener('click', function () {
-        // Clear all selections within the same question group
-        const name = label.querySelector('input[type="radio"]').name;
-        quizForm.querySelectorAll(`input[name="${name}"]`).forEach(function (radio) {
-          radio.closest('.quiz-option').classList.remove('selected');
+    questionLists.forEach(function (ul) {
+      const correctIdx = parseInt(ul.getAttribute('data-correct'), 10);
+      const labels = ul.querySelectorAll('.quiz-option');
+
+      labels.forEach(function (label) {
+        label.addEventListener('click', function () {
+          const radio = label.querySelector('input[type="radio"]');
+          const selectedIdx = parseInt(radio.value, 10);
+
+          // Clear state on all options in this question
+          labels.forEach(function (l) {
+            l.classList.remove('correct', 'incorrect', 'selected');
+          });
+
+          // Mark selected and apply correct/incorrect
+          radio.checked = true;
+          if (selectedIdx === correctIdx) {
+            label.classList.add('correct');
+          } else {
+            label.classList.add('incorrect');
+          }
+
+          maybeEnableNext();
         });
-
-        // Mark this one selected
-        label.classList.add('selected');
-        label.querySelector('input[type="radio"]').checked = true;
-
-        // Enable NEXT if all questions have an answer selected
-        maybeEnableNext();
       });
     });
 
-    function allAnswered() {
-      const groups = {};
-      quizForm.querySelectorAll('input[type="radio"]').forEach(function (r) {
-        if (!groups[r.name]) groups[r.name] = false;
-        if (r.checked) groups[r.name] = true;
+    function allCorrect() {
+      return Array.from(questionLists).every(function (ul) {
+        const correctIdx = parseInt(ul.getAttribute('data-correct'), 10);
+        const checked = ul.querySelector('input[type="radio"]:checked');
+        return checked && parseInt(checked.value, 10) === correctIdx;
       });
-      return Object.values(groups).every(Boolean);
     }
 
     function maybeEnableNext() {
       if (!nextBtn) return;
-      if (allAnswered()) {
+      if (allCorrect()) {
         nextBtn.classList.remove('inactive');
         nextBtn.classList.add('active');
         nextBtn.setAttribute('type', 'submit');
+      } else {
+        nextBtn.classList.remove('active');
+        nextBtn.classList.add('inactive');
+        nextBtn.setAttribute('type', 'button');
       }
     }
 
-    // Prevent NEXT from submitting if no answer chosen (belt + suspenders)
+    // Belt-and-suspenders: block submission if not all correct
     if (nextBtn) {
       nextBtn.addEventListener('click', function (e) {
-        if (!allAnswered()) {
+        if (!allCorrect()) {
           e.preventDefault();
           e.stopPropagation();
         }
       });
     }
   }
-
-  // ── Welcome form NEXT guard ───────────────────────────────
-  // The NEXT button on the welcome page submits the form.
-  // It's always enabled (server validates), so nothing extra needed.
 
 })();
