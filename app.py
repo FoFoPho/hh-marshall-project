@@ -274,16 +274,17 @@ def complete(module_id):
             return redirect(url_for('start_module', module_id=module_id))
         return redirect(url_for('step', module_id=module_id, step_num=current))
 
-    # Generate cert number once
+    # Generate cert number once  (format: M1_FC_090126_01)
     if 'cert_number' not in session:
         user = session.get('user', {})
         initials = (
             user.get('first_name', 'X')[0].upper() +
             user.get('last_name',  'X')[0].upper()
         )
-        date_str = datetime.now().strftime('%Y%m%d')
-        session['cert_number'] = f"TMP-M{module_id}-{date_str}-{initials}-001"
-        session['completed_at'] = datetime.now().strftime('%Y-%m-%d')
+        now = datetime.now()
+        date_code = now.strftime('%m%d%y')   # MMDDYY
+        session['cert_number'] = f"M{module_id}_{initials}_{date_code}_01"
+        session['completed_at'] = now.strftime('%Y-%m-%d')
 
     steps = build_steps(module)
     display_num = f"{len(steps) + 2:02d}"
@@ -308,7 +309,7 @@ def download_certificate(module_id):
     pdf_bytes = generate_certificate(
         first_name   = user.get('first_name', ''),
         last_name    = user.get('last_name', ''),
-        module_id    = module_id,
+        module_title = module.get('title', f'Module {module_id}'),
         cert_number  = session.get('cert_number', ''),
         completed_at = session.get('completed_at', ''),
     )
