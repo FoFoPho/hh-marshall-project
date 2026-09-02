@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-01 (Session 2)  
-**Last session:** Certificate PDF redesign
+**Last updated:** 2026-09-02 (Session 3)  
+**Last session:** Cross-device resume (SQLite persistence)
 
 ---
 
@@ -23,7 +23,8 @@ A web-based safety training course platform for Hammer Haag employees. Users sel
 | PDF         | ReportLab               |
 | Server      | Gunicorn                |
 | Hosting     | Railway                 |
-| Session     | Flask signed cookies (no database) |
+| Session     | Flask signed cookies (per-browser state) |
+| Persistence | SQLite (`db.py`), keyed by email + module — enables cross-device resume |
 
 ---
 
@@ -32,6 +33,7 @@ A web-based safety training course platform for Hammer Haag employees. Users sel
 ```
 HH Marshall Project - 2026/
 ├── app.py              # All Flask routes and logic
+├── db.py               # SQLite progress persistence (resume across devices)
 ├── certificate.py      # ReportLab PDF generation
 ├── requirements.txt    # flask, reportlab, gunicorn
 ├── Procfile            # web: gunicorn app:app
@@ -134,15 +136,26 @@ Add a new object to the top-level `modules` array. Use the next number (5, 6, et
 
 ---
 
+## Resume / Cross-Device Progress
+
+Progress is persisted server-side in SQLite (`db.py`), keyed by `(email, module_id)`, in addition to the session cookie. Session cookies still drive gating during an active visit; the DB is what makes progress survive a closed tab or a different device.
+
+- `GET /module/<id>` looks up existing progress for the logged-in email before resetting anything. If found and not yet certified, it hydrates the session and redirects straight to the saved step. If found and already certified, it redirects to the completion page (cert re-downloadable from any device).
+- Every point that mutates `current_step`, `completed_sections`, or `quiz_failed_section` also writes through to the DB via the `sync_progress()` helper in `app.py`.
+- `GET /module/<id>/reset` deletes the DB row for that email/module and restarts from step 1 — this is the explicit "Start Over" escape hatch, surfaced on the module select cards.
+- Identity is **email only** (normalized to lowercase/trimmed) — first/last name and job title are stored for display and certificate generation but aren't part of the lookup key. There's no verification step (e.g. a confirmation email), so this trusts self-reported email the same way the app already trusted self-reported names.
+
+---
+
 ## Railway Deployment
 
 1. Push repo to GitHub
 2. New project on Railway → connect GitHub repo
 3. Set environment variable: `SECRET_KEY` = any long random string
 4. Railway auto-detects Python + runs `gunicorn app:app` from Procfile
-5. No database needed — all state is session-based
+5. **Required for resume to survive redeploys:** attach a Railway Volume to the service (e.g. mounted at `/data`) and set `DATABASE_PATH=/data/progress.db`. Without this, `progress.db` lives on the container's ephemeral filesystem and is wiped on every redeploy/restart — resume would silently stop working after each deploy.
 
-**Railway URL:** (not yet deployed)
+**Railway URL:** (already deployed — update this line with the live URL)
 
 ---
 
@@ -197,12 +210,29 @@ To adjust text positions, edit the float constants in `certificate.py`. Page is 
 
 - [ ] Fill in Modules 2, 3, and 4 content in `modules.json`
 - [ ] Add real Marshall Project logo image to the web UI header (currently text-based)
-- [ ] Deploy to Railway and record URL here
+- [ ] Attach a Railway Volume + set `DATABASE_PATH` so `progress.db` survives redeploys (see Railway Deployment above) — resume won't be durable in production until this is done
+- [ ] Record the live Railway URL above
 - [ ] Consider adding a logo bar / splash screen
 
 ---
 
 ## Session Log
+
+### 2026-09-02 (Session 3) — Cross-Device Resume
+
+**What changed:**
+- New `db.py` — stdlib `sqlite3` persistence layer, one `progress` row per `(email, module_id)`, storing step/section/cert progress alongside the session
+- `templates/welcome.html` — re-added the Email field (removed in Session 1's `32dfa99`), now required alongside first/last name; added red-asterisk required markers and a grey helper note explaining email is used to resume progress later
+- `app.py` — `welcome_start` now requires + normalizes email; `start_module` looks up existing progress before resetting (resumes in-progress or completed modules instead of always restarting); added `sync_progress()` write-through called from `step`, `submit_quiz`, `restudy`, and `complete`; new `GET /module/<id>/reset` route to explicitly clear progress and start over
+- `templates/module_select.html` — softened the "cannot be resumed later / two uninterrupted hours" copy to reflect that progress now saves automatically; added "In Progress" / "Completed" badges and a "Start Over" link per module card, driven by `progress_by_module` passed from the `modules` route
+- `static/css/style.css` — `.required-mark`, `.form-hint`, `.module-progress-badge` (+ `.in-progress`/`.completed` variants), `.module-card-footer a` link styling
+
+**Decisions made:**
+- Reversed the Session 1 "session-only, no database" decision — SQLite was the lightest option that still supports cross-device resume, since a cookie alone can't do that
+- Identity for resume = normalized email (not a separate resume code) — reuses a field students already recognize, at the cost of trusting self-reported email the same way names were already trusted
+- Kept the "sit down with enough time" framing in `module_select.html` rather than removing it entirely — resume is a safety net for interruptions, not an invitation to split training across days
+
+**Known gap:** Railway's filesystem is ephemeral — `progress.db` needs a Railway Volume + `DATABASE_PATH` env var (see Railway Deployment section) or progress will be lost on every redeploy. Not yet done as of this session.
 
 ### 2026-09-01 (Session 2) — Certificate Redesign
 

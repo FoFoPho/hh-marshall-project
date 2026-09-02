@@ -33,23 +33,30 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label" for="first_name">First Name</label>
+        <label class="form-label" for="first_name">First Name <span class="required-mark">*</span></label>
         <input class="form-input" type="text" id="first_name" name="first_name"
                value="{{ request.form.get('first_name', '') }}" required>
       </div>
       <div class="form-group">
-        <label class="form-label" for="last_name">Last Name</label>
+        <label class="form-label" for="last_name">Last Name <span class="required-mark">*</span></label>
         <input class="form-input" type="text" id="last_name" name="last_name"
                value="{{ request.form.get('last_name', '') }}" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
+        <label class="form-label" for="email">Email Address <span class="required-mark">*</span></label>
+        <input class="form-input" type="email" id="email" name="email"
+               value="{{ request.form.get('email', '') }}" required>
+      </div>
+      <div class="form-group">
         <label class="form-label" for="job_title">Job Title</label>
         <input class="form-input" type="text" id="job_title" name="job_title"
                value="{{ request.form.get('job_title', '') }}">
       </div>
     </div>
+
+    <p class="form-hint">Your first name, last name, and email are used to save your progress, so you can continue later if you need to.</p>
 
     <!-- Nav -->
     <div class="nav-bar">

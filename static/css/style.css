@@ -154,6 +154,7 @@ html, body {
 }
 
 .module-card {
+  position: relative;
   background: var(--white);
   border: 1px solid var(--gray-light);
   border-radius: 8px;
@@ -164,6 +165,38 @@ html, body {
   text-decoration: none;
   color: inherit;
   transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.module-progress-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.module-progress-badge.in-progress {
+  background: var(--gray-bg);
+  color: var(--blue);
+}
+
+.module-progress-badge.completed {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.module-card-footer a {
+  color: #666;
+  text-decoration: underline;
+}
+
+.module-card-footer a:hover {
+  color: var(--blue);
 }
 
 .module-card:hover {
@@ -369,6 +402,17 @@ html, body {
   padding: 10px 14px;
   font-size: 14px;
   margin-bottom: 16px;
+}
+
+.required-mark {
+  color: var(--red);
+}
+
+.form-hint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--gray-mid);
+  margin-top: 4px;
 }
 
 /* ── Knowledge Check label ───────────────────────────────── */

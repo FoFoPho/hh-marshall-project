@@ -9,8 +9,11 @@ from flask import (
     url_for, request, send_file
 )
 
+import db
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
+db.init_db()
 
 
 # ---------------------------------------------------------------------------
@@ -70,6 +73,26 @@ def youtube_embed_url(url):
 app.jinja_env.globals['youtube_embed'] = youtube_embed_url
 
 
+def sync_progress():
+    """Push the current session's progress on the active module to the DB."""
+    user = session.get('user')
+    module_id = session.get('module_id')
+    if not user or not user.get('email') or module_id is None:
+        return
+    db.save_progress(
+        email=user['email'],
+        module_id=module_id,
+        first_name=user.get('first_name', ''),
+        last_name=user.get('last_name', ''),
+        job_title=user.get('job_title', ''),
+        current_step=session.get('current_step', 1),
+        completed_sections=session.get('completed_sections', []),
+        quiz_failed_section=session.get('quiz_failed_section'),
+        cert_number=session.get('cert_number'),
+        completed_at=session.get('completed_at'),
+    )
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
@@ -85,47 +108,78 @@ def welcome_start():
     first_name = request.form.get('first_name', '').strip()
     last_name  = request.form.get('last_name', '').strip()
     job_title  = request.form.get('job_title', '').strip()
+    email      = db.normalize_email(request.form.get('email', ''))
 
-    if not first_name or not last_name:
+    if not first_name or not last_name or not email:
         welcome_video = load_content().get('welcome_video', '')
         return render_template('welcome.html', welcome_video=welcome_video,
-                               error="Please enter your first and last name before continuing.")
+                               error="Please enter your first name, last name, and email before continuing.")
 
     session['user'] = {
         'first_name': first_name,
         'last_name':  last_name,
         'job_title':  job_title,
+        'email':      email,
     }
     return redirect(url_for('modules'))
 
 
 @app.route('/modules')
 def modules():
-    if not session.get('user'):
+    user = session.get('user')
+    if not user:
         return redirect(url_for('index'))
-    return render_template('module_select.html', modules=load_modules())
+    progress_by_module = {
+        p['module_id']: p for p in db.get_progress_for_email(user['email'])
+    }
+    return render_template('module_select.html', modules=load_modules(),
+                           progress_by_module=progress_by_module)
 
 
 @app.route('/module/<int:module_id>')
 def start_module(module_id):
     module = get_module(module_id)
-    if not module or not session.get('user'):
+    user = session.get('user')
+    if not module or not user:
         return redirect(url_for('index'))
 
     # Reset module state while preserving user info
-    user = session.get('user')
     session.clear()
     session['user'] = user
     session['module_id'] = module_id
-    session['completed_sections'] = []
-    session['quiz_failed_section'] = None
 
     steps = build_steps(module)
     if not steps:
         return redirect(url_for('complete', module_id=module_id))
 
+    existing = db.get_progress(user['email'], module_id)
+    if existing:
+        # Resume in-progress or already-completed work on this module.
+        session['current_step']        = existing['current_step']
+        session['completed_sections']  = existing['completed_sections']
+        session['quiz_failed_section'] = existing['quiz_failed_section']
+        if existing['cert_number']:
+            session['cert_number']  = existing['cert_number']
+            session['completed_at'] = existing['completed_at']
+            return redirect(url_for('complete', module_id=module_id))
+        return redirect(url_for('step', module_id=module_id, step_num=existing['current_step']))
+
+    session['completed_sections'] = []
+    session['quiz_failed_section'] = None
     session['current_step'] = 1
+    sync_progress()
     return redirect(url_for('step', module_id=module_id, step_num=1))
+
+
+@app.route('/module/<int:module_id>/reset')
+def reset_module(module_id):
+    module = get_module(module_id)
+    user = session.get('user')
+    if not module or not user:
+        return redirect(url_for('index'))
+
+    db.delete_progress(user['email'], module_id)
+    return redirect(url_for('start_module', module_id=module_id))
 
 
 @app.route('/module/<int:module_id>/step/<int:step_num>')
@@ -170,6 +224,7 @@ def step(module_id, step_num):
         # This lets the user click NEXT from lesson → quiz without being gated.
         if step_num >= current:
             session['current_step'] = step_num + 1
+            sync_progress()
 
         return render_template('lesson.html',
             module=module,
@@ -239,15 +294,18 @@ def submit_quiz(module_id, section_id):
         next_step = quiz_step_num + 1
         if next_step > len(steps):
             session['current_step'] = next_step
+            sync_progress()
             return redirect(url_for('complete', module_id=module_id))
 
         session['current_step'] = next_step
+        sync_progress()
         return redirect(url_for('step', module_id=module_id, step_num=next_step))
     else:
         session['quiz_failed_section'] = section_id
         # Ensure current_step is at least at the quiz step
         if current < quiz_step_num:
             session['current_step'] = quiz_step_num
+        sync_progress()
         return redirect(url_for('step', module_id=module_id, step_num=quiz_step_num))
 
 
@@ -258,6 +316,7 @@ def restudy(module_id, section_id):
         return redirect(url_for('index'))
 
     session['quiz_failed_section'] = None
+    sync_progress()
 
     steps = build_steps(module)
     for i, s in enumerate(steps):
@@ -294,6 +353,7 @@ def complete(module_id):
         date_code = now.strftime('%m%d%y')   # MMDDYY
         session['cert_number'] = f"M{module_id}_{initials}_{date_code}_01"
         session['completed_at'] = now.strftime('%Y-%m-%d')
+        sync_progress()
 
     steps = build_steps(module)
     display_num = f"{len(steps) + 2:02d}"
