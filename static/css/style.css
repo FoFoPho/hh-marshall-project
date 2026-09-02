@@ -41,7 +41,7 @@ html, body {
   background: var(--white);
   border-bottom: 1px solid var(--gray-light);
   padding: 0 32px;
-  height: 84px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,7 +55,7 @@ html, body {
 }
 
 .site-header .logo .site-logo {
-  height: 66px;
+  height: 90px;
   width: auto;
   display: block;
 }
