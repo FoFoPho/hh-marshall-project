@@ -12,9 +12,8 @@
   <!-- Header -->
   <header class="site-header">
     <a href="{{ url_for('index') }}" class="logo">
-      <span class="logo-the">The</span>
-      <span class="logo-main">Marshall<br>Project</span>
-      <span class="logo-sub">A Hammer Haag Initiative</span>
+      <img src="{{ url_for('static', filename='assets/Project Marshall Logo.png') }}"
+           alt="The Marshall Project — A Hammer Haag Initiative" class="site-logo">
     </a>
     {% block header_right %}{% endblock %}
   </header>

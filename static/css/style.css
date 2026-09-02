@@ -41,7 +41,7 @@ html, body {
   background: var(--white);
   border-bottom: 1px solid var(--gray-light);
   padding: 0 32px;
-  height: 72px;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -50,38 +50,14 @@ html, body {
 
 .site-header .logo {
   display: flex;
-  flex-direction: column;
-  line-height: 1;
+  align-items: center;
   text-decoration: none;
 }
 
-.logo-the {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--black);
-  text-transform: uppercase;
-}
-
-.logo-main {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 900;
-  font-size: 22px;
-  letter-spacing: 0.05em;
-  color: var(--blue);
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.logo-sub {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: var(--black);
-  text-transform: uppercase;
-  margin-top: 1px;
+.site-header .logo .site-logo {
+  height: 66px;
+  width: auto;
+  display: block;
 }
 
 .step-indicator {
