@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-02 (Session 3)  
-**Last session:** Cross-device resume (SQLite persistence)
+**Last updated:** 2026-09-02 (Session 5)  
+**Last session:** Real header logo + Module 1 content from script docx
 
 ---
 
@@ -208,15 +208,58 @@ To adjust text positions, edit the float constants in `certificate.py`. Page is 
 
 ## Pending / Next Steps
 
-- [ ] Fill in Modules 2, 3, and 4 content in `modules.json`
-- [ ] Add real Marshall Project logo image to the web UI header (currently text-based)
-- [ ] Attach a Railway Volume + set `DATABASE_PATH` so `progress.db` survives redeploys (see Railway Deployment above) — resume won't be durable in production until this is done
+- [ ] Fill in Modules 2, 3, and 4 content — user is dropping script docs into `Modules/` (see "Module Script Docs" below) one at a time for conversion into `modules.json`
 - [ ] Record the live Railway URL above
 - [ ] Consider adding a logo bar / splash screen
 
 ---
 
+## Module Script Docs
+
+The user drops a `.docx` script per module into `Modules/` (untracked in git — source files, not app code) for conversion into `content/modules.json`. Confirmed format (validated against Module 1's script):
+
+```
+Section – <Section Title>
+Video: <youtube.com/watch?v=... or youtu.be/... link>
+Text:
+<lesson blurb — becomes brief_text>
+
+Quiz –
+  • <question text>
+    A. <option> B. <option> C. <option> D. <option>
+  • ...
+Answer Key
+  • <letter per question, in order>
+```
+
+Notes for processing the next one:
+- `.docx` isn't readable directly — convert first: `textutil -convert txt -stdout "Modules/<file>.docx"`.
+- Video links may be `youtu.be/ID` short links — `youtube_embed_url()` in `app.py` now handles both that and `youtube.com/watch?v=ID`, so either format works as-is. Normalize to `https://www.youtube.com/watch?v=ID` when writing to `modules.json` for consistency (strip `?si=`/playlist/index tracking params).
+- If a section's answer key is missing (happened for Module 1's first section), infer likely answers from the lesson text but **confirm with the user before finalizing** — don't guess silently on quiz content that gates certification.
+- Section title vs. content mismatches happen (Module 1's "Bolt Testing" section was actually about reading a tape measure) — flag and confirm rather than transcribing blindly.
+- `video_label` per section (e.g. "BASIC SAFETY TRAINING VIDEO"), `brief_label` standardized to `"SAFETY BRIEF"` across all sections.
+
+---
+
 ## Session Log
+
+### 2026-09-02 (Session 5) — Module 1 Real Content + youtu.be Embed Fix
+
+**What changed:**
+- `content/modules.json` — replaced Module 1's placeholder "Pinch Point Safety" section with 3 real sections transcribed from `Modules/Module 1 - Test Script.docx`: Basic Safety Training (5 quiz questions), Intro to Fabrication Drawings | The Basics (4 questions), Reading a Tape Measure (1 question, retitled from "Bolt Testing" in the script to match its actual content)
+- `app.py` — `youtube_embed_url()` now handles `youtu.be/ID` short links in addition to `youtube.com/watch?v=ID` (two of the three script videos were short links, which previously embedded blank)
+
+**Decisions made:**
+- Basic Safety Training's answer key was missing from the script — inferred from the lesson text (1-A, 2-C, 3-C, 4-C, 5-C) and confirmed with the user before writing it in, rather than guessing silently on a compliance quiz
+- This script's format is confirmed as the template for Modules 2-4 too — see "Module Script Docs" above for the processing checklist
+
+**Verification:** ran the full module end-to-end via the Flask test client — all 3 videos embed with valid IDs, all 10 quiz questions grade correctly, a wrong answer still blocks progress, and the module reaches `complete` only after all sections pass.
+
+### 2026-09-02 (Session 4) — Real Header Logo
+
+**What changed:**
+- `templates/base.html` / `static/css/style.css` — replaced the CSS-built text logo (`.logo-the`/`.logo-main`/`.logo-sub`) with the official logo image (`static/assets/Project Marshall Logo.png`); header grew from 72px → 110px and the logo renders at 90px tall so the full stacked lockup (including the "A Hammer Haag Initiative" tagline) has room to read clearly
+- Railway Volume (`web-volume`, mounted at `/data`) attached to the `web` service with `DATABASE_PATH=/data/progress.db` set, so the Session 3 resume feature now survives redeploys in production
 
 ### 2026-09-02 (Session 3) — Cross-Device Resume
 

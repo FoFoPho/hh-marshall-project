@@ -60,12 +60,15 @@ def build_steps(module):
 
 
 def youtube_embed_url(url):
-    """Convert a YouTube watch URL to a nocookie embed URL."""
+    """Convert a YouTube watch/short URL to a nocookie embed URL."""
     if not url:
         return ''
     parsed = urlparse(url)
     params = parse_qs(parsed.query)
-    video_id = params.get('v', [''])[0]
+    if parsed.netloc.endswith('youtu.be'):
+        video_id = parsed.path.lstrip('/')
+    else:
+        video_id = params.get('v', [''])[0]
     start = params.get('t', ['0'])[0].rstrip('s')
     return f"https://www.youtube-nocookie.com/embed/{video_id}?start={start}&rel=0&modestbranding=1"
 

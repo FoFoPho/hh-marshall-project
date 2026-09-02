@@ -9,28 +9,152 @@
       "welcome_video": "https://www.youtube.com/watch?v=nzK2bL_Kkok&t=10s",
       "sections": [
         {
-          "id": "pinch-point-safety",
-          "title": "Pinch Point Safety",
+          "id": "basic-safety-training",
+          "title": "Basic Safety Training",
           "pages": [
             {
               "type": "lesson",
-              "video_url": "https://www.youtube.com/watch?v=nzK2bL_Kkok&t=10s",
-              "video_label": "PINCH POINT SAFETY VIDEO",
+              "video_url": "https://www.youtube.com/watch?v=nzK2bL_Kkok",
+              "video_label": "BASIC SAFETY TRAINING VIDEO",
               "brief_label": "SAFETY BRIEF",
-              "brief_text": "Pinch points occur where moving parts can trap hands, fingers, or clothing. Stay alert, keep guards in place, and maintain a safe distance whenever equipment is operating."
+              "brief_text": "Hammer Haag Steel's safety training emphasizes wearing task-appropriate personal protective equipment, completing company training and receiving approval before operating machinery, and speaking up whenever conditions seem unsafe. Forklift operators must drive slowly, remain alert, keep forks low, never carry passengers, use the horn near blind corners, and properly balance loads. Overhead-crane safety includes inspecting rigging, avoiding suspended loads, keeping hands and feet clear, using taglines, and lifting slowly and carefully. Employees should use the PASS method for fire extinguishers—pull, aim, squeeze, and sweep—alert others to a fire, and call 911 if it is too large to control. Machines under maintenance must remain locked and tagged until an authorized employee restores them to service, and portable tools should be unplugged before adjustments. Above all, employees should maintain clean work areas, report hazards, stop when uncertain, and ask a supervisor or safety manager for assistance."
             }
           ],
           "quiz": {
             "questions": [
               {
-                "text": "Which action best helps prevent a pinch-point injury?",
+                "text": "Which PPE is required for everyone entering the shop?",
                 "options": [
-                  "Keep machine guards in place",
-                  "Reach into moving equipment carefully",
-                  "Wear loose clothing around machinery",
-                  "Stand as close as possible while equipment is operating"
+                  "Safety glasses, safety boots, and long pants",
+                  "A respirator and welding helmet",
+                  "A face shield and gloves",
+                  "A hard hat and reflective vest"
                 ],
                 "correct": 0
+              },
+              {
+                "text": "Who may operate equipment such as forklifts and overhead cranes?",
+                "options": [
+                  "Anyone with previous experience",
+                  "Anyone supervised by a coworker",
+                  "Employees trained and approved by Hammer Haag",
+                  "Employees who have worked at the company for 30 days"
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Where should forklift forks be positioned while traveling?",
+                "options": [
+                  "At chest height",
+                  "As high as possible",
+                  "Low to the ground",
+                  "Resting directly on the ground"
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Which action is prohibited when using a forklift?",
+                "options": [
+                  "Measuring a load to find its center",
+                  "Driving slowly through the shop",
+                  "Carrying a person on the forks or sides",
+                  "Keeping the load stable and balanced"
+                ],
+                "correct": 2
+              },
+              {
+                "text": "What should you do if you see a machine that has been locked and tagged out?",
+                "options": [
+                  "Remove the tag if the machine appears repaired",
+                  "Turn the power on to test it",
+                  "Leave the lock and tag in place",
+                  "Ask any available employee to restart it"
+                ],
+                "correct": 2
+              }
+            ]
+          }
+        },
+        {
+          "id": "intro-to-fabrication-drawings",
+          "title": "Intro to Fabrication Drawings | The Basics",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=A1r33ckXpgU",
+              "video_label": "FABRICATION DRAWINGS VIDEO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_text": "This training explains the fundamentals of reading shop prints for weldments and machined parts so employees can complete work correctly, avoid rework, and maintain production flow. A print's title block identifies essential project information, including the company, project location, part name, drawing and revision numbers, scale, approval history, job number, and issue date. General notes specify requirements such as material grades and welding electrodes, while the bill of materials lists each part's quantity, mark, dimensions, grade, and weight. Grid lines help locate items, and dimensions must be read carefully from the correct reference points. Section views show internal or alternate perspectives, detail views provide enlarged information about specific areas, and weld symbols identify required welds. Individual part and machine drawings may also specify thicknesses, widths, lengths, surface finishes, radii, and allowable tolerances. Employees should read every drawing completely and ask for clarification about any unfamiliar number or symbol before beginning work."
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "What important information is typically found in a drawing's title block?",
+                "options": [
+                  "Only the part's dimensions and weight",
+                  "Project details, drawing and revision numbers, scale, approvals, and job number",
+                  "Employee schedules and equipment assignments",
+                  "Welding instructions only"
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What is the purpose of a bill of materials?",
+                "options": [
+                  "To list the parts, quantities, descriptions, dimensions, material grades, and weights required",
+                  "To record employee training and certifications",
+                  "To explain how to operate shop machinery",
+                  "To show when equipment was last inspected"
+                ],
+                "correct": 0
+              },
+              {
+                "text": "Why are section and detail views included in shop drawings?",
+                "options": [
+                  "To identify who approved the project",
+                  "To provide different perspectives and more specific information about how parts are constructed",
+                  "To replace all measurements on the drawing",
+                  "To show where materials are stored"
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if you do not understand a symbol or number on a drawing?",
+                "options": [
+                  "Ignore it if the other measurements are clear",
+                  "Estimate what it means based on previous jobs",
+                  "Begin the work and ask about it later",
+                  "Find out what it means before proceeding"
+                ],
+                "correct": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "reading-a-tape-measure",
+          "title": "Reading a Tape Measure",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=fMDnbE-6gPM",
+              "video_label": "TAPE MEASURE VIDEO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_text": "This training explains how to accurately read and use an imperial tape measure, an essential shop skill that helps prevent costly mistakes and rework. A tape measure shows full inches with its longest numbered lines, followed by progressively smaller marks for halves, quarters, eighths, and sixteenths. To read a measurement, identify the last full inch and then count the fractional marks beyond it. The movable end hook compensates for its own thickness during inside and outside measurements, but the tape should not be used if the hook is bent, loose, or damaged. When measuring, secure the hook, pull the blade tight, keep it straight without sagging, and look directly over the mark to avoid misreading it. Transfer the measurement clearly, use a square when a straight line is needed, and always double-check before cutting. Working slowly, precisely, and consistently helps avoid bad cuts and keeps production moving."
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "What is the best way to ensure an accurate tape-measure reading?",
+                "options": [
+                  "Let the tape sag slightly",
+                  "Read the mark from an angle",
+                  "Keep the tape straight and double-check the measurement",
+                  "Round the measurement to the nearest inch"
+                ],
+                "correct": 2
               }
             ]
           }
