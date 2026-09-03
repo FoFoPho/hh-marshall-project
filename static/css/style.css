@@ -136,6 +136,11 @@ html, body {
   max-width: 1200px;
 }
 
+.dashboard-refresh-note {
+  color: var(--gray-mid);
+  font-size: 13px;
+}
+
 .dashboard-actions {
   display: flex;
   gap: 12px;

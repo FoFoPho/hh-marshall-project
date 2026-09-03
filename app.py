@@ -509,6 +509,12 @@ def supervisor_dashboard():
     return render_template('supervisor_dashboard.html', rows=build_dashboard_rows())
 
 
+@app.route('/supervisor/data.json')
+@supervisor_required
+def supervisor_data():
+    return {'rows': build_dashboard_rows()}
+
+
 @app.route('/supervisor/export.csv')
 @supervisor_required
 def supervisor_export_csv():
