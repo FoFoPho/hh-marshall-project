@@ -329,8 +329,10 @@ def restudy(module_id, section_id):
     if not module or session.get('module_id') != module_id:
         return redirect(url_for('index'))
 
-    session['quiz_failed_section'] = None
-    sync_progress()
+    # Note: quiz_failed_section is intentionally left set here — it's what
+    # marks the student as "Restudy" on the supervisor dashboard, and should
+    # stay true for the whole remediation period. submit_quiz() clears it on
+    # a passing retry (or re-sets it on another failure), not this route.
 
     # Send the student back one section further, so they review the
     # previous section before retrying — unless this is already the

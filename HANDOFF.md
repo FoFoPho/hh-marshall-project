@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-03 (Session 10)  
-**Last session:** Restudy rows yellow + Progress column on dashboard
+**Last updated:** 2026-09-03 (Session 11)  
+**Last session:** Fixed restudy status clearing too early on the dashboard
 
 ---
 
@@ -217,7 +217,7 @@ To adjust text positions, edit the float constants in `certificate.py`. Page is 
 
 ## Supervisor Dashboard
 
-Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` if not authenticated). Shows every student's progress across every module in one table — name, email, module, current section, status (In Progress / Restudying / Completed, derived directly from existing `quiz_failed_section`/`cert_number` fields, no extra tracking needed), and cert number. Rows tint green when completed, red when currently restudying after a quiz failure.
+Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` if not authenticated). Shows every student's progress across every module in one table — name, email, module, section progress, current section, status (In Progress / Restudy / Completed, derived directly from existing `quiz_failed_section`/`cert_number` fields, no extra tracking needed), and cert number. Rows tint green when completed, yellow while restudying after a quiz failure.
 
 - **Password:** any environment variable whose name starts with `SUPERVISOR_PASSWORD` is accepted (`get_supervisor_passwords()` in `app.py`) — add `SUPERVISOR_PASSWORD`, `SUPERVISOR_PASSWORD_2`, etc. on Railway anytime, no redeploy-time code change needed. No usernames — single shared password, session-flag gated independently of the student session.
 - **Export CSV** (`/supervisor/export.csv`) — same rows, same columns, as a download.
@@ -258,6 +258,16 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-03 (Session 11) — Fixed Restudy Status Clearing Too Early
+
+**The bug:** users reported the dashboard never showed "Restudy"/yellow for students who'd just failed a quiz. `restudy()` was clearing `session['quiz_failed_section']` (and persisting that clear to the DB) the instant the student clicked "REVIEW & RETRY" — i.e. before they'd reviewed anything or retaken the quiz. That left the DB showing "Restudy" for only the brief window between the failed submission and the student clicking through, then "In Progress" for the entire actual remediation period — exactly backwards from what's useful on a supervisor dashboard.
+
+**Root cause:** that early clear was leftover from before the restudy redesign (Session 7). It fed a `quiz_failed` variable passed into `quiz.html`, but grepping every template confirmed `quiz_failed` is never actually referenced anywhere — dead data. There was no real reason left to clear the flag early.
+
+**Fix:** removed the early clear from `restudy()`. `quiz_failed_section` now stays set for the whole remediation period; `submit_quiz()` already correctly clears it on a passing retry (or re-sets it on another failure) — that's the only place it should change now. Verified: DB shows the failed section through the restudy click and through reviewing lessons, dashboard shows "Restudy"/yellow throughout, and it correctly flips to "In Progress" only once the retake actually passes.
+
+**Lesson for later:** when a session field starts getting read for a second purpose (here: DB/dashboard visibility, on top of its original session-UI purpose), audit every place that mutates it — a write that made sense for the original purpose can silently break the new one.
 
 ### 2026-09-03 (Session 7) — Restudy-Previous-Section + Supervisor Dashboard
 
