@@ -23,6 +23,11 @@
     <a href="{{ url_for('supervisor_logout') }}" class="btn btn-logout">Log Out</a>
   </div>
 
+  <div class="dashboard-search">
+    <input type="search" id="search-input" class="form-input"
+           placeholder="Search name, email, module, status…" autocomplete="off">
+  </div>
+
   <div class="table-scroll" id="table-wrap" {% if not rows %}style="display:none"{% endif %}>
     <table class="supervisor-table">
       <thead>
@@ -54,6 +59,7 @@
     </table>
   </div>
   <p class="welcome-subtitle" id="empty-msg" {% if rows %}style="display:none"{% endif %}>No student progress recorded yet.</p>
+  <p class="welcome-subtitle" id="no-matches-msg" style="display:none">No records match your search.</p>
 </main>
 
 <script>
@@ -65,6 +71,8 @@
   var tableWrap = document.getElementById('table-wrap');
   var emptyMsg = document.getElementById('empty-msg');
   var refreshNote = document.getElementById('refresh-note');
+  var searchInput = document.getElementById('search-input');
+  var noMatchesMsg = document.getElementById('no-matches-msg');
 
   function escapeHtml(s) {
     var div = document.createElement('div');
@@ -72,27 +80,53 @@
     return div.innerHTML;
   }
 
+  // Row matches only if every whitespace-separated search word appears
+  // somewhere in the row's combined text — lets "Forrest Conner" narrow
+  // past "Forrest" even though first/last name are separate columns.
+  function rowMatches(tr, words) {
+    if (!words.length) return true;
+    var text = tr.textContent.toLowerCase();
+    return words.every(function (w) { return text.indexOf(w) !== -1; });
+  }
+
+  function applyFilter() {
+    var query = searchInput.value.trim().toLowerCase();
+    var words = query ? query.split(/\s+/) : [];
+    var rowEls = tbody.querySelectorAll('tr');
+    var visibleCount = 0;
+    rowEls.forEach(function (tr) {
+      var match = rowMatches(tr, words);
+      tr.style.display = match ? '' : 'none';
+      if (match) visibleCount++;
+    });
+    noMatchesMsg.style.display = (rowEls.length > 0 && visibleCount === 0) ? '' : 'none';
+  }
+
   function render(rows) {
-    if (!rows.length) {
+    if (rows.length) {
+      tableWrap.style.display = '';
+      emptyMsg.style.display = 'none';
+      tbody.innerHTML = rows.map(function (r) {
+        return '<tr class="' + escapeHtml(r.status_class) + '">'
+          + '<td>' + escapeHtml(r.first_name) + '</td>'
+          + '<td>' + escapeHtml(r.last_name) + '</td>'
+          + '<td>' + escapeHtml(r.email) + '</td>'
+          + '<td>' + escapeHtml(r.module_title) + '</td>'
+          + '<td>' + escapeHtml(r.section) + '</td>'
+          + '<td>' + escapeHtml(r.status) + '</td>'
+          + '<td>' + escapeHtml(r.cert_number) + '</td>'
+          + '<td>' + escapeHtml(r.updated_at) + '</td>'
+          + '</tr>';
+      }).join('');
+    } else {
       tableWrap.style.display = 'none';
       emptyMsg.style.display = '';
-      return;
+      tbody.innerHTML = '';
     }
-    tableWrap.style.display = '';
-    emptyMsg.style.display = 'none';
-    tbody.innerHTML = rows.map(function (r) {
-      return '<tr class="' + escapeHtml(r.status_class) + '">'
-        + '<td>' + escapeHtml(r.first_name) + '</td>'
-        + '<td>' + escapeHtml(r.last_name) + '</td>'
-        + '<td>' + escapeHtml(r.email) + '</td>'
-        + '<td>' + escapeHtml(r.module_title) + '</td>'
-        + '<td>' + escapeHtml(r.section) + '</td>'
-        + '<td>' + escapeHtml(r.status) + '</td>'
-        + '<td>' + escapeHtml(r.cert_number) + '</td>'
-        + '<td>' + escapeHtml(r.updated_at) + '</td>'
-        + '</tr>';
-    }).join('');
+    applyFilter();
   }
+
+  searchInput.addEventListener('input', applyFilter);
 
   function poll() {
     if (document.visibilityState === 'hidden') return;

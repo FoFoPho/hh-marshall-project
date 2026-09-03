@@ -185,6 +185,11 @@ html, body {
 }
 .btn-logout:hover { color: var(--black); border-color: var(--gray-mid); }
 
+.dashboard-search {
+  max-width: 420px;
+  margin-bottom: 16px;
+}
+
 .table-scroll {
   width: 100%;
   overflow-x: auto;

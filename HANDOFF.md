@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-03 (Session 8)  
-**Last session:** Supervisor Dashboard auto-refresh
+**Last updated:** 2026-09-03 (Session 9)  
+**Last session:** Supervisor Dashboard search/filter
 
 ---
 
@@ -224,6 +224,7 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - **Reset All Data** (`/supervisor/reset`, POST) — deletes every row in the `progress` table, **including completed/certified students** (confirmed as intended for now, to clear test-user data before real employees start — this is not a routine action). Gated behind two chained `confirm()` dialogs client-side; there's no server-side undo.
 - The header's "Supervisor Dashboard" link (grey pill, top right, in `base.html`) is visible on every page regardless of auth state — clicking it while logged out just routes through the login form.
 - **Auto-refresh:** the dashboard polls `/supervisor/data.json` (same `build_dashboard_rows()` data, JSON) every 7s via inline JS in `supervisor_dashboard.html`, swapping the table body in place (no page reload, no lost scroll position). Polling pauses while the tab isn't visible. Chose polling over WebSockets/SSE — this is a low-traffic internal tool where a few seconds of staleness doesn't matter, and polling needed no gunicorn/worker changes on Railway.
+- **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
 
 ---
 
