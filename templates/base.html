@@ -15,7 +15,10 @@
       <img src="{{ url_for('static', filename='assets/Project Marshall Logo.png') }}"
            alt="The Marshall Project — A Hammer Haag Initiative" class="site-logo">
     </a>
-    {% block header_right %}{% endblock %}
+    <div class="header-right-group">
+      {% block header_right %}{% endblock %}
+      <a href="{{ url_for('supervisor_dashboard') }}" class="supervisor-link">Supervisor Dashboard</a>
+    </div>
   </header>
 
   {% block body %}{% endblock %}

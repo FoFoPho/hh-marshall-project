@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Supervisor Login — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">SUPERVISOR LOGIN</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content">
+  <h1 class="page-title">Supervisor Login</h1>
+  <p class="welcome-subtitle">Enter the supervisor password to view the training dashboard.</p>
+
+  <form class="user-form" method="POST" action="{{ url_for('supervisor_login') }}">
+    {% if error %}
+    <div class="form-error">{{ error }}</div>
+    {% endif %}
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input class="form-input" type="password" id="password" name="password" required autofocus>
+      </div>
+    </div>
+
+    <div class="nav-bar">
+      <div></div><!-- spacer -->
+      <div class="nav-btn-wrap">
+        <button type="submit" class="nav-btn active" aria-label="Log in">
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="nav-label">LOG IN</span>
+      </div>
+    </div>
+  </form>
+</main>
+{% endblock %}

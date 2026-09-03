@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Supervisor Dashboard — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">SUPERVISOR DASHBOARD</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content dashboard-main">
+  <h1 class="page-title">Supervisor Dashboard</h1>
+  <p class="welcome-subtitle">Live progress across every student and module.</p>
+
+  <div class="dashboard-actions">
+    <a href="{{ url_for('supervisor_export_csv') }}" class="btn btn-export">Export CSV</a>
+    <form method="POST" action="{{ url_for('supervisor_reset') }}"
+          onsubmit="return confirm('This permanently deletes ALL progress for every student, including completed certificates. This cannot be undone. Continue?') && confirm('Are you absolutely sure? Type OK to permanently erase every record.');">
+      <button type="submit" class="btn btn-reset">Reset All Data</button>
+    </form>
+    <a href="{{ url_for('supervisor_logout') }}" class="btn btn-logout">Log Out</a>
+  </div>
+
+  {% if rows %}
+  <div class="table-scroll">
+    <table class="supervisor-table">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Module</th>
+          <th>Current Section</th>
+          <th>Status</th>
+          <th>Cert Number</th>
+          <th>Last Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr class="{{ row.status_class }}">
+          <td>{{ row.first_name }}</td>
+          <td>{{ row.last_name }}</td>
+          <td>{{ row.email }}</td>
+          <td>{{ row.module_title }}</td>
+          <td>{{ row.section }}</td>
+          <td>{{ row.status }}</td>
+          <td>{{ row.cert_number }}</td>
+          <td>{{ row.updated_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="welcome-subtitle">No student progress recorded yet.</p>
+  {% endif %}
+</main>
+{% endblock %}

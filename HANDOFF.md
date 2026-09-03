@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-02 (Session 5)  
-**Last session:** Real header logo + Module 1 content from script docx
+**Last updated:** 2026-09-03 (Session 7)  
+**Last session:** Restudy-previous-section behavior + Supervisor Dashboard
 
 ---
 
@@ -208,9 +208,21 @@ To adjust text positions, edit the float constants in `certificate.py`. Page is 
 
 ## Pending / Next Steps
 
+- [ ] **Set a real `SUPERVISOR_PASSWORD` on Railway before relying on the dashboard.** Without one, it falls back to a hardcoded dev password (`DEV_SUPERVISOR_PASSWORD` in `app.py`) that's plainly visible in the source — fine for local dev, not acceptable once this matters in production. See "Supervisor Dashboard" below.
 - [ ] Fill in Modules 2, 3, and 4 content — user is dropping script docs into `Modules/` (see "Module Script Docs" below) one at a time for conversion into `modules.json`
 - [ ] Record the live Railway URL above
 - [ ] Consider adding a logo bar / splash screen
+
+---
+
+## Supervisor Dashboard
+
+Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` if not authenticated). Shows every student's progress across every module in one table — name, email, module, current section, status (In Progress / Restudying / Completed, derived directly from existing `quiz_failed_section`/`cert_number` fields, no extra tracking needed), and cert number. Rows tint green when completed, red when currently restudying after a quiz failure.
+
+- **Password:** any environment variable whose name starts with `SUPERVISOR_PASSWORD` is accepted (`get_supervisor_passwords()` in `app.py`) — add `SUPERVISOR_PASSWORD`, `SUPERVISOR_PASSWORD_2`, etc. on Railway anytime, no redeploy-time code change needed. No usernames — single shared password, session-flag gated independently of the student session.
+- **Export CSV** (`/supervisor/export.csv`) — same rows, same columns, as a download.
+- **Reset All Data** (`/supervisor/reset`, POST) — deletes every row in the `progress` table, **including completed/certified students** (confirmed as intended for now, to clear test-user data before real employees start — this is not a routine action). Gated behind two chained `confirm()` dialogs client-side; there's no server-side undo.
+- The header's "Supervisor Dashboard" link (grey pill, top right, in `base.html`) is visible on every page regardless of auth state — clicking it while logged out just routes through the login form.
 
 ---
 
@@ -242,6 +254,24 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-03 (Session 7) — Restudy-Previous-Section + Supervisor Dashboard
+
+**What changed:**
+- `app.py` — `restudy()` now sends a student back to the *previous* section's lesson on quiz failure (not just the failed section's own lesson), unless it's already the first section. `step()`'s `next_url` computation now skips forward over any quiz step whose section is already in `completed_sections`, so walking forward from that earlier lesson doesn't force a retake of an already-passed quiz. Only affects the restudy path — normal first-time progress is untouched, since an unpassed quiz is never in `completed_sections`.
+- `templates/quiz.html` / `static/js/main.js` — "START SECTION OVER" relabeled to "REVIEW & RETRY" (copy no longer assumed it only goes back to the current section); failure banner copy softened to match.
+- New Supervisor Dashboard (`/supervisor`) — see "Supervisor Dashboard" above for full details. New `db.get_all_progress()` / `db.reset_all_progress()`; new templates `supervisor_login.html` / `supervisor_dashboard.html`; header link added in `base.html` via a new `.header-right-group` wrapper (groups the per-page `header_right` block with the new link without disturbing existing page layouts).
+
+**Decisions made:**
+- Reset wipes everything, including completed certs — acceptable now (test-user data), called out clearly since it's a real compliance-data loss once real employees are using this.
+- Password matching is prefix-based (`SUPERVISOR_PASSWORD*`) rather than a single comma-separated variable, so supervisors can add more later purely through Railway's UI.
+- No new session state was needed for the restudy fix — `current_step` already never decreases and only gates moving *ahead*, so the whole feature came down to two read-time computations (the restudy target section, and the next-step skip-over) rather than any new tracking.
+
+### 2026-09-02 (Session 6) — Certificate Template Update
+
+**What changed:**
+- `static/assets/MP Cert Template.png` replaced with a cleaner redesign (old one kept locally as `ARCHIVED - MP Cert Template.png`, intentionally not committed).
+- No code changes — verified by rendering a real test certificate against the new template; the position constants in `certificate.py` still line up because the new template kept virtually the same pixel dimensions/layout grid as the old one.
 
 ### 2026-09-02 (Session 5) — Module 1 Real Content + youtu.be Embed Fix
 

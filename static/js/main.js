@@ -5,8 +5,8 @@
   // Instant green/red feedback on selection.
   // Correct answer → NEXT enables.
   // Wrong answer → option turns red, failure banner appears,
-  //   PREVIOUS swaps to START SECTION OVER, entire quiz locks.
-  //   User must click START SECTION OVER to restudy before retrying.
+  //   PREVIOUS swaps to REVIEW & RETRY, entire quiz locks.
+  //   User must click REVIEW & RETRY to restudy before retrying.
 
   const quizForm    = document.getElementById('quiz-form');
   const nextBtn     = document.getElementById('nav-next');
@@ -55,7 +55,7 @@
       });
       // Show failure banner
       if (banner) banner.style.display = '';
-      // Swap PREVIOUS → START SECTION OVER
+      // Swap PREVIOUS → REVIEW & RETRY
       if (prevWrap)    prevWrap.style.display    = 'none';
       if (restudyWrap) restudyWrap.style.display = '';
     }

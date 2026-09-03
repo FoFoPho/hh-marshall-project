@@ -1,12 +1,14 @@
+import csv
 import os
 import io
 import json
 from datetime import datetime
+from functools import wraps
 from urllib.parse import urlparse, parse_qs
 
 from flask import (
     Flask, session, render_template, redirect,
-    url_for, request, send_file
+    url_for, request, send_file, Response
 )
 
 import db
@@ -214,11 +216,20 @@ def step(module_id, step_num):
     else:
         prev_url = url_for('step', module_id=module_id, step_num=step_num - 1)
 
-    # Next URL (may be blocked on failed quiz)
-    if step_num == len(steps):
+    # Next URL (may be blocked on failed quiz). Skip forward over any quiz
+    # step whose section is already passed — happens when restudying an
+    # earlier section after a later quiz failure.
+    completed_sections = session.get('completed_sections', [])
+    next_step_num = step_num + 1
+    while (next_step_num <= len(steps)
+           and steps[next_step_num - 1]['type'] == 'quiz'
+           and steps[next_step_num - 1]['section_id'] in completed_sections):
+        next_step_num += 1
+
+    if next_step_num > len(steps):
         next_url = url_for('complete', module_id=module_id)
     else:
-        next_url = url_for('step', module_id=module_id, step_num=step_num + 1)
+        next_url = url_for('step', module_id=module_id, step_num=next_step_num)
 
     quiz_failed = (session.get('quiz_failed_section') == step_data.get('section_id'))
 
@@ -321,9 +332,18 @@ def restudy(module_id, section_id):
     session['quiz_failed_section'] = None
     sync_progress()
 
+    # Send the student back one section further, so they review the
+    # previous section before retrying — unless this is already the
+    # first section, in which case there's nothing earlier to review.
+    sections = module.get('sections', [])
+    idx = next((i for i, s in enumerate(sections) if s['id'] == section_id), None)
+    if idx is None:
+        return redirect(url_for('index'))
+    target_section_id = sections[idx - 1]['id'] if idx > 0 else section_id
+
     steps = build_steps(module)
     for i, s in enumerate(steps):
-        if s.get('section_id') == section_id and s['type'] == 'lesson':
+        if s.get('section_id') == target_section_id and s['type'] == 'lesson':
             lesson_step_num = i + 1
             return redirect(url_for('step', module_id=module_id, step_num=lesson_step_num))
 
@@ -392,6 +412,126 @@ def download_certificate(module_id):
         as_attachment=True,
         download_name=f"marshall-project-module-{module_id}-certificate.pdf",
     )
+
+
+# ---------------------------------------------------------------------------
+# Supervisor Dashboard
+# ---------------------------------------------------------------------------
+
+DEV_SUPERVISOR_PASSWORD = 'dev-supervisor-password-change-in-prod'
+
+
+def get_supervisor_passwords():
+    """Any env var prefixed SUPERVISOR_PASSWORD is a valid password — lets
+    new ones be added on Railway anytime with no code change."""
+    passwords = {v for k, v in os.environ.items() if k.startswith('SUPERVISOR_PASSWORD') and v}
+    return passwords or {DEV_SUPERVISOR_PASSWORD}
+
+
+def supervisor_required(view):
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if not session.get('is_supervisor'):
+            return redirect(url_for('supervisor_login'))
+        return view(*args, **kwargs)
+    return wrapped
+
+
+def section_title_by_id(module, section_id):
+    for s in module.get('sections', []) if module else []:
+        if s['id'] == section_id:
+            return s['title']
+    return section_id
+
+
+def build_dashboard_rows():
+    rows = []
+    for p in db.get_all_progress():
+        module = get_module(p['module_id'])
+        module_title = module['title'] if module else f"Module {p['module_id']}"
+
+        if p['cert_number']:
+            status, status_class, section_label = 'Completed', 'completed', '—'
+        elif p['quiz_failed_section']:
+            failed_title = section_title_by_id(module, p['quiz_failed_section'])
+            status = f"Restudying — failed \"{failed_title}\" quiz"
+            status_class = 'restudying'
+            section_label = failed_title
+        else:
+            status, status_class = 'In Progress', 'in_progress'
+            section_label = '—'
+            if module:
+                steps = build_steps(module)
+                idx = p['current_step'] - 1
+                if 0 <= idx < len(steps):
+                    section_label = steps[idx]['section']['title']
+
+        try:
+            updated_at = datetime.fromisoformat(p['updated_at']).strftime('%Y-%m-%d %I:%M %p UTC')
+        except (TypeError, ValueError):
+            updated_at = p['updated_at'] or ''
+
+        rows.append({
+            'first_name': p['first_name'],
+            'last_name': p['last_name'],
+            'email': p['email'],
+            'module_title': module_title,
+            'section': section_label,
+            'status': status,
+            'status_class': status_class,
+            'cert_number': p['cert_number'] or '',
+            'updated_at': updated_at,
+        })
+    return rows
+
+
+@app.route('/supervisor/login', methods=['GET', 'POST'])
+def supervisor_login():
+    error = None
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        if password and password in get_supervisor_passwords():
+            session['is_supervisor'] = True
+            return redirect(url_for('supervisor_dashboard'))
+        error = 'Incorrect password.'
+    return render_template('supervisor_login.html', error=error)
+
+
+@app.route('/supervisor/logout')
+def supervisor_logout():
+    session.pop('is_supervisor', None)
+    return redirect(url_for('supervisor_login'))
+
+
+@app.route('/supervisor')
+@supervisor_required
+def supervisor_dashboard():
+    return render_template('supervisor_dashboard.html', rows=build_dashboard_rows())
+
+
+@app.route('/supervisor/export.csv')
+@supervisor_required
+def supervisor_export_csv():
+    buf = io.StringIO()
+    writer = csv.writer(buf)
+    writer.writerow(['First Name', 'Last Name', 'Email', 'Module', 'Current Section',
+                      'Status', 'Cert Number', 'Last Updated'])
+    for r in build_dashboard_rows():
+        writer.writerow([r['first_name'], r['last_name'], r['email'], r['module_title'],
+                          r['section'], r['status'], r['cert_number'], r['updated_at']])
+
+    return Response(
+        buf.getvalue(),
+        mimetype='text/csv',
+        headers={'Content-Disposition': 'attachment; filename=marshall-project-progress.csv'},
+    )
+
+
+@app.route('/supervisor/reset', methods=['POST'])
+@supervisor_required
+def supervisor_reset():
+    db.reset_all_progress()
+    return redirect(url_for('supervisor_dashboard'))
 
 
 if __name__ == '__main__':

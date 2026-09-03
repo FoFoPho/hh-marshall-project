@@ -108,3 +108,16 @@ def delete_progress(email, module_id):
             'DELETE FROM progress WHERE email = ? AND module_id = ?',
             (email, module_id),
         )
+
+
+def get_all_progress():
+    with get_connection() as conn:
+        rows = conn.execute(
+            'SELECT * FROM progress ORDER BY updated_at DESC',
+        ).fetchall()
+    return [_row_to_dict(row) for row in rows]
+
+
+def reset_all_progress():
+    with get_connection() as conn:
+        conn.execute('DELETE FROM progress')

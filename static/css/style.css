@@ -60,6 +60,33 @@ html, body {
   display: block;
 }
 
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.supervisor-link {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-mid);
+  background: var(--gray-bg);
+  border: 1px solid var(--gray-light);
+  border-radius: 999px;
+  padding: 6px 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.supervisor-link:hover {
+  color: var(--black);
+  border-color: var(--gray-mid);
+}
+
 .step-indicator {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
@@ -103,6 +130,92 @@ html, body {
   color: var(--black);
   margin-bottom: 24px;
 }
+
+/* ── Supervisor Dashboard ─────────────────────────────────── */
+.dashboard-main {
+  max-width: 1200px;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-export {
+  background: var(--blue);
+  color: var(--white);
+}
+.btn-export:hover { background: var(--blue-dark); }
+
+.btn-reset {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+.btn-reset:hover { background: var(--red); color: var(--white); }
+
+.btn-logout {
+  background: var(--white);
+  color: var(--gray-mid);
+  border: 1px solid var(--gray-light);
+}
+.btn-logout:hover { color: var(--black); border-color: var(--gray-mid); }
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.supervisor-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--white);
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.supervisor-table th,
+.supervisor-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-light);
+  white-space: nowrap;
+}
+
+.supervisor-table th {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-mid);
+  background: var(--gray-bg);
+}
+
+.supervisor-table tr:last-child td { border-bottom: none; }
+
+.supervisor-table tr.completed { background: var(--green-bg); }
+.supervisor-table tr.restudying { background: var(--red-bg); }
 
 /* ── Module Select Page ──────────────────────────────────── */
 .module-select-intro {
