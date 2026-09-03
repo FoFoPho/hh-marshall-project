@@ -446,19 +446,31 @@ def section_title_by_id(module, section_id):
     return section_id
 
 
+def section_index_by_id(module, section_id):
+    """1-indexed position of a section within its module, or None if not found."""
+    for i, s in enumerate(module.get('sections', []) if module else []):
+        if s['id'] == section_id:
+            return i + 1
+    return None
+
+
 def build_dashboard_rows():
     rows = []
     for p in db.get_all_progress():
         module = get_module(p['module_id'])
         module_title = module['title'] if module else f"Module {p['module_id']}"
+        total_sections = len(module['sections']) if module else None
+        current_section_num = None
 
         if p['cert_number']:
             status, status_class, section_label = 'Completed', 'completed', '—'
+            current_section_num = total_sections
         elif p['quiz_failed_section']:
             failed_title = section_title_by_id(module, p['quiz_failed_section'])
             status = 'Restudy'
             status_class = 'restudying'
             section_label = failed_title
+            current_section_num = section_index_by_id(module, p['quiz_failed_section'])
         else:
             status, status_class = 'In Progress', 'in_progress'
             section_label = '—'
@@ -467,14 +479,20 @@ def build_dashboard_rows():
                 idx = p['current_step'] - 1
                 if 0 <= idx < len(steps):
                     section_label = steps[idx]['section']['title']
+                    current_section_num = section_index_by_id(module, steps[idx]['section']['id'])
+                elif idx >= len(steps):
+                    # Passed every quiz but hasn't loaded /complete yet.
+                    current_section_num = total_sections
 
         try:
             updated_at = datetime.fromisoformat(p['updated_at']).strftime('%Y-%m-%d %I:%M %p UTC')
         except (TypeError, ValueError):
             updated_at = p['updated_at'] or ''
 
-        total_sections = len(module['sections']) if module else None
-        progress = f"{len(p['completed_sections'])}/{total_sections if total_sections is not None else '?'}"
+        if total_sections:
+            progress = f"{current_section_num or 1}/{total_sections}"
+        else:
+            progress = '?/?'
 
         rows.append({
             'first_name': p['first_name'],

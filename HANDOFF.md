@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-03 (Session 12)  
-**Last session:** Fixed quiz failures never reaching the server at all
+**Last updated:** 2026-09-03 (Session 13)  
+**Last session:** Progress column now shows current section, not completed count
 
 ---
 
@@ -226,7 +226,7 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - **Auto-refresh:** the dashboard polls `/supervisor/data.json` (same `build_dashboard_rows()` data, JSON) every 7s via inline JS in `supervisor_dashboard.html`, swapping the table body in place (no page reload, no lost scroll position). Polling pauses while the tab isn't visible. Chose polling over WebSockets/SSE — this is a low-traffic internal tool where a few seconds of staleness doesn't matter, and polling needed no gunicorn/worker changes on Railway.
 - **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
 - **Restudying rows are yellow** (`--yellow`/`--yellow-bg` tokens in `style.css`), status text just reads **"Restudy"** — red is reserved for stronger "something's wrong" signals elsewhere (form errors, wrong-answer quiz feedback). The specific section they're stuck on is still shown in the Current Section column, so the status text didn't need to repeat it.
-- **Progress column** shows `completed/total` sections for that module (e.g. `2/5`), computed in `build_dashboard_rows()` from `len(completed_sections)` vs. `len(module['sections'])`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
+- **Progress column** shows `current section number/total` (e.g. `2/5`) — a 1-indexed "which section are they on," not a completed-count. Someone who just started is `1/N`, not `0/N`; someone restudying section 3 is `3/N` (based on the failed section's index), not however many they'd actually passed. Computed in `build_dashboard_rows()` via `section_index_by_id()`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
 
 ---
 
@@ -258,6 +258,12 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-03 (Session 13) — Progress Column: Current Section, Not Completed Count
+
+**What changed:** the dashboard's Progress column (`app.py`, `build_dashboard_rows()`) used to show `len(completed_sections)/total` — meaning a student who'd just started, or who was restudying a section they hadn't passed yet, showed as `0/N`. Changed to show which section they're currently *on* (1-indexed), computed via a new `section_index_by_id()` helper: completed students show the last section, restudying students show the index of the section whose quiz they failed (not however many they'd actually passed), and in-progress students show the section their `current_step` currently maps to. A brand-new student now reads `1/N` instead of `0/N`.
+
+**Decisions made:** none of consequence — this was a straightforward semantic correction to match what "which section are they on" actually means to a supervisor glancing at the table.
 
 ### 2026-09-03 (Session 12) — Fixed Quiz Failures Never Reaching the Server
 
