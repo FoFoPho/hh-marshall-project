@@ -58,6 +58,14 @@
       // Swap PREVIOUS → REVIEW & RETRY
       if (prevWrap)    prevWrap.style.display    = 'none';
       if (restudyWrap) restudyWrap.style.display = '';
+
+      // NEXT never becomes submittable once a wrong answer is picked, so the
+      // server never sees this failure unless we tell it separately here.
+      // sendBeacon (not fetch) because the student may click REVIEW & RETRY
+      // and navigate away before an ordinary request would finish.
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(quizForm.action, new FormData(quizForm));
+      }
     }
 
     function maybeEnableNext() {

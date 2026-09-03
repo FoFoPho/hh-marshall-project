@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-03 (Session 11)  
-**Last session:** Fixed restudy status clearing too early on the dashboard
+**Last updated:** 2026-09-03 (Session 12)  
+**Last session:** Fixed quiz failures never reaching the server at all
 
 ---
 
@@ -258,6 +258,16 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-03 (Session 12) — Fixed Quiz Failures Never Reaching the Server
+
+**The bug:** Session 11's fix was necessary but not sufficient — the dashboard still never showed "Restudy" in real usage. Root cause was one level deeper, in `static/js/main.js`'s quiz UI: a wrong answer click is handled entirely client-side (turns the option red, shows the failure banner, disables further clicks) and NEXT never becomes a submit button unless every answer is correct. "REVIEW & RETRY" is a plain `<a href>` link straight to `restudy()` — it never touches `submit_quiz()`. So the form containing a wrong answer is **never actually POSTed to the server at all**, meaning `quiz_failed_section` was never being set in the database during real browser usage. Every test in Sessions 7-11 POSTed directly to `/module/<id>/quiz/<section_id>` via the Flask test client, which bypasses the browser entirely and doesn't reflect how a real user triggers a failure — that's why the bug went undetected through several rounds of automated testing.
+
+**Fix:** `lockQuiz()` in `main.js` now fires `navigator.sendBeacon(quizForm.action, new FormData(quizForm))` the moment a wrong answer is clicked — `sendBeacon` specifically because a `fetch()` call could get cancelled if the student clicks "REVIEW & RETRY" and navigates away before it finishes; `sendBeacon` is designed to survive that. The partial form data (only the clicked wrong answer, since the quiz locks before later questions get answered) is handled correctly server-side — `submit_quiz()` already treats a missing answer as incorrect, so the whole quiz still fails as intended.
+
+**Verified with a real headless-Chromium session** (Playwright, installed ad hoc into `venv` for this — not a project dependency), not just the Flask test client: signed up a student, clicked a wrong quiz answer in an actual browser, then in a separate browser session logged into `/supervisor` and confirmed that student's row showed "Restudy" with a yellow background. Screenshots taken during the run confirmed the on-page failure UI (red option, banner, REVIEW & RETRY swap) is unchanged.
+
+**Lesson for later:** the Flask test client's `client.post(...)` calls are not a substitute for verifying what the actual client-side JS does — this bug specifically lived in the gap between "the server handles X correctly when asked" and "the browser actually asks." Worth a real browser pass (Playwright/similar) for any future changes to `main.js`, not just server-side tests.
 
 ### 2026-09-03 (Session 11) — Fixed Restudy Status Clearing Too Early
 
