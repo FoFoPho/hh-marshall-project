@@ -36,6 +36,7 @@
           <th>Last Name</th>
           <th>Email</th>
           <th>Module</th>
+          <th>Progress</th>
           <th>Current Section</th>
           <th>Status</th>
           <th>Cert Number</th>
@@ -49,6 +50,7 @@
           <td>{{ row.last_name }}</td>
           <td>{{ row.email }}</td>
           <td>{{ row.module_title }}</td>
+          <td>{{ row.progress }}</td>
           <td>{{ row.section }}</td>
           <td>{{ row.status }}</td>
           <td>{{ row.cert_number }}</td>
@@ -112,6 +114,7 @@
           + '<td>' + escapeHtml(r.last_name) + '</td>'
           + '<td>' + escapeHtml(r.email) + '</td>'
           + '<td>' + escapeHtml(r.module_title) + '</td>'
+          + '<td>' + escapeHtml(r.progress) + '</td>'
           + '<td>' + escapeHtml(r.section) + '</td>'
           + '<td>' + escapeHtml(r.status) + '</td>'
           + '<td>' + escapeHtml(r.cert_number) + '</td>'

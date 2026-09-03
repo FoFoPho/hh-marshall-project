@@ -454,7 +454,7 @@ def build_dashboard_rows():
             status, status_class, section_label = 'Completed', 'completed', '—'
         elif p['quiz_failed_section']:
             failed_title = section_title_by_id(module, p['quiz_failed_section'])
-            status = f"Restudying — failed \"{failed_title}\" quiz"
+            status = 'Restudy'
             status_class = 'restudying'
             section_label = failed_title
         else:
@@ -471,11 +471,15 @@ def build_dashboard_rows():
         except (TypeError, ValueError):
             updated_at = p['updated_at'] or ''
 
+        total_sections = len(module['sections']) if module else None
+        progress = f"{len(p['completed_sections'])}/{total_sections if total_sections is not None else '?'}"
+
         rows.append({
             'first_name': p['first_name'],
             'last_name': p['last_name'],
             'email': p['email'],
             'module_title': module_title,
+            'progress': progress,
             'section': section_label,
             'status': status,
             'status_class': status_class,
@@ -520,11 +524,11 @@ def supervisor_data():
 def supervisor_export_csv():
     buf = io.StringIO()
     writer = csv.writer(buf)
-    writer.writerow(['First Name', 'Last Name', 'Email', 'Module', 'Current Section',
+    writer.writerow(['First Name', 'Last Name', 'Email', 'Module', 'Progress', 'Current Section',
                       'Status', 'Cert Number', 'Last Updated'])
     for r in build_dashboard_rows():
         writer.writerow([r['first_name'], r['last_name'], r['email'], r['module_title'],
-                          r['section'], r['status'], r['cert_number'], r['updated_at']])
+                          r['progress'], r['section'], r['status'], r['cert_number'], r['updated_at']])
 
     return Response(
         buf.getvalue(),

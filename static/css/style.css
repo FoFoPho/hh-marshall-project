@@ -17,8 +17,10 @@
   --white:      #FFFFFF;
   --green:      #28A745;
   --red:        #DC3545;
+  --yellow:     #B7791F;
   --red-bg:     #FEE8E8;
   --green-bg:   #EAF7EC;
+  --yellow-bg:  #FFF6DD;
 }
 
 html, body {
@@ -225,7 +227,7 @@ html, body {
 .supervisor-table tr:last-child td { border-bottom: none; }
 
 .supervisor-table tr.completed { background: var(--green-bg); }
-.supervisor-table tr.restudying { background: var(--red-bg); }
+.supervisor-table tr.restudying { background: var(--yellow-bg); }
 
 /* ── Module Select Page ──────────────────────────────────── */
 .module-select-intro {

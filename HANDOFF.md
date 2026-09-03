@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-03 (Session 9)  
-**Last session:** Supervisor Dashboard search/filter
+**Last updated:** 2026-09-03 (Session 10)  
+**Last session:** Restudy rows yellow + Progress column on dashboard
 
 ---
 
@@ -225,6 +225,8 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - The header's "Supervisor Dashboard" link (grey pill, top right, in `base.html`) is visible on every page regardless of auth state — clicking it while logged out just routes through the login form.
 - **Auto-refresh:** the dashboard polls `/supervisor/data.json` (same `build_dashboard_rows()` data, JSON) every 7s via inline JS in `supervisor_dashboard.html`, swapping the table body in place (no page reload, no lost scroll position). Polling pauses while the tab isn't visible. Chose polling over WebSockets/SSE — this is a low-traffic internal tool where a few seconds of staleness doesn't matter, and polling needed no gunicorn/worker changes on Railway.
 - **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
+- **Restudying rows are yellow** (`--yellow`/`--yellow-bg` tokens in `style.css`), status text just reads **"Restudy"** — red is reserved for stronger "something's wrong" signals elsewhere (form errors, wrong-answer quiz feedback). The specific section they're stuck on is still shown in the Current Section column, so the status text didn't need to repeat it.
+- **Progress column** shows `completed/total` sections for that module (e.g. `2/5`), computed in `build_dashboard_rows()` from `len(completed_sections)` vs. `len(module['sections'])`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
 
 ---
 
