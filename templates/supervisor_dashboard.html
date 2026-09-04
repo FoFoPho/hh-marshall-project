@@ -28,45 +28,59 @@
            placeholder="Search name, email, module, status…" autocomplete="off">
   </div>
 
-  <div class="table-scroll" id="table-wrap" {% if not rows %}style="display:none"{% endif %}>
-    <table class="supervisor-table">
-      <thead>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Module</th>
-          <th>Progress</th>
-          <th>Current Section</th>
-          <th>Status</th>
-          <th>Cert Number</th>
-          <th>Last Updated</th>
-          <th class="dashboard-row-actions">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="progress-tbody">
-        {% for row in rows %}
-        <tr class="{{ row.status_class }}">
-          <td>{{ row.first_name }}</td>
-          <td>{{ row.last_name }}</td>
-          <td>{{ row.email }}</td>
-          <td>{{ row.module_title }}</td>
-          <td>{{ row.progress }}</td>
-          <td>{{ row.section }}</td>
-          <td>{{ row.status }}</td>
-          <td>{{ row.cert_number }}</td>
-          <td>{{ row.updated_at }}</td>
-          <td class="dashboard-row-actions">
-            <a href="{{ url_for('supervisor_edit', email=row.email) }}" class="row-action-link">Edit</a>
-            <form method="POST" action="{{ url_for('supervisor_delete', email=row.email, module_id=row.module_id) }}"
-                  onsubmit="return confirm('Permanently delete this progress record? This cannot be undone.') && confirm('Are you absolutely sure? This record cannot be recovered once deleted.');">
-              <button type="submit" class="row-action-btn row-action-delete">Delete</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div class="dashboard-table-row" id="table-wrap" {% if not rows %}style="display:none"{% endif %}>
+    <div class="table-scroll">
+      <table class="supervisor-table">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Module</th>
+            <th>Progress</th>
+            <th>Current Section</th>
+            <th>Status</th>
+            <th>Cert Number</th>
+            <th>Last Updated</th>
+          </tr>
+        </thead>
+        <tbody id="progress-tbody">
+          {% for row in rows %}
+          <tr class="{{ row.status_class }}">
+            <td>{{ row.first_name }}</td>
+            <td>{{ row.last_name }}</td>
+            <td>{{ row.email }}</td>
+            <td>{{ row.module_title }}</td>
+            <td>{{ row.progress }}</td>
+            <td>{{ row.section }}</td>
+            <td>{{ row.status }}</td>
+            <td>{{ row.cert_number }}</td>
+            <td>{{ row.updated_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="dashboard-actions-panel">
+      <table class="supervisor-table actions-table">
+        <thead>
+          <tr><th>Actions</th></tr>
+        </thead>
+        <tbody id="actions-tbody">
+          {% for row in rows %}
+          <tr class="{{ row.status_class }}">
+            <td class="dashboard-row-actions">
+              <a href="{{ url_for('supervisor_edit', email=row.email) }}" class="row-action-link">Edit</a>
+              <form method="POST" action="{{ url_for('supervisor_delete', email=row.email, module_id=row.module_id) }}"
+                    onsubmit="return confirm('Permanently delete this progress record? This cannot be undone.') && confirm('Are you absolutely sure? This record cannot be recovered once deleted.');">
+                <button type="submit" class="row-action-btn row-action-delete">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
   <p class="welcome-subtitle" id="empty-msg" {% if rows %}style="display:none"{% endif %}>No student progress recorded yet.</p>
   <p class="welcome-subtitle" id="no-matches-msg" style="display:none">No records match your search.</p>
@@ -80,6 +94,7 @@
   var editUrlTemplate = {{ url_for('supervisor_edit', email='EMAIL_TOKEN') | tojson }};
   var deleteUrlTemplate = {{ url_for('supervisor_delete', email='EMAIL_TOKEN', module_id=999999) | tojson }};
   var tbody = document.getElementById('progress-tbody');
+  var actionsTbody = document.getElementById('actions-tbody');
   var tableWrap = document.getElementById('table-wrap');
   var emptyMsg = document.getElementById('empty-msg');
   var refreshNote = document.getElementById('refresh-note');
@@ -114,14 +129,16 @@
   function applyFilter() {
     var query = searchInput.value.trim().toLowerCase();
     var words = query ? query.split(/\s+/) : [];
-    var rowEls = tbody.querySelectorAll('tr');
+    var dataRows = tbody.querySelectorAll('tr');
+    var actionRows = actionsTbody.querySelectorAll('tr');
     var visibleCount = 0;
-    rowEls.forEach(function (tr) {
+    dataRows.forEach(function (tr, i) {
       var match = rowMatches(tr, words);
       tr.style.display = match ? '' : 'none';
+      if (actionRows[i]) actionRows[i].style.display = match ? '' : 'none';
       if (match) visibleCount++;
     });
-    noMatchesMsg.style.display = (rowEls.length > 0 && visibleCount === 0) ? '' : 'none';
+    noMatchesMsg.style.display = (dataRows.length > 0 && visibleCount === 0) ? '' : 'none';
   }
 
   function render(rows) {
@@ -139,6 +156,10 @@
           + '<td>' + escapeHtml(r.status) + '</td>'
           + '<td>' + escapeHtml(r.cert_number) + '</td>'
           + '<td>' + escapeHtml(r.updated_at) + '</td>'
+          + '</tr>';
+      }).join('');
+      actionsTbody.innerHTML = rows.map(function (r) {
+        return '<tr class="' + escapeHtml(r.status_class) + '">'
           + '<td class="dashboard-row-actions">'
           +   '<a href="' + escapeHtml(editUrl(r.email)) + '" class="row-action-link">Edit</a>'
           +   '<form method="POST" action="' + escapeHtml(deleteUrl(r.email, r.module_id)) + '" '
@@ -152,6 +173,7 @@
       tableWrap.style.display = 'none';
       emptyMsg.style.display = '';
       tbody.innerHTML = '';
+      actionsTbody.innerHTML = '';
     }
     applyFilter();
   }

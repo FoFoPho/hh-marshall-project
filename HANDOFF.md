@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-04 (Session 16)  
-**Last session:** Fixed sticky Actions column not working in Safari
+**Last updated:** 2026-09-04 (Session 17)  
+**Last session:** Actions column split into its own non-scrolling panel
 
 ---
 
@@ -228,7 +228,7 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
 - **Restudying rows are yellow** (`--yellow`/`--yellow-bg` tokens in `style.css`), status text just reads **"Restudy"** — red is reserved for stronger "something's wrong" signals elsewhere (form errors, wrong-answer quiz feedback). The specific section they're stuck on is still shown in the Current Section column, so the status text didn't need to repeat it.
 - **Progress column** shows `current section number/total` (e.g. `2/5`) — a 1-indexed "which section are they on," not a completed-count. Someone who just started is `1/N`, not `0/N`; someone restudying section 3 is `3/N` (based on the failed section's index), not however many they'd actually passed. Computed in `build_dashboard_rows()` via `section_index_by_id()`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
-- **Actions column is sticky** (`position: sticky; right: 0`) within the table's own horizontal scroll container — pinned in view no matter how far right the table is scrolled. Needed explicit per-row-status backgrounds (`var(--white)`/`var(--green-bg)`/`var(--yellow-bg)`) on the sticky cell itself, since a `<td>` has no background of its own and scrolled content would otherwise show through underneath it. Added after a user report of "I don't see the Edit button" turned out to be the column sitting off-screen with no visible scrollbar (macOS auto-hides them). `.supervisor-table` uses `border-collapse: separate; border-spacing: 0` (not `collapse`) — **required** for sticky to work on `th`/`td` in Safari/WebKit specifically; Chromium doesn't have this limitation, which is why the first attempt at this looked fixed in testing but wasn't for the user's actual browser. See Session 16.
+- **Actions lives in its own non-scrolling panel** (`templates/supervisor_dashboard.html`: `.dashboard-table-row` wraps `.table-scroll` — the main data table, horizontally scrollable — and `.dashboard-actions-panel` — a second, separate `<table>` with just Edit/Delete, always fully visible, never scrolls) rather than as a column inside the main table. Two independent `<tr>` lists, driven from the same `rows` array in the same order, both server-rendered and in the JS `render()`/`applyFilter()` functions, kept pixel-aligned via a shared explicit `height: 44px` on every `.supervisor-table th`/`td` in both tables. This replaced an earlier `position: sticky` attempt (Sessions 15-16) that never fully worked in the user's actual Safari despite passing in both Chromium and Playwright's WebKit — see Session 17 for why the split-panel approach was chosen instead of continuing to chase it.
 - **Edit** (`/supervisor/edit/<email>`, GET+POST) — small form to fix First/Last/Email typos. Renames the student across **every** module row they have, not just the row the Edit link was clicked from (deliberate — a dashboard row is per-module, but a name/email correction is about the person). Implemented as `db.rename_student()`: all-or-nothing, rejects with no changes applied if the new email would collide with a different student's existing row in any module the student is enrolled in.
 - **Delete** (`/supervisor/delete/<email>/<int:module_id>`, POST) — removes exactly one (student, module) row, e.g. for a student who accidentally started twice under two emails. Module-scoped (unlike Edit) — reuses the existing `db.delete_progress()`. Gated behind two chained `confirm()` dialogs, same pattern as Reset All Data. **Gotcha hit while building this:** don't interpolate free-form data (names, etc.) into an inline `onsubmit="..."` confirm() string — an apostrophe in the data survives HTML-attribute escaping and still breaks out of the JS string once the browser decodes the attribute, because HTML-entity-escaping and JS-string-escaping are different layers and get applied at different times. Kept both confirm messages static/generic to sidestep this entirely.
 
@@ -262,6 +262,17 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-04 (Session 17) — Actions Column: Separate Panel Instead of Sticky
+
+**What changed:** even after Session 16's `border-collapse: separate` fix (verified against Playwright's WebKit engine), the user's real Safari *still* didn't show the sticky Actions column. Rather than keep chasing a `position: sticky` bug that couldn't be reproduced 1:1 outside the user's actual browser, the user proposed decoupling Actions from the table entirely — implemented as a second, independent `<table>` (`.dashboard-actions-panel`) sitting next to the scrollable data table (`.table-scroll`) inside a flex row (`.dashboard-table-row`), rather than as a column inside it. Since Actions is now structurally never part of the horizontally-scrolling element, there's no CSS positioning trick involved at all — it's simply always visible.
+
+- `templates/supervisor_dashboard.html`: two `<tbody>`s (`progress-tbody`, `actions-tbody`) built from the same `rows` array in the same order, both server-rendered and in the JS `render()`. `applyFilter()` now walks both tbodies by index together so search hides/shows matching rows in both panels in lockstep.
+- `static/css/style.css`: `.supervisor-table th`/`td` got an explicit `height: 44px; box-sizing: border-box` in both tables, to force pixel-matched row heights between two otherwise-independent tables (text rows and button rows don't naturally reach the same content height on their own).
+
+**Verified:** measured actual row bounding-box positions via Playwright in both Chromium and WebKit at a narrow (900px) viewport — max vertical drift between the two tables was 1px (WebKit) and 0.5px (Chromium), imperceptible. Confirmed Edit/Delete are visible with zero scrolling at that width, and that searching keeps both panels' visible rows in sync.
+
+**Lesson for later:** after two rounds of CSS-only fixes that each looked verified but didn't hold up in the user's real browser, restructuring to avoid the fragile mechanism entirely (no `position: sticky` at all) was more reliable than a third attempt at fixing it in place. Worth remembering as a general instinct: if a specific CSS feature has burned you twice against this user's actual Safari, the next move is to stop relying on that feature rather than debug it a third time.
 
 ### 2026-09-04 (Session 16) — Sticky Actions Column Didn't Actually Work in Safari
 

@@ -192,17 +192,34 @@ html, body {
   margin-bottom: 16px;
 }
 
-.table-scroll {
+/* Actions sits in its own non-scrolling table next to the main one
+   (see .dashboard-table-row) rather than as a column inside it -
+   position:sticky on table cells is unreliable in Safari, so this
+   sidesteps that entirely instead of fighting it. */
+.dashboard-table-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   width: 100%;
+}
+
+.table-scroll {
+  flex: 1 1 auto;
+  min-width: 0; /* let this shrink so its own overflow-x can kick in */
   overflow-x: auto;
+}
+
+.dashboard-actions-panel {
+  flex: 0 0 auto;
+}
+
+.dashboard-actions-panel .supervisor-table {
+  width: auto;
 }
 
 .supervisor-table {
   width: 100%;
-  /* separate, not collapse: Safari doesn't honor position:sticky on
-     th/td when the table uses border-collapse: collapse. */
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   background: var(--white);
   border: 1px solid var(--gray-light);
   border-radius: 8px;
@@ -211,6 +228,8 @@ html, body {
 
 .supervisor-table th,
 .supervisor-table td {
+  height: 44px;
+  box-sizing: border-box;
   padding: 10px 14px;
   text-align: left;
   border-bottom: 1px solid var(--gray-light);
@@ -231,27 +250,6 @@ html, body {
 
 .supervisor-table tr.completed { background: var(--green-bg); }
 .supervisor-table tr.restudying { background: var(--yellow-bg); }
-
-/* Actions column stays pinned to the right edge of the table's own
-   horizontal scroll, so it's never hidden off-screen. Needs an opaque
-   background per row state, or scrolled content shows through underneath. */
-.supervisor-table th.dashboard-row-actions,
-.supervisor-table td.dashboard-row-actions {
-  position: sticky;
-  right: 0;
-  background: var(--white);
-  box-shadow: -4px 0 6px -4px rgba(0, 0, 0, 0.15);
-}
-
-.supervisor-table th.dashboard-row-actions {
-  background: var(--gray-bg);
-  z-index: 2;
-}
-
-.supervisor-table td.dashboard-row-actions { z-index: 1; }
-
-.supervisor-table tr.completed td.dashboard-row-actions { background: var(--green-bg); }
-.supervisor-table tr.restudying td.dashboard-row-actions { background: var(--yellow-bg); }
 
 .dashboard-row-actions {
   display: flex;
