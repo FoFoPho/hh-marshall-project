@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-04 (Session 14)  
-**Last session:** Removed cert download from student flow; added dashboard Edit/Delete
+**Last updated:** 2026-09-04 (Session 15)  
+**Last session:** Sticky Actions column on the Supervisor Dashboard
 
 ---
 
@@ -228,6 +228,7 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
 - **Restudying rows are yellow** (`--yellow`/`--yellow-bg` tokens in `style.css`), status text just reads **"Restudy"** — red is reserved for stronger "something's wrong" signals elsewhere (form errors, wrong-answer quiz feedback). The specific section they're stuck on is still shown in the Current Section column, so the status text didn't need to repeat it.
 - **Progress column** shows `current section number/total` (e.g. `2/5`) — a 1-indexed "which section are they on," not a completed-count. Someone who just started is `1/N`, not `0/N`; someone restudying section 3 is `3/N` (based on the failed section's index), not however many they'd actually passed. Computed in `build_dashboard_rows()` via `section_index_by_id()`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
+- **Actions column is sticky** (`position: sticky; right: 0`) within the table's own horizontal scroll container — pinned in view no matter how far right the table is scrolled. Needed explicit per-row-status backgrounds (`var(--white)`/`var(--green-bg)`/`var(--yellow-bg)`) on the sticky cell itself, since a `<td>` has no background of its own and scrolled content would otherwise show through underneath it. Added after a user report of "I don't see the Edit button" turned out to be the column sitting off-screen with no visible scrollbar (macOS auto-hides them) — confirmed via a narrow-viewport Playwright screenshot before fixing.
 - **Edit** (`/supervisor/edit/<email>`, GET+POST) — small form to fix First/Last/Email typos. Renames the student across **every** module row they have, not just the row the Edit link was clicked from (deliberate — a dashboard row is per-module, but a name/email correction is about the person). Implemented as `db.rename_student()`: all-or-nothing, rejects with no changes applied if the new email would collide with a different student's existing row in any module the student is enrolled in.
 - **Delete** (`/supervisor/delete/<email>/<int:module_id>`, POST) — removes exactly one (student, module) row, e.g. for a student who accidentally started twice under two emails. Module-scoped (unlike Edit) — reuses the existing `db.delete_progress()`. Gated behind two chained `confirm()` dialogs, same pattern as Reset All Data. **Gotcha hit while building this:** don't interpolate free-form data (names, etc.) into an inline `onsubmit="..."` confirm() string — an apostrophe in the data survives HTML-attribute escaping and still breaks out of the JS string once the browser decodes the attribute, because HTML-entity-escaping and JS-string-escaping are different layers and get applied at different times. Kept both confirm messages static/generic to sidestep this entirely.
 
@@ -261,6 +262,12 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-04 (Session 15) — Sticky Actions Column
+
+**What changed:** the Supervisor Dashboard's new Actions column (Session 14) sat off the right edge of the table on any reasonably narrow window, with no visible scrollbar to hint it was there (macOS hides scrollbars until actively scrolling). `static/css/style.css` — Actions `<th>`/`<td>` (both already share the `.dashboard-row-actions` class) now use `position: sticky; right: 0` within `.table-scroll`'s horizontal scroll, with a subtle left-edge box-shadow as a "floating above content" cue. Explicit backgrounds added per row state (`--white` default, `--green-bg` completed, `--yellow-bg` restudying) since sticky cells need their own opaque background or the scrolled-under content bleeds through.
+
+**Found via:** a real user report ("I'm not seeing edit button") that took a few rounds to diagnose — first ruled out a stale deploy (checked Railway's Deployments tab, confirmed the right commit was live), then ruled out browser caching (private window, same result), before the actual tell showed up: the visible "Last Updated" column value was cut off mid-string, meaning the table was simply wider than its container. Verified the fix with a narrow-viewport (1000px) Playwright screenshot, scrolling the table's own container and confirming Edit/Delete stayed pinned and correctly colored.
 
 ### 2026-09-04 (Session 14) — Cert Download Removed from Student Flow; Dashboard Edit/Delete
 

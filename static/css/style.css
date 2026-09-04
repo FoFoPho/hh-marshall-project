@@ -229,6 +229,27 @@ html, body {
 .supervisor-table tr.completed { background: var(--green-bg); }
 .supervisor-table tr.restudying { background: var(--yellow-bg); }
 
+/* Actions column stays pinned to the right edge of the table's own
+   horizontal scroll, so it's never hidden off-screen. Needs an opaque
+   background per row state, or scrolled content shows through underneath. */
+.supervisor-table th.dashboard-row-actions,
+.supervisor-table td.dashboard-row-actions {
+  position: sticky;
+  right: 0;
+  background: var(--white);
+  box-shadow: -4px 0 6px -4px rgba(0, 0, 0, 0.15);
+}
+
+.supervisor-table th.dashboard-row-actions {
+  background: var(--gray-bg);
+  z-index: 2;
+}
+
+.supervisor-table td.dashboard-row-actions { z-index: 1; }
+
+.supervisor-table tr.completed td.dashboard-row-actions { background: var(--green-bg); }
+.supervisor-table tr.restudying td.dashboard-row-actions { background: var(--yellow-bg); }
+
 .dashboard-row-actions {
   display: flex;
   gap: 8px;
