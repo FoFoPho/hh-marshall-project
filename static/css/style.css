@@ -229,6 +229,43 @@ html, body {
 .supervisor-table tr.completed { background: var(--green-bg); }
 .supervisor-table tr.restudying { background: var(--yellow-bg); }
 
+.dashboard-row-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dashboard-row-actions form { margin: 0; }
+
+.row-action-link,
+.row-action-btn {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--white);
+  transition: background 0.15s, color 0.15s;
+}
+
+.row-action-link {
+  color: var(--blue);
+  border: 1px solid var(--blue);
+}
+.row-action-link:hover { background: var(--blue); color: var(--white); }
+
+.row-action-delete {
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+.row-action-delete:hover { background: var(--red); color: var(--white); }
+
 /* ── Module Select Page ──────────────────────────────────── */
 .module-select-intro {
   text-align: center;
@@ -744,50 +781,13 @@ html, body {
   margin-bottom: 32px;
 }
 
-.cert-card {
-  background: var(--white);
-  border: 1px solid var(--gray-light);
-  border-radius: 8px;
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  max-width: 480px;
-  margin-bottom: 24px;
-}
-
-.cert-card-icon {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-}
-
-.cert-card-icon svg {
-  width: 48px;
-  height: 48px;
-  stroke: var(--blue);
-  fill: none;
-  stroke-width: 1.5;
-}
-
-.cert-card-label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 4px;
-}
-
-.cert-card-title {
-  font-size: 16px;
-  font-weight: 600;
+.cert-number-note {
+  font-size: 15px;
   color: var(--black);
+  margin-bottom: 32px;
 }
 
-.download-btn {
+.cta-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -809,9 +809,9 @@ html, body {
   max-width: 480px;
 }
 
-.download-btn:hover { background: var(--blue-dark); }
+.cta-btn:hover { background: var(--blue-dark); }
 
-.download-btn svg {
+.cta-btn svg {
   width: 18px;
   height: 18px;
   stroke: white;

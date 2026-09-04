@@ -41,6 +41,7 @@
           <th>Status</th>
           <th>Cert Number</th>
           <th>Last Updated</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody id="progress-tbody">
@@ -55,6 +56,13 @@
           <td>{{ row.status }}</td>
           <td>{{ row.cert_number }}</td>
           <td>{{ row.updated_at }}</td>
+          <td class="dashboard-row-actions">
+            <a href="{{ url_for('supervisor_edit', email=row.email) }}" class="row-action-link">Edit</a>
+            <form method="POST" action="{{ url_for('supervisor_delete', email=row.email, module_id=row.module_id) }}"
+                  onsubmit="return confirm('Permanently delete this progress record? This cannot be undone.') && confirm('Are you absolutely sure? This record cannot be recovered once deleted.');">
+              <button type="submit" class="row-action-btn row-action-delete">Delete</button>
+            </form>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -69,6 +77,8 @@
   'use strict';
   var POLL_MS = 7000;
   var dataUrl = {{ url_for('supervisor_data') | tojson }};
+  var editUrlTemplate = {{ url_for('supervisor_edit', email='EMAIL_TOKEN') | tojson }};
+  var deleteUrlTemplate = {{ url_for('supervisor_delete', email='EMAIL_TOKEN', module_id=999999) | tojson }};
   var tbody = document.getElementById('progress-tbody');
   var tableWrap = document.getElementById('table-wrap');
   var emptyMsg = document.getElementById('empty-msg');
@@ -80,6 +90,16 @@
     var div = document.createElement('div');
     div.textContent = s == null ? '' : String(s);
     return div.innerHTML;
+  }
+
+  function editUrl(email) {
+    return editUrlTemplate.replace('EMAIL_TOKEN', encodeURIComponent(email));
+  }
+
+  function deleteUrl(email, moduleId) {
+    return deleteUrlTemplate
+      .replace('EMAIL_TOKEN', encodeURIComponent(email))
+      .replace('999999', String(moduleId));
   }
 
   // Row matches only if every whitespace-separated search word appears
@@ -119,6 +139,13 @@
           + '<td>' + escapeHtml(r.status) + '</td>'
           + '<td>' + escapeHtml(r.cert_number) + '</td>'
           + '<td>' + escapeHtml(r.updated_at) + '</td>'
+          + '<td class="dashboard-row-actions">'
+          +   '<a href="' + escapeHtml(editUrl(r.email)) + '" class="row-action-link">Edit</a>'
+          +   '<form method="POST" action="' + escapeHtml(deleteUrl(r.email, r.module_id)) + '" '
+          +     'onsubmit="return confirm(\'Permanently delete this progress record? This cannot be undone.\') && confirm(\'Are you absolutely sure? This record cannot be recovered once deleted.\');">'
+          +     '<button type="submit" class="row-action-btn row-action-delete">Delete</button>'
+          +   '</form>'
+          + '</td>'
           + '</tr>';
       }).join('');
     } else {

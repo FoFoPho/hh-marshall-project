@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-03 (Session 13)  
-**Last session:** Progress column now shows current section, not completed count
+**Last updated:** 2026-09-04 (Session 14)  
+**Last session:** Removed cert download from student flow; added dashboard Edit/Delete
 
 ---
 
@@ -122,8 +122,7 @@ Add a new object to the top-level `modules` array. Use the next number (5, 6, et
    - **Correct**: advance to step 3 (next section lesson or complete)
    - **Wrong**: stay on quiz, failure banner shown, NEXT locked
    - User clicks "START SECTION OVER" → `/module/<id>/restudy/<section_id>` → back to step 1
-6. After all sections passed → `/module/<id>/complete`
-7. Certificate PDF download → `/module/<id>/certificate`
+6. After all sections passed → `/module/<id>/complete` — congrats screen, cert number shown as text, button back to module selection (no PDF in this flow — see "Certificate PDF" below)
 
 ---
 
@@ -190,6 +189,8 @@ Font: Barlow Condensed (headings) + Barlow (body) via Google Fonts.
 
 ## Certificate PDF
 
+**As of Session 14, this is disconnected from the student flow** — `/module/<id>/complete` no longer links to it, students only see their cert number as text. The route (`/module/<id>/certificate`), `certificate.py`, `reportlab` in `requirements.txt`, and the template PNG are all still in the repo and fully functional if hit directly — intentionally left in place rather than deleted, in case a PDF download is wanted again later (e.g. supervisor-triggered). Cert numbers themselves are unaffected — still generated on completion and tracked on the Supervisor Dashboard.
+
 The certificate uses `static/assets/MP Cert Template.png` as a full-page background. Four text fields are overlaid at calibrated positions in `certificate.py`:
 
 | Field | Color | Position constants |
@@ -227,6 +228,8 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
 - **Restudying rows are yellow** (`--yellow`/`--yellow-bg` tokens in `style.css`), status text just reads **"Restudy"** — red is reserved for stronger "something's wrong" signals elsewhere (form errors, wrong-answer quiz feedback). The specific section they're stuck on is still shown in the Current Section column, so the status text didn't need to repeat it.
 - **Progress column** shows `current section number/total` (e.g. `2/5`) — a 1-indexed "which section are they on," not a completed-count. Someone who just started is `1/N`, not `0/N`; someone restudying section 3 is `3/N` (based on the failed section's index), not however many they'd actually passed. Computed in `build_dashboard_rows()` via `section_index_by_id()`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
+- **Edit** (`/supervisor/edit/<email>`, GET+POST) — small form to fix First/Last/Email typos. Renames the student across **every** module row they have, not just the row the Edit link was clicked from (deliberate — a dashboard row is per-module, but a name/email correction is about the person). Implemented as `db.rename_student()`: all-or-nothing, rejects with no changes applied if the new email would collide with a different student's existing row in any module the student is enrolled in.
+- **Delete** (`/supervisor/delete/<email>/<int:module_id>`, POST) — removes exactly one (student, module) row, e.g. for a student who accidentally started twice under two emails. Module-scoped (unlike Edit) — reuses the existing `db.delete_progress()`. Gated behind two chained `confirm()` dialogs, same pattern as Reset All Data. **Gotcha hit while building this:** don't interpolate free-form data (names, etc.) into an inline `onsubmit="..."` confirm() string — an apostrophe in the data survives HTML-attribute escaping and still breaks out of the JS string once the browser decodes the attribute, because HTML-entity-escaping and JS-string-escaping are different layers and get applied at different times. Kept both confirm messages static/generic to sidestep this entirely.
 
 ---
 
@@ -258,6 +261,22 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-04 (Session 14) — Cert Download Removed from Student Flow; Dashboard Edit/Delete
+
+**What changed:**
+- `templates/complete.html` — replaced the "Certificate of Completion" card + Download Certificate button with a congrats message, the cert number shown as plain text ("save this for your records"), and one big button back to module selection. `certificate.py`, `reportlab`, and `/module/<id>/certificate` are untouched and still work if hit directly — just unlinked, per the user's call to keep the code around rather than delete it.
+- `static/css/style.css` — `.download-btn` renamed to `.cta-btn` (it's a generic big-CTA style now, not download-specific), the now-unused `.cert-card*` rules removed, new `.cert-number-note` style added.
+- `db.py` — new `rename_student(old_email, first_name, last_name, new_email)`, all-or-nothing across every module row a student has, with a same-module collision check before applying anything.
+- `app.py` — new `GET/POST /supervisor/edit/<email>` and `POST /supervisor/delete/<email>/<int:module_id>` routes; `build_dashboard_rows()` now also exposes `module_id` per row (needed to build the Delete URL).
+- `templates/supervisor_edit.html` — new small form page, same visual pattern as `welcome.html`.
+- `templates/supervisor_dashboard.html` — new Actions column (Edit link + Delete button behind double-confirm) in both the Jinja-rendered table and the auto-refresh JS `render()` function.
+
+**Decisions made:**
+- Edit renames a student across *every* module row they have, not just the row clicked — see "Supervisor Dashboard" section above. Delete stays module-scoped (the original ask was specifically about one accidental duplicate entry).
+- PDF certificate generation stays in the repo, disconnected rather than deleted, in case it's wanted again later from a different entry point.
+
+**Verified with real headless-browser sessions** (Playwright, ad hoc in `venv`, same as Session 12): walked a student through a full module to confirm the new complete page renders correctly; used the Edit form to rename a student and confirmed the change; clicked Delete and confirmed cancelling the first `confirm()` leaves the row intact while accepting both actually removes it. Also caught and fixed a real escaping bug this way — see "Supervisor Dashboard" section above for the mechanism, worth remembering for any future inline `onsubmit`/`onclick` handler built from concatenated strings.
 
 ### 2026-09-03 (Session 13) — Progress Column: Current Section, Not Completed Count
 

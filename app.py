@@ -498,6 +498,7 @@ def build_dashboard_rows():
             'first_name': p['first_name'],
             'last_name': p['last_name'],
             'email': p['email'],
+            'module_id': p['module_id'],
             'module_title': module_title,
             'progress': progress,
             'section': section_label,
@@ -561,6 +562,39 @@ def supervisor_export_csv():
 @supervisor_required
 def supervisor_reset():
     db.reset_all_progress()
+    return redirect(url_for('supervisor_dashboard'))
+
+
+@app.route('/supervisor/edit/<email>', methods=['GET', 'POST'])
+@supervisor_required
+def supervisor_edit(email):
+    records = db.get_progress_for_email(email)
+    if not records:
+        return redirect(url_for('supervisor_dashboard'))
+    current = records[0]
+
+    if request.method == 'POST':
+        first_name = request.form.get('first_name', '').strip()
+        last_name = request.form.get('last_name', '').strip()
+        new_email = request.form.get('email', '').strip()
+
+        if not first_name or not last_name or not new_email:
+            return render_template('supervisor_edit.html', record=current,
+                                   error='First name, last name, and email are all required.')
+
+        if not db.rename_student(email, first_name, last_name, new_email):
+            return render_template('supervisor_edit.html', record=current,
+                                   error='That email is already used by another student in one of this student\'s modules.')
+
+        return redirect(url_for('supervisor_dashboard'))
+
+    return render_template('supervisor_edit.html', record=current)
+
+
+@app.route('/supervisor/delete/<email>/<int:module_id>', methods=['POST'])
+@supervisor_required
+def supervisor_delete(email, module_id):
+    db.delete_progress(email, module_id)
     return redirect(url_for('supervisor_dashboard'))
 
 

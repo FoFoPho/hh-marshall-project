@@ -110,6 +110,36 @@ def delete_progress(email, module_id):
         )
 
 
+def rename_student(old_email, first_name, last_name, new_email):
+    """Rename a student's identity across every module row they have.
+
+    All-or-nothing: if new_email would collide with an existing row in any
+    module the student is enrolled in, no changes are applied and False is
+    returned. Returns True on success.
+    """
+    old_email = normalize_email(old_email)
+    new_email = normalize_email(new_email)
+    with get_connection() as conn:
+        module_ids = [
+            r['module_id'] for r in conn.execute(
+                'SELECT module_id FROM progress WHERE email = ?', (old_email,)
+            ).fetchall()
+        ]
+        if new_email != old_email:
+            for module_id in module_ids:
+                collision = conn.execute(
+                    'SELECT 1 FROM progress WHERE email = ? AND module_id = ?',
+                    (new_email, module_id),
+                ).fetchone()
+                if collision:
+                    return False
+        conn.execute(
+            'UPDATE progress SET email = ?, first_name = ?, last_name = ? WHERE email = ?',
+            (new_email, first_name, last_name, old_email),
+        )
+    return True
+
+
 def get_all_progress():
     with get_connection() as conn:
         rows = conn.execute(
