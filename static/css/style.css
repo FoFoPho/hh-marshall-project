@@ -199,7 +199,10 @@ html, body {
 
 .supervisor-table {
   width: 100%;
-  border-collapse: collapse;
+  /* separate, not collapse: Safari doesn't honor position:sticky on
+     th/td when the table uses border-collapse: collapse. */
+  border-collapse: separate;
+  border-spacing: 0;
   background: var(--white);
   border: 1px solid var(--gray-light);
   border-radius: 8px;

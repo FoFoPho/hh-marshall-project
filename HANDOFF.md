@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-04 (Session 15)  
-**Last session:** Sticky Actions column on the Supervisor Dashboard
+**Last updated:** 2026-09-04 (Session 16)  
+**Last session:** Fixed sticky Actions column not working in Safari
 
 ---
 
@@ -228,7 +228,7 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 - **Search:** a client-side-only search box filters all columns at once. The query is split into words and a row matches only if *every* word appears somewhere in that row's combined text — this is what lets "Forrest Conner" narrow past "Forrest" alone even though first/last name are separate columns. Filtering re-applies after every auto-refresh poll (`applyFilter()` runs at the end of `render()`), so a supervisor's search doesn't get wiped every 7 seconds. **CSV export is not filter-aware** — it always exports every row regardless of what's on-screen; revisit if "export what I'm looking at" is wanted later.
 - **Restudying rows are yellow** (`--yellow`/`--yellow-bg` tokens in `style.css`), status text just reads **"Restudy"** — red is reserved for stronger "something's wrong" signals elsewhere (form errors, wrong-answer quiz feedback). The specific section they're stuck on is still shown in the Current Section column, so the status text didn't need to repeat it.
 - **Progress column** shows `current section number/total` (e.g. `2/5`) — a 1-indexed "which section are they on," not a completed-count. Someone who just started is `1/N`, not `0/N`; someone restudying section 3 is `3/N` (based on the failed section's index), not however many they'd actually passed. Computed in `build_dashboard_rows()` via `section_index_by_id()`. Present in the initial render, the auto-refresh JSON payload, and CSV export — three places that all build/consume dashboard rows, worth remembering if another column gets added later.
-- **Actions column is sticky** (`position: sticky; right: 0`) within the table's own horizontal scroll container — pinned in view no matter how far right the table is scrolled. Needed explicit per-row-status backgrounds (`var(--white)`/`var(--green-bg)`/`var(--yellow-bg)`) on the sticky cell itself, since a `<td>` has no background of its own and scrolled content would otherwise show through underneath it. Added after a user report of "I don't see the Edit button" turned out to be the column sitting off-screen with no visible scrollbar (macOS auto-hides them) — confirmed via a narrow-viewport Playwright screenshot before fixing.
+- **Actions column is sticky** (`position: sticky; right: 0`) within the table's own horizontal scroll container — pinned in view no matter how far right the table is scrolled. Needed explicit per-row-status backgrounds (`var(--white)`/`var(--green-bg)`/`var(--yellow-bg)`) on the sticky cell itself, since a `<td>` has no background of its own and scrolled content would otherwise show through underneath it. Added after a user report of "I don't see the Edit button" turned out to be the column sitting off-screen with no visible scrollbar (macOS auto-hides them). `.supervisor-table` uses `border-collapse: separate; border-spacing: 0` (not `collapse`) — **required** for sticky to work on `th`/`td` in Safari/WebKit specifically; Chromium doesn't have this limitation, which is why the first attempt at this looked fixed in testing but wasn't for the user's actual browser. See Session 16.
 - **Edit** (`/supervisor/edit/<email>`, GET+POST) — small form to fix First/Last/Email typos. Renames the student across **every** module row they have, not just the row the Edit link was clicked from (deliberate — a dashboard row is per-module, but a name/email correction is about the person). Implemented as `db.rename_student()`: all-or-nothing, rejects with no changes applied if the new email would collide with a different student's existing row in any module the student is enrolled in.
 - **Delete** (`/supervisor/delete/<email>/<int:module_id>`, POST) — removes exactly one (student, module) row, e.g. for a student who accidentally started twice under two emails. Module-scoped (unlike Edit) — reuses the existing `db.delete_progress()`. Gated behind two chained `confirm()` dialogs, same pattern as Reset All Data. **Gotcha hit while building this:** don't interpolate free-form data (names, etc.) into an inline `onsubmit="..."` confirm() string — an apostrophe in the data survives HTML-attribute escaping and still breaks out of the JS string once the browser decodes the attribute, because HTML-entity-escaping and JS-string-escaping are different layers and get applied at different times. Kept both confirm messages static/generic to sidestep this entirely.
 
@@ -262,6 +262,18 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-04 (Session 16) — Sticky Actions Column Didn't Actually Work in Safari
+
+**The bug:** Session 15's sticky Actions column tested fine in a Chromium-based Playwright check, got shipped, and the user (on Safari) still couldn't see it after a hard refresh, a private window, and confirming the right commit was live on Railway — all of which pointed away from caching/deploy issues and toward something actually still broken.
+
+**Root cause:** `position: sticky` on `<th>`/`<td>` elements is a known WebKit/Safari limitation when the table uses `border-collapse: collapse` — Safari just doesn't honor it in that combination, while Chromium (and Firefox) handle it fine. `.supervisor-table` used `border-collapse: collapse`, so my Chromium-based verification in Session 15 passed while the actual bug — invisible in the browser I tested with — shipped anyway.
+
+**Fix:** `border-collapse: separate; border-spacing: 0` instead. No visible layout change (the table's cell borders were only ever `border-bottom`, nothing relying on collapsed shared edges).
+
+**Verified properly this time** by installing Playwright's WebKit engine (`playwright install webkit`) — the actual engine Safari uses, not just "a browser" — and re-running the same narrow-viewport scroll test against it. Confirmed both before (broken) and after (fixed) states render correctly.
+
+**Lesson for later:** this user is on Safari. A frontend fix that only gets checked in Chromium is not verified for them — worth defaulting to WebKit (or checking both) for any CSS/JS change on this project going forward, not just whichever browser Playwright happens to default to.
 
 ### 2026-09-04 (Session 15) — Sticky Actions Column
 
