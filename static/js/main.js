@@ -117,6 +117,73 @@
     });
   }
 
+  // ── Video autoplay ────────────────────────────────────────
+  // Embeds carry autoplay=1, but browsers (Safari especially) block
+  // autoplay *with sound* until the user has clicked on the page. If the
+  // video hasn't started shortly after loading, fall back to muted
+  // autoplay (always allowed) and show a "Tap for sound" button.
+
+  const AUTOPLAY_CHECK_MS = 1500;
+  const videoFrames = document.querySelectorAll('iframe.video-embed');
+
+  if (videoFrames.length) {
+    const prevReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function () {
+      if (prevReady) prevReady();
+      videoFrames.forEach(setupAutoplay);
+    };
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  }
+
+  function setupAutoplay(iframe) {
+    const wrapper  = iframe.closest('.video-wrapper');
+    const soundBtn = wrapper && wrapper.querySelector('.video-sound-btn');
+    let mutedPoll = null;
+
+    const player = new YT.Player(iframe, {
+      events: {
+        onReady: function () {
+          player.playVideo();
+          setTimeout(function () {
+            const state = player.getPlayerState();
+            if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
+              if (player.isMuted()) showSoundBtn();   // browser auto-muted it
+              return;
+            }
+            player.mute();
+            player.playVideo();
+            showSoundBtn();
+          }, AUTOPLAY_CHECK_MS);
+        },
+      },
+    });
+
+    function hideSoundBtn() {
+      if (soundBtn) soundBtn.hidden = true;
+      if (mutedPoll) { clearInterval(mutedPoll); mutedPoll = null; }
+    }
+
+    function showSoundBtn() {
+      if (!soundBtn) return;
+      soundBtn.hidden = false;
+      // Hide it again if they unmute with YouTube's own controls instead
+      mutedPoll = setInterval(function () {
+        if (!player.isMuted()) hideSoundBtn();
+      }, 1000);
+    }
+
+    if (soundBtn) {
+      soundBtn.addEventListener('click', function () {
+        player.unMute();
+        player.setVolume(100);
+        if (player.getPlayerState() !== YT.PlayerState.PLAYING) player.playVideo();
+        hideSoundBtn();
+      });
+    }
+  }
+
   function textOf(root, selector) {
     const el = root.querySelector(selector);
     return el ? el.textContent.trim() : '';

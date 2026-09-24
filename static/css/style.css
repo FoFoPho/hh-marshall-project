@@ -469,6 +469,47 @@ html, body {
   display: block;
 }
 
+/* Shown when the browser blocks autoplay with sound and the video
+   falls back to playing muted — one tap unmutes it */
+.video-sound-btn {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 999px;
+  background: var(--blue);
+  color: var(--white);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  animation: read-aloud-pulse 1.8s ease-in-out infinite;
+}
+
+.video-sound-btn[hidden] { display: none; }
+
+.video-sound-btn:hover { background: var(--blue-dark); }
+
+.video-sound-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: white;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.video-sound-btn svg polygon { fill: white; }
+
 /* ── Brief / Text Block ──────────────────────────────────── */
 .brief-block {
   background: var(--white);

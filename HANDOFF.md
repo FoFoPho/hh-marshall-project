@@ -148,6 +148,16 @@ Add a new object to the top-level `modules` array. Use the next number (5, 6, et
 
 ---
 
+## Video Autoplay
+
+Every embedded video (welcome page + lesson pages) autoplays. `youtube_embed_url()` in `app.py` adds `autoplay=1&playsinline=1&enablejsapi=1`, and `main.js` loads the YouTube IFrame API and wraps each `iframe.video-embed` in a `YT.Player`:
+
+- Tries to play **with sound**. If it isn't playing ~1.5s later (browser blocked autoplay with sound, which Safari does until the user has clicked on the site), it **mutes and plays** (muted autoplay is always allowed) and shows a pulsing blue **"Tap for sound"** button over the video (`.video-sound-btn`, in `lesson.html`/`welcome.html`). One tap unmutes; the button also hides itself if they unmute via YouTube's own controls.
+- No `origin` param on the embed URL on purpose. Behind Railway's proxy, Flask may see `http://` while the site is served over `https://`, and a wrong origin silently breaks the player API.
+- Verified against the real YouTube player (Session 18): WebKit → muted autoplay + button, tap → sound; Chromium after a prior click on the site → plays with sound, no button.
+
+---
+
 ## Read-Aloud (Knowledge Checks + Practical Exercises)
 
 Applies to **every module** — no per-module setting. Uses the browser's built-in voice (Web Speech API, `speechSynthesis`), so there are no audio files and edits to `modules.json` are spoken automatically. Logic lives in the `ReadAloud` helper at the top of `static/js/main.js`.
@@ -304,6 +314,8 @@ Notes for processing the next one:
 - Spoken/written instruction says "instructor" (the script said "superviser" in its notes; user specified instructor).
 
 - **Later in session:** Module 1 set to Coming Soon via a new `coming_soon` flag in `modules.json` (content kept intact). Checked in `start_module()` and `step()`. Students with existing Module 1 progress can't resume it while the flag is on, but their rows stay on the supervisor dashboard.
+
+- **Later in session:** videos autoplay, with a muted fallback and a "Tap for sound" button (see "Video Autoplay" section).
 
 **Verified:** Playwright in WebKit and Chromium with a stubbed `speechSynthesis`: Module 7 end to end (video, 1s-delayed reading of Q1 with options, Q2 read after Q1 correct, replay button, wrong answer cancels speech + REVIEW & RETRY, practical read aloud, NEXT locked until confirmed, `/step/3` and `/complete` URL-skipping blocked, cert number shown), blocked-autoplay simulation (first click starts reading), dashboard Completed/Restudy rows, and Module 1 regression (quizzes read aloud, completes with no practical pages). **Not verified:** real audio in the user's Safari.
 

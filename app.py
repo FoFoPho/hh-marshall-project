@@ -82,7 +82,10 @@ def youtube_embed_url(url):
     else:
         video_id = params.get('v', [''])[0]
     start = params.get('t', ['0'])[0].rstrip('s')
-    return f"https://www.youtube-nocookie.com/embed/{video_id}?start={start}&rel=0&modestbranding=1"
+    # autoplay + enablejsapi: main.js tries to play with sound, and falls back
+    # to muted autoplay + a "Tap for sound" button if the browser blocks it.
+    return (f"https://www.youtube-nocookie.com/embed/{video_id}?start={start}"
+            f"&rel=0&modestbranding=1&autoplay=1&playsinline=1&enablejsapi=1")
 
 
 app.jinja_env.globals['youtube_embed'] = youtube_embed_url
