@@ -85,7 +85,7 @@
     {% for m in modules %}
     {% set p = progress_by_module.get(m.id) %}
     <div>
-      {% if m.sections | length > 0 %}
+      {% if m.sections | length > 0 and not m.coming_soon %}
       <a href="{{ url_for('start_module', module_id=m.id) }}" class="module-card">
         {% if p %}
         <div class="module-progress-badge {{ 'completed' if p.cert_number else 'in-progress' }}">

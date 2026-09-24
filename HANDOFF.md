@@ -115,6 +115,9 @@ This adds a Practical Exercise page right after that section's quiz. Sections wi
 ### Multiple quiz questions:
 Add more objects to the `questions` array. All questions are shown on one quiz page; all must be correct to pass.
 
+### Hide a module as "Coming Soon" without deleting its content:
+Set `"coming_soon": true` on the module. The card greys out and `/module/<id>` (and its steps) redirect back to the module grid. Remove the flag (or set it to `false`) to bring it back. Module 1 is currently hidden this way (Session 18). Modules with no `sections` also show as Coming Soon automatically.
+
 ### Add a new module:
 Add a new object to the top-level `modules` array. Use the next number (5, 6, etc.) and set the icon to one of: `hardhat`, `stairs`, `crosshair`, `forklift` (or add a new SVG in `module_select.html`).
 
@@ -299,6 +302,8 @@ Notes for processing the next one:
 - Read-aloud on for all modules (not just Module 7).
 - Practical gated by student self-confirmation (same trust model as self-reported names/emails), not an instructor code.
 - Spoken/written instruction says "instructor" (the script said "superviser" in its notes; user specified instructor).
+
+- **Later in session:** Module 1 set to Coming Soon via a new `coming_soon` flag in `modules.json` (content kept intact). Checked in `start_module()` and `step()`. Students with existing Module 1 progress can't resume it while the flag is on, but their rows stay on the supervisor dashboard.
 
 **Verified:** Playwright in WebKit and Chromium with a stubbed `speechSynthesis`: Module 7 end to end (video, 1s-delayed reading of Q1 with options, Q2 read after Q1 correct, replay button, wrong answer cancels speech + REVIEW & RETRY, practical read aloud, NEXT locked until confirmed, `/step/3` and `/complete` URL-skipping blocked, cert number shown), blocked-autoplay simulation (first click starts reading), dashboard Completed/Restudy rows, and Module 1 regression (quizzes read aloud, completes with no practical pages). **Not verified:** real audio in the user's Safari.
 

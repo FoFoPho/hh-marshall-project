@@ -157,6 +157,9 @@ def start_module(module_id):
     user = session.get('user')
     if not module or not user:
         return redirect(url_for('index'))
+    if module.get('coming_soon'):
+        # Content kept in modules.json but hidden from students for now
+        return redirect(url_for('modules'))
 
     # Reset module state while preserving user info
     session.clear()
@@ -202,6 +205,8 @@ def step(module_id, step_num):
     module = get_module(module_id)
     if not module or session.get('module_id') != module_id:
         return redirect(url_for('index'))
+    if module.get('coming_soon'):
+        return redirect(url_for('modules'))
 
     steps = build_steps(module)
     current = session.get('current_step', 0)

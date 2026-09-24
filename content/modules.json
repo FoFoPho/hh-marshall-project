@@ -6,6 +6,7 @@
       "title": "Module 1",
       "icon": "hardhat",
       "estimated_time": "2 hours",
+      "coming_soon": true,
       "welcome_video": "https://www.youtube.com/watch?v=nzK2bL_Kkok&t=10s",
       "sections": [
         {
