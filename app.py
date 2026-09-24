@@ -58,6 +58,16 @@ def build_steps(module):
             'section': section,
             'quiz': section['quiz'],
         })
+        # Optional practical exercise after the knowledge check — student
+        # confirms they did it with their instructor to unlock the next step.
+        if section.get('practical'):
+            steps.append({
+                'type': 'practical',
+                'section_id': section['id'],
+                'section_title': section['title'].upper(),
+                'section': section,
+                'practical': section['practical'],
+            })
     return steps
 
 
@@ -260,6 +270,19 @@ def step(module_id, step_num):
             quiz_failed=quiz_failed,
             restudy_url=restudy_url,
         )
+    elif step_data['type'] == 'practical':
+        # Unlike a lesson, viewing doesn't unlock the next step — the student
+        # has to confirm via submit_practical(). Already past it (e.g. walking
+        # forward again during a restudy) → show it as already confirmed.
+        return render_template('practical.html',
+            module=module,
+            step=step_data,
+            step_num=step_num,
+            display_num=display_num,
+            prev_url=prev_url,
+            next_url=next_url,
+            already_confirmed=step_num < current,
+        )
 
     return redirect(url_for('index'))
 
@@ -323,6 +346,36 @@ def submit_quiz(module_id, section_id):
         return redirect(url_for('step', module_id=module_id, step_num=quiz_step_num))
 
 
+@app.route('/module/<int:module_id>/practical/<section_id>', methods=['POST'])
+def submit_practical(module_id, section_id):
+    module = get_module(module_id)
+    if not module or session.get('module_id') != module_id:
+        return redirect(url_for('index'))
+
+    steps = build_steps(module)
+    practical_step_num = next(
+        (i + 1 for i, s in enumerate(steps)
+         if s['type'] == 'practical' and s['section_id'] == section_id),
+        None)
+    if practical_step_num is None:
+        return redirect(url_for('index'))
+
+    # Gating: must have reached this step
+    current = session.get('current_step', 0)
+    if practical_step_num > current:
+        return redirect(url_for('step', module_id=module_id, step_num=current))
+
+    if not request.form.get('confirmed'):
+        return redirect(url_for('step', module_id=module_id, step_num=practical_step_num))
+
+    next_step = practical_step_num + 1
+    session['current_step'] = max(current, next_step)
+    sync_progress()
+    if next_step > len(steps):
+        return redirect(url_for('complete', module_id=module_id))
+    return redirect(url_for('step', module_id=module_id, step_num=next_step))
+
+
 @app.route('/module/<int:module_id>/restudy/<section_id>')
 def restudy(module_id, section_id):
     module = get_module(module_id)
@@ -358,11 +411,14 @@ def complete(module_id):
     if not module or session.get('module_id') != module_id:
         return redirect(url_for('index'))
 
-    # Verify all sections have been passed
+    # Verify all sections have been passed, and every step (including a final
+    # practical exercise, which has no quiz to mark it done) has been cleared
     sections = module.get('sections', [])
     completed = session.get('completed_sections', [])
-    if any(s['id'] not in completed for s in sections):
-        current = session.get('current_step', 0)
+    current = session.get('current_step', 0)
+    if 'cert_number' not in session and (
+            any(s['id'] not in completed for s in sections)
+            or current <= len(build_steps(module))):
         if current == 0:
             return redirect(url_for('start_module', module_id=module_id))
         return redirect(url_for('step', module_id=module_id, step_num=current))

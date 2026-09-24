@@ -24,7 +24,13 @@
     {% set q_idx = loop.index0 %}
     {% set letters = ['A', 'B', 'C', 'D', 'E'] %}
 
-    <p class="quiz-question">{{ q.text }}</p>
+    <div class="quiz-q" data-q="{{ q_idx }}" data-total="{{ questions | length }}">
+    <div class="read-aloud-row">
+      <p class="quiz-question">{{ q.text }}</p>
+      <button type="button" class="read-aloud-btn" aria-label="Read question aloud" title="Read aloud">
+        <svg viewBox="0 0 24 24"><polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      </button>
+    </div>
 
     <ul class="quiz-options" data-correct="{{ q.correct }}">
       {% for option in q.options %}
@@ -42,6 +48,7 @@
     </ul>
 
     <div class="quiz-counter">QUESTION {{ loop.index }} OF {{ questions | length }}</div>
+    </div>
 
     {% if not loop.last %}<hr style="border:none;border-top:1px solid var(--gray-light);margin:24px 0;">{% endif %}
     {% endfor %}

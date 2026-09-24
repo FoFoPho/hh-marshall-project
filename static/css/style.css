@@ -732,6 +732,110 @@ html, body {
 .quiz-result-text.correct { color: var(--green); }
 .quiz-result-text.incorrect { color: var(--red); }
 
+/* ── Read Aloud ──────────────────────────────────────────── */
+.read-aloud-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.read-aloud-row .quiz-question,
+.read-aloud-row .practical-text {
+  flex: 1;
+}
+
+.read-aloud-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.read-aloud-btn:hover { background: var(--blue-dark); }
+
+.read-aloud-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: white;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.read-aloud-btn svg polygon { fill: white; }
+
+.speaking .read-aloud-btn {
+  animation: read-aloud-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes read-aloud-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(27, 79, 191, 0.45); }
+  70%  { box-shadow: 0 0 0 10px rgba(27, 79, 191, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(27, 79, 191, 0); }
+}
+
+/* ── Practical Exercise ──────────────────────────────────── */
+.practical-text {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.practical-instructor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--gray-bg);
+  border-left: 4px solid var(--blue);
+  border-radius: 4px;
+}
+
+.practical-instructor svg {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  stroke: var(--blue);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.practical-instructor-text {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.practical-confirm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--gray-light);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.practical-confirm input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
 /* ── Failure Banner ──────────────────────────────────────── */
 .failure-banner {
   position: fixed;

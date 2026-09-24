@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Practical Exercise — The Marshall Project{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">
+  PRACTICAL EXERCISE <span class="dot"></span> {{ display_num }}
+</div>
+{% endblock %}
+
+{% block body %}
+<main class="main-content">
+  <h1 class="page-title">{{ step.section_title }}</h1>
+  <div class="section-badge">Practical Exercise</div>
+  <p class="quiz-instruction">Complete this hands-on exercise before moving on.</p>
+
+  <form class="quiz-card practical-card" id="practical-form"
+        method="POST"
+        action="{{ url_for('submit_practical', module_id=module.id, section_id=step.section_id) }}">
+
+    <div class="read-aloud-row">
+      <p class="practical-text">{{ step.practical.text }}</p>
+      <button type="button" class="read-aloud-btn" aria-label="Read exercise aloud" title="Read aloud">
+        <svg viewBox="0 0 24 24"><polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      </button>
+    </div>
+
+    <div class="practical-instructor">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
+      <p class="practical-instructor-text">Complete this exercise with your instructor. If your instructor isn't with you, see them to get started.</p>
+    </div>
+
+    <label class="practical-confirm">
+      <input type="checkbox" name="confirmed" value="1" id="practical-confirmed"
+             {% if already_confirmed %}checked{% endif %}>
+      <span>I have completed this exercise with my instructor</span>
+    </label>
+  </form>
+</main>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-btn-wrap">
+    <a href="{{ prev_url }}" class="nav-btn active" aria-label="Previous">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="nav-label">PREVIOUS</span>
+  </div>
+
+  <!-- NEXT — JS enables it once the confirmation box is ticked -->
+  <div class="nav-btn-wrap">
+    <button id="practical-next" type="submit" form="practical-form"
+            class="nav-btn {{ 'active' if already_confirmed else 'inactive' }}" aria-label="Next">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <span class="nav-label">NEXT</span>
+  </div>
+</nav>
+{% endblock %}

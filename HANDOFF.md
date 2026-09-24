@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-04 (Session 17)  
-**Last session:** Actions column split into its own non-scrolling panel
+**Last updated:** 2026-09-24 (Session 18)  
+**Last session:** Module 7 (Power Tool Safety) added; knowledge checks + new practical exercise pages read aloud automatically
 
 ---
 
@@ -43,14 +43,15 @@ HH Marshall Project - 2026/
 │   └── modules.json    # ← EDIT THIS to add/update content
 ├── static/
 │   ├── css/style.css   # Design system (colors, layout, components)
-│   ├── js/main.js      # Quiz answer selection + NEXT guard
+│   ├── js/main.js      # Read-aloud, quiz answer selection + NEXT guard, practical confirm
 │   └── assets/         # Logo and other static images (empty for now)
 ├── templates/
 │   ├── base.html           # Header shell
 │   ├── module_select.html  # Module grid page
 │   ├── welcome.html        # Welcome video + user info form
 │   ├── lesson.html         # Lesson page (video + brief)
-│   ├── quiz.html           # Quiz page with gating
+│   ├── quiz.html           # Quiz page with gating (read aloud)
+│   ├── practical.html      # Practical exercise page (read aloud, student confirms)
 │   └── complete.html       # Completion + certificate download
 └── HANDOFF.md          # ← This file
 ```
@@ -104,6 +105,13 @@ Open: http://localhost:5000
 ### Add a new lesson page within a section:
 Just add another object to the `pages` array. Each page gets its own lesson step.
 
+### Add a practical exercise after a section's knowledge check:
+Add an optional `practical` object to the section (sibling of `quiz`):
+```json
+"practical": { "text": "Go out to the work areas and inspect tool safety." }
+```
+This adds a Practical Exercise page right after that section's quiz. Sections without `practical` are unchanged.
+
 ### Multiple quiz questions:
 Add more objects to the `questions` array. All questions are shown on one quiz page; all must be correct to pass.
 
@@ -122,6 +130,7 @@ Add a new object to the top-level `modules` array. Use the next number (5, 6, et
    - **Correct**: advance to step 3 (next section lesson or complete)
    - **Wrong**: stay on quiz, failure banner shown, NEXT locked
    - User clicks "START SECTION OVER" → `/module/<id>/restudy/<section_id>` → back to step 1
+   - If the section has a `practical`: quiz pass → Practical Exercise page → student ticks "I have completed this exercise with my instructor" → NEXT
 6. After all sections passed → `/module/<id>/complete` — congrats screen, cert number shown as text, button back to module selection (no PDF in this flow — see "Certificate PDF" below)
 
 ---
@@ -132,6 +141,19 @@ Add a new object to the top-level `modules` array. Use the next number (5, 6, et
 - NEXT is **disabled client-side** until a quiz answer is selected
 - After a wrong answer, NEXT is **disabled both client and server-side**
 - "START SECTION OVER" is the only way out of a failed quiz
+- **Practical exercise pages** don't unlock the next step just by being viewed (unlike lessons). NEXT is disabled client-side until the confirmation box is ticked, and `POST /module/<id>/practical/<section_id>` requires the `confirmed` field before advancing `current_step`. `complete()` also requires `current_step > len(steps)` (unless already certified), so a final practical can't be skipped by typing `/complete`. No new DB columns — `current_step` alone tracks it. When a student walks back through a practical they've already passed (e.g. during restudy), it renders pre-confirmed.
+
+---
+
+## Read-Aloud (Knowledge Checks + Practical Exercises)
+
+Applies to **every module** — no per-module setting. Uses the browser's built-in voice (Web Speech API, `speechSynthesis`), so there are no audio files and edits to `modules.json` are spoken automatically. Logic lives in the `ReadAloud` helper at the top of `static/js/main.js`.
+
+- **Knowledge check:** 1 second after the page loads (`READ_DELAY_MS`), reads "Question 1 of N. <question>" then "A: <option>", "B: <option>"… Each correct answer reads the next unanswered question. Clicking any answer cancels speech in progress; a wrong answer stops reading entirely.
+- **Practical exercise:** 1 second after load, reads "Practical exercise. <text>. <instructor instruction>".
+- A blue speaker button beside each question / the exercise replays it (pulses while speaking).
+- **Autoplay limit:** browsers — Safari in particular — may block speech that starts before the user has clicked on the page. When that happens, the first click/tap/keypress anywhere on the page starts the reading; the speaker buttons always work. Voice quality depends on the device.
+- Headless browsers don't play audio — the Playwright checks stub `speechSynthesis` with an init script that records what's spoken. Actual audio has to be confirmed in a real browser.
 
 ---
 
@@ -252,6 +274,8 @@ Answer Key
   • <letter per question, in order>
 ```
 
+Newer scripts (Module 7 onward) use a slightly different format: options as `A: <option>` bullets with **✓ marking the correct answer** (no separate Answer Key — strip the ✓ when transcribing), `Text: (no text)` meaning no brief, and a `Section N Practical Exercise` block that becomes the section's `practical.text`.
+
 Notes for processing the next one:
 - `.docx` isn't readable directly — convert first: `textutil -convert txt -stdout "Modules/<file>.docx"`.
 - Video links may be `youtu.be/ID` short links — `youtube_embed_url()` in `app.py` now handles both that and `youtube.com/watch?v=ID`, so either format works as-is. Normalize to `https://www.youtube.com/watch?v=ID` when writing to `modules.json` for consistency (strip `?si=`/playlist/index tracking params).
@@ -262,6 +286,21 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-09-24 (Session 18) — Module 7, Read-Aloud, Practical Exercises
+
+**What changed:**
+- `content/modules.json` — Module 7 (Power Tool Safety) from `Modules/Module 7 - Power Tool Safety.docx`: one section with video (no brief text), 2-question knowledge check, and a practical exercise. Modules 5 and 6 added as Coming Soon stubs so the grid reads 1–7. Module 7's `estimated_time` is a placeholder "2 hours" copied from the others (the script didn't say).
+- `app.py` — `build_steps()` emits a `practical` step after a section's quiz when `section.practical` is set; `step()` renders `practical.html`; new `POST /module/<id>/practical/<section_id>` (`submit_practical()`); `complete()` also requires `current_step > len(steps)`.
+- `templates/practical.html` (new), `templates/quiz.html` (each question wrapped in `.quiz-q` with a speaker button), `templates/module_select.html` (new `drill` icon), `static/css/style.css` (read-aloud button/pulse, practical card), `static/js/main.js` (`ReadAloud` helper + quiz/practical wiring).
+
+**Decisions made:**
+- Built-in browser voice over recorded AI audio — free, zero maintenance, content edits need no re-recording; voice varies by device.
+- Read-aloud on for all modules (not just Module 7).
+- Practical gated by student self-confirmation (same trust model as self-reported names/emails), not an instructor code.
+- Spoken/written instruction says "instructor" (the script said "superviser" in its notes; user specified instructor).
+
+**Verified:** Playwright in WebKit and Chromium with a stubbed `speechSynthesis`: Module 7 end to end (video, 1s-delayed reading of Q1 with options, Q2 read after Q1 correct, replay button, wrong answer cancels speech + REVIEW & RETRY, practical read aloud, NEXT locked until confirmed, `/step/3` and `/complete` URL-skipping blocked, cert number shown), blocked-autoplay simulation (first click starts reading), dashboard Completed/Restudy rows, and Module 1 regression (quizzes read aloud, completes with no practical pages). **Not verified:** real audio in the user's Safari.
 
 ### 2026-09-04 (Session 17) — Actions Column: Separate Panel Instead of Sticky
 
