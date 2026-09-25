@@ -16,6 +16,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LETTERS = 'ABCDE'
 LANG_NAMES = {'en': 'English', 'es': 'Spanish'}
 PRACTICAL_INTRO = {'en': 'Practical exercise.', 'es': 'Ejercicio práctico.'}
+# AI voice-over pause tag: between every line, plus one at the end so the
+# clip doesn't cut off abruptly.
+PAUSE = '[pause 0.5s]'
 
 
 def load(name):
@@ -53,17 +56,15 @@ def main():
     print(f'# {module["title"]} — Voice-Over Scripts\n')
     print(f'{len(clips)} clips. Record each one exactly as written, then save it '
           f'with the file name shown (MP3 preferred; M4A or WAV also work).\n')
-    print('Read the answer letters aloud ("A", "B", …). Leave a short pause between '
-          'the question and each answer.\n')
+    print(f'Each script is ready to paste into the AI voice generator as-is, '
+          f'including the {PAUSE} tags.\n')
     for lang in ('en', 'es'):
         print(f'\n## {LANG_NAMES[lang]}\n')
         for filename, clip_lang, label, lines in clips:
             if clip_lang != lang:
                 continue
             print(f'### `{filename}`\n*{label}*\n')
-            for line in lines:
-                print(f'> {line}  ')
-            print()
+            print(f'  {PAUSE}  '.join(lines) + f'  {PAUSE}\n')
 
 
 if __name__ == '__main__':
