@@ -1,38 +1,20 @@
 (function () {
   'use strict';
 
-  // ── Read aloud ────────────────────────────────────────────
-  // Browser built-in voice (Web Speech API) — no audio files, so edits to
-  // modules.json are picked up automatically. Browsers (Safari especially)
-  // may refuse to start speech before the user has clicked on the page;
-  // if that happens, the first click/tap/keypress anywhere retries it, and
-  // the speaker buttons always work since they're a click themselves.
+  // ── Voice-over clips ──────────────────────────────────────
+  // Recorded clips (static/audio/…, found by filename convention in app.py)
+  // are passed in as data-audio URLs; no clip → no audio. Browsers (Safari
+  // especially) may refuse to play sound before the user has clicked on the
+  // page; if that happens, the speaker button pulses and the first
+  // click/tap/keypress anywhere starts the clip.
 
   const READ_DELAY_MS = 1000;
 
-  const ReadAloud = (function () {
-    const synth = window.speechSynthesis;
-    const supported = !!(synth && window.SpeechSynthesisUtterance);
-    let voice = null;
-    let token = 0;            // bumps on every speak/cancel so stale callbacks are ignored
+  const Narration = (function () {
+    const audio = new Audio();
+    audio.preload = 'auto';
     let activeEl = null;      // element showing the .speaking pulse
-    let pendingRetry = null;  // speak() args to replay on first user gesture if blocked
-
-    function pickVoice() {
-      const voices = synth.getVoices();
-      voice =
-        voices.find(function (v) { return v.default && /^en/i.test(v.lang); }) ||
-        voices.find(function (v) { return /^en[-_]US/i.test(v.lang); }) ||
-        voices.find(function (v) { return /^en/i.test(v.lang); }) ||
-        null;
-    }
-
-    if (supported) {
-      pickVoice();
-      // Safari/Chrome load the voice list asynchronously
-      synth.addEventListener && synth.addEventListener('voiceschanged', pickVoice);
-      window.addEventListener('pagehide', function () { cancel(); });
-    }
+    let pendingRetry = null;  // [src, el] to replay on first user gesture if blocked
 
     function setActive(el) {
       if (activeEl) activeEl.classList.remove('speaking');
@@ -40,20 +22,29 @@
       if (activeEl) activeEl.classList.add('speaking');
     }
 
-    function cancel() {
-      if (!supported) return;
-      token++;
+    function clearBlocked() {
+      document.querySelectorAll('.audio-blocked').forEach(function (el) {
+        el.classList.remove('audio-blocked');
+      });
+    }
+
+    audio.addEventListener('ended', function () { setActive(null); });
+    window.addEventListener('pagehide', function () { stop(); });
+
+    function stop() {
       pendingRetry = null;
-      synth.cancel();
+      audio.pause();
       setActive(null);
     }
 
-    function armRetry(parts, el) {
-      pendingRetry = [parts, el];
+    function armRetry(src, el) {
+      pendingRetry = [src, el];
+      if (el) el.classList.add('audio-blocked');
       function retry(e) {
         document.removeEventListener('pointerdown', retry, true);
         document.removeEventListener('keydown', retry, true);
-        // Clicks on answers / speaker buttons / checkboxes start their own speech
+        clearBlocked();
+        // Clicks on answers / speaker buttons / checkboxes start their own audio
         if (e && e.target && e.target.closest &&
             e.target.closest('.quiz-option, .read-aloud-btn, .practical-confirm')) {
           pendingRetry = null;
@@ -62,60 +53,31 @@
         if (pendingRetry) {
           const args = pendingRetry;
           pendingRetry = null;
-          speak(args[0], args[1]);
+          play(args[0], args[1]);
         }
       }
       document.addEventListener('pointerdown', retry, true);
       document.addEventListener('keydown', retry, true);
     }
 
-    // parts: array of strings, each spoken as its own utterance (natural pauses)
-    // el:    element to pulse while speaking
-    function speak(parts, el) {
-      if (!supported || !parts.length) return;
-      cancel();
-      const myToken = token;
-      let blocked = false;
-
-      parts.forEach(function (text, i) {
-        const u = new SpeechSynthesisUtterance(text);
-        if (voice) u.voice = voice;
-        u.lang = voice ? voice.lang : 'en-US';
-        u.rate = 0.95;
-        if (i === 0) {
-          u.onstart = function () { if (token === myToken) setActive(el); };
-        }
-        if (i === parts.length - 1) {
-          u.onend = function () { if (token === myToken) setActive(null); };
-        }
-        u.onerror = function (e) {
-          if (token !== myToken) return;
+    function play(src, el) {
+      if (!src) return;
+      stop();
+      clearBlocked();
+      audio.src = src;
+      setActive(el);
+      const p = audio.play();
+      if (p && p.catch) {
+        p.catch(function (err) {
+          if (audio.src.indexOf(src) === -1) return;   // superseded by a newer clip
           setActive(null);
-          if (e.error === 'not-allowed' && !blocked) {
-            blocked = true;
-            armRetry(parts, el);
-          }
-        };
-        synth.speak(u);
-      });
-
-      // Some browsers silently drop speech instead of raising not-allowed
-      setTimeout(function () {
-        if (token === myToken && !blocked && !synth.speaking && !synth.pending) {
-          blocked = true;
-          armRetry(parts, el);
-        }
-      }, 300);
+          if (err && err.name === 'NotAllowedError') armRetry(src, el);
+        });
+      }
     }
 
-    return { supported: supported, speak: speak, cancel: cancel };
+    return { play: play, stop: stop };
   })();
-
-  if (!ReadAloud.supported) {
-    document.querySelectorAll('.read-aloud-btn').forEach(function (b) {
-      b.style.display = 'none';
-    });
-  }
 
   // ── Video autoplay ────────────────────────────────────────
   // Embeds carry autoplay=1, but browsers (Safari especially) block
@@ -184,11 +146,6 @@
     }
   }
 
-  function textOf(root, selector) {
-    const el = root.querySelector(selector);
-    return el ? el.textContent.trim() : '';
-  }
-
   // ── Quiz answer selection ─────────────────────────────────
   // Instant green/red feedback on selection.
   // Correct answer → NEXT enables.
@@ -206,20 +163,8 @@
     const questionLists = quizForm.querySelectorAll('.quiz-options');
     const questionEls   = Array.from(quizForm.querySelectorAll('.quiz-q'));
 
-    // "Question 1 of 2. <text>" then "A: <option>" per option
-    function questionScript(qEl) {
-      const n = parseInt(qEl.getAttribute('data-q'), 10) + 1;
-      const total = qEl.getAttribute('data-total');
-      const parts = ['Question ' + n + ' of ' + total + '. ' + textOf(qEl, '.quiz-question')];
-      qEl.querySelectorAll('.quiz-option').forEach(function (label) {
-        const letter = textOf(label, '.option-letter').replace(/\.$/, '');
-        parts.push(letter + ': ' + textOf(label, '.option-text'));
-      });
-      return parts;
-    }
-
     function readQuestion(qEl) {
-      if (qEl) ReadAloud.speak(questionScript(qEl), qEl);
+      if (qEl) Narration.play(qEl.getAttribute('data-audio'), qEl);
     }
 
     function nextUnanswered() {
@@ -245,7 +190,7 @@
           const selectedIdx = parseInt(radio.value, 10);
 
           radio.checked = true;
-          ReadAloud.cancel();
+          Narration.stop();
 
           if (selectedIdx === correctIdx) {
             label.classList.add('correct');
@@ -319,11 +264,7 @@
     const practicalNext = document.getElementById('practical-next');
 
     function readPractical() {
-      ReadAloud.speak([
-        'Practical exercise.',
-        textOf(practicalForm, '.practical-text'),
-        textOf(practicalForm, '.practical-instructor-text'),
-      ], practicalForm);
+      Narration.play(practicalForm.getAttribute('data-audio'), practicalForm);
     }
 
     const btn = practicalForm.querySelector('.read-aloud-btn');

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Module Complete — The Marshall Project{% endblock %}
+{% block title %}{{ t('module_complete_page_title') }} — {{ t('site_title') }}{% endblock %}
 
 {% block header_right %}
 <div class="step-indicator">
-  MODULE COMPLETE <span class="dot"></span> {{ display_num }}
+  {{ t('module_complete_step') }} <span class="dot"></span> {{ display_num }}
 </div>
 {% endblock %}
 
@@ -15,13 +15,13 @@
     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
   </div>
 
-  <h1 class="page-title">Congrats! You Finished {{ module.title }}</h1>
-  <p class="complete-subtitle">Your completion has been recorded.</p>
+  <h1 class="page-title">{{ t('congrats', title=module.title) }}</h1>
+  <p class="complete-subtitle">{{ t('completion_recorded') }}</p>
 
-  <p class="cert-number-note">Certificate No. <strong>{{ cert_number }}</strong> — save this for your records.</p>
+  <p class="cert-number-note">{{ t('cert_note', cert=cert_number) }}</p>
 
   <a href="{{ url_for('modules') }}" class="cta-btn">
-    Return to Module Selection
+    {{ t('return_to_modules') }}
   </a>
 
 </main>
@@ -32,13 +32,13 @@
     <a href="{{ url_for('modules') }}" class="nav-btn active" aria-label="Back to modules">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
-    <span class="nav-label">BACK TO<br>MODULES</span>
+    <span class="nav-label">{{ t('back_to_modules') }}</span>
   </div>
   <div class="nav-btn-wrap">
     <a href="{{ url_for('index') }}" class="nav-btn active" aria-label="Home">
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
     </a>
-    <span class="nav-label">HOME</span>
+    <span class="nav-label">{{ t('home') }}</span>
   </div>
 </nav>
 {% endblock %}

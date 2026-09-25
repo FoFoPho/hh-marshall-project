@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Select a Module — The Marshall Project{% endblock %}
+{% block title %}{{ t('select_module_page_title') }} — {{ t('site_title') }}{% endblock %}
 
 {% block header_right %}
-<div class="step-indicator">SELECT A MODULE</div>
+<div class="step-indicator">{{ t('select_module_step') }}</div>
 {% endblock %}
 
 {% macro module_icon(icon) %}
@@ -75,10 +75,9 @@
 
 {% block body %}
 <main class="main-content">
-  <h1 class="page-title">Choose Your Training Module</h1>
+  <h1 class="page-title">{{ t('choose_module_title') }}</h1>
   <p class="module-select-intro">
-    Please plan to sit down with enough time to complete a full module in one go.<br>
-    Your progress is saved along the way, so you can always pick back up if something comes up.
+    {{ t('module_select_intro') }}
   </p>
 
   <div class="module-grid">
@@ -89,19 +88,19 @@
       <a href="{{ url_for('start_module', module_id=m.id) }}" class="module-card">
         {% if p %}
         <div class="module-progress-badge {{ 'completed' if p.cert_number else 'in-progress' }}">
-          {{ 'Completed' if p.cert_number else 'In Progress' }}
+          {{ t('completed') if p.cert_number else t('in_progress') }}
         </div>
         {% endif %}
         <div class="module-number">{{ m.id }}</div>
         <div class="module-label">{{ m.title }}</div>
         <div class="module-icon">{{ module_icon(m.icon) }}</div>
-        <div class="module-select-link">{{ 'Continue' if p and not p.cert_number else 'Select Module' }}</div>
+        <div class="module-select-link">{{ t('continue') if p and not p.cert_number else t('select_module') }}</div>
       </a>
-      <p class="module-card-footer">Estimated completion time: {{ m.estimated_time }}</p>
+      <p class="module-card-footer">{{ t('estimated_time', time=m.estimated_time) }}</p>
       {% if p %}
       <p class="module-card-footer">
         <a href="{{ url_for('reset_module', module_id=m.id) }}"
-           onclick="return confirm('Start {{ m.title }} over from the beginning? Your current progress on this module will be cleared.');">Start Over</a>
+           onclick="return confirm('{{ t('start_over_confirm', title=m.title) }}');">{{ t('start_over') }}</a>
       </p>
       {% endif %}
       {% else %}
@@ -109,9 +108,9 @@
         <div class="module-number">{{ m.id }}</div>
         <div class="module-label">{{ m.title }}</div>
         <div class="module-icon">{{ module_icon(m.icon) }}</div>
-        <div class="module-select-link">Select Module</div>
+        <div class="module-select-link">{{ t('select_module') }}</div>
       </div>
-      <p class="module-card-footer">Coming Soon</p>
+      <p class="module-card-footer">{{ t('coming_soon') }}</p>
       {% endif %}
     </div>
     {% endfor %}

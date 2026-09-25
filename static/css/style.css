@@ -89,6 +89,33 @@ html, body {
   border-color: var(--gray-mid);
 }
 
+/* EN | ES language toggle (header) */
+.lang-toggle {
+  display: flex;
+  border: 1px solid var(--gray-light);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lang-toggle a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 6px 12px;
+  color: var(--gray-mid);
+  background: var(--white);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+
+.lang-toggle a:hover { color: var(--black); }
+
+.lang-toggle a.active {
+  background: var(--blue);
+  color: var(--white);
+}
+
 .step-indicator {
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
@@ -490,6 +517,7 @@ html, body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+  white-space: nowrap;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
   animation: read-aloud-pulse 1.8s ease-in-out infinite;
 }
@@ -814,7 +842,8 @@ html, body {
 
 .read-aloud-btn svg polygon { fill: white; }
 
-.speaking .read-aloud-btn {
+.speaking .read-aloud-btn,
+.audio-blocked .read-aloud-btn {
   animation: read-aloud-pulse 1.4s ease-in-out infinite;
 }
 

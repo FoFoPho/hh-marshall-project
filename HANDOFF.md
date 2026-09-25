@@ -3,7 +3,7 @@
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
 **Last updated:** 2026-09-24 (Session 18)  
-**Last session:** Module 7 (Power Tool Safety) added; knowledge checks + new practical exercise pages read aloud automatically
+**Last session:** Module 7 added, practical exercises, video autoplay, recorded voice-over clips, EN | ES Spanish toggle
 
 ---
 
@@ -40,7 +40,8 @@ HH Marshall Project - 2026/
 ├── .python-version     # 3.11
 ├── .gitignore
 ├── content/
-│   └── modules.json    # ← EDIT THIS to add/update content
+│   ├── modules.json    # ← EDIT THIS to add/update content
+│   └── ui_strings.json # Site text in English + Spanish
 ├── static/
 │   ├── css/style.css   # Design system (colors, layout, components)
 │   ├── js/main.js      # Read-aloud, quiz answer selection + NEXT guard, practical confirm
@@ -53,6 +54,8 @@ HH Marshall Project - 2026/
 │   ├── quiz.html           # Quiz page with gating (read aloud)
 │   ├── practical.html      # Practical exercise page (read aloud, student confirms)
 │   └── complete.html       # Completion + certificate download
+├── tools/
+│   └── voiceover_scripts.py  # Prints the voice-over recording script for a module
 └── HANDOFF.md          # ← This file
 ```
 
@@ -158,15 +161,26 @@ Every embedded video (welcome page + lesson pages) autoplays. `youtube_embed_url
 
 ---
 
-## Read-Aloud (Knowledge Checks + Practical Exercises)
+## Voice-Over Clips (Knowledge Checks + Practical Exercises)
 
-Applies to **every module** — no per-module setting. Uses the browser's built-in voice (Web Speech API, `speechSynthesis`), so there are no audio files and edits to `modules.json` are spoken automatically. Logic lives in the `ReadAloud` helper at the top of `static/js/main.js`.
+Recorded clips, played automatically. **Replaced the browser text-to-speech voice** (Session 18, the robot voice was judged too poor). Applies to every module.
 
-- **Knowledge check:** 1 second after the page loads (`READ_DELAY_MS`), reads "Question 1 of N. <question>" then "A: <option>", "B: <option>"… Each correct answer reads the next unanswered question. Clicking any answer cancels speech in progress; a wrong answer stops reading entirely.
-- **Practical exercise:** 1 second after load, reads "Practical exercise. <text>. <instructor instruction>".
-- A blue speaker button beside each question / the exercise replays it (pulses while speaking).
-- **Autoplay limit:** browsers — Safari in particular — may block speech that starts before the user has clicked on the page. When that happens, the first click/tap/keypress anywhere on the page starts the reading; the speaker buttons always work. Voice quality depends on the device.
-- Headless browsers don't play audio — the Playwright checks stub `speechSynthesis` with an init script that records what's spoken. Actual audio has to be confirmed in a real browser.
+- **Files are found by name — no `modules.json` edit needed:** `static/audio/m<module>/s<section #>-q<question #>-<lang>.mp3` and `static/audio/m<module>/s<section #>-practical-<lang>.mp3` (`.m4a`/`.wav` also accepted; `<lang>` is `en` or `es`; section # is 1-based position in the module). Lookup is `audio_url()` in `app.py`.
+- **No clip for the current language → silent**, and the speaker button isn't shown. There is deliberately no fallback to the other language's clip or to text-to-speech.
+- **Script for the voice talent:** `python3 tools/voiceover_scripts.py <module id>` prints every clip's file name and exact wording (EN + ES) straight from `modules.json`/`ui_strings.json`. The user's drop folder is `Modules/Audio/` (untracked, like the script docx files). Copy finished clips into `static/audio/m<id>/` with the listed names. **Re-run the script after any wording change** (e.g. Spanish corrections): changed text means that clip must be re-recorded.
+- **Playback** (`Narration` in `static/js/main.js`): 1s after load (`READ_DELAY_MS`) plays Q1's clip; each correct answer plays the next unanswered question's clip; clicking any answer stops the current clip. Practical page plays its clip after 1s. A speaker button replays.
+- **Autoplay limit:** Safari blocks sound before the user clicks on the page. `audio.play()` rejecting with `NotAllowedError` → the speaker button pulses (`.audio-blocked`) and the first click/tap/keypress anywhere plays the clip.
+
+---
+
+## Spanish (EN | ES toggle)
+
+EN | ES pill in the header (`base.html`, hidden on `/supervisor*` pages, which stay English). Choice stored in a `lang` cookie (1 year), deliberately **not** the Flask session, because `start_module()` calls `session.clear()`. `GET /lang/<code>?next=<path>` sets it and returns to the same page (local paths only).
+
+- **Site text:** `content/ui_strings.json`, `{key: {en, es}}`, used in templates as `{{ t('key') }}` (`t()` in `app.py`). Strings may contain `<br>`/`<strong>`; `{placeholders}` are HTML-escaped.
+- **Course content:** add `<field>_es` next to any field in `modules.json` (`title_es`, `text_es`, `options_es`, `practical.text_es`, `video_label_es`, `estimated_time_es`, … even `video_url_es` for a Spanish-dubbed video). `localize()` swaps them in; anything untranslated falls back to English. `options_es` must stay in the same order as `options` because grading uses the `correct` index. Translated so far: all UI text, every module card title/time, Module 7 content. Module 1 content is not translated (hidden as Coming Soon).
+- **Translations are Claude drafts** (formal *usted*), pending review by a Spanish speaker the user is lining up. Apply corrections directly in the two JSON files, then re-run `tools/voiceover_scripts.py` to see which Spanish clips need re-recording.
+- **YouTube subtitles:** in Spanish, embeds add `hl=es&cc_lang_pref=es&cc_load_policy=1`. That only selects a **real Spanish caption track**. As of Session 18 the Module 7 video (`s23ndf0bln4`) only has YouTube's auto-generated English track, so no Spanish captions appear until one is added in YouTube Studio → Subtitles (Studio can auto-translate the English captions as a starting point).
 
 ---
 
@@ -316,6 +330,7 @@ Notes for processing the next one:
 - **Later in session:** Module 1 set to Coming Soon via a new `coming_soon` flag in `modules.json` (content kept intact). Checked in `start_module()` and `step()`. Students with existing Module 1 progress can't resume it while the flag is on, but their rows stay on the supervisor dashboard.
 
 - **Later in session:** videos autoplay, with a muted fallback and a "Tap for sound" button (see "Video Autoplay" section).
+- **Later in session:** text-to-speech replaced by recorded voice-over clips found by filename, plus `tools/voiceover_scripts.py` to generate the recording script. EN | ES toggle added: `content/ui_strings.json` + `t()` for site text, `_es` fields + `localize()` for content, Spanish caption params on embeds (see "Voice-Over Clips" and "Spanish" sections). Verified in WebKit + Chromium with test tones as stand-in clips (removed afterwards): EN/ES clips play at the right moments, missing clips stay silent, blocked-autoplay first-click retry works, every student page renders in Spanish, the toggle returns to the same page, supervisor pages have no toggle, and `/lang` refuses off-site redirects.
 
 **Verified:** Playwright in WebKit and Chromium with a stubbed `speechSynthesis`: Module 7 end to end (video, 1s-delayed reading of Q1 with options, Q2 read after Q1 correct, replay button, wrong answer cancels speech + REVIEW & RETRY, practical read aloud, NEXT locked until confirmed, `/step/3` and `/complete` URL-skipping blocked, cert number shown), blocked-autoplay simulation (first click starts reading), dashboard Completed/Restudy rows, and Module 1 regression (quizzes read aloud, completes with no practical pages). **Not verified:** real audio in the user's Safari.
 

@@ -10,6 +10,7 @@ from flask import (
     Flask, session, render_template, redirect,
     url_for, request, send_file, Response
 )
+from markupsafe import Markup
 
 import db
 
@@ -36,6 +37,80 @@ def get_module(module_id):
     for m in load_modules():
         if m['id'] == module_id:
             return m
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Language (English / Spanish)
+# ---------------------------------------------------------------------------
+# Chosen via the EN | ES toggle in the header, stored in its own cookie (not
+# the session) so it survives the session.clear() in start_module().
+
+LANGS = ('en', 'es')
+
+
+def get_lang():
+    lang = request.cookies.get('lang', 'en')
+    return lang if lang in LANGS else 'en'
+
+
+def load_ui_strings():
+    path = os.path.join(os.path.dirname(__file__), 'content', 'ui_strings.json')
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def t(key, **kwargs):
+    """UI string in the current language (falls back to English).
+    Strings may contain markup (<br>, <strong>); kwargs are escaped."""
+    entry = load_ui_strings().get(key, {})
+    text = entry.get(get_lang()) or entry.get('en') or key
+    return Markup(text).format(**kwargs)
+
+
+def localize(obj, lang=None):
+    """Deep copy of module content with every `<field>_es` swapped in for
+    `<field>` when the language is Spanish. Missing translations fall back
+    to English, so partially translated modules still work."""
+    lang = lang or get_lang()
+    if isinstance(obj, list):
+        return [localize(x, lang) for x in obj]
+    if not isinstance(obj, dict):
+        return obj
+    out = {}
+    for k, v in obj.items():
+        if k.endswith('_es'):
+            continue
+        if lang == 'es' and f'{k}_es' in obj:
+            v = obj[f'{k}_es']
+        out[k] = localize(v, lang)
+    return out
+
+
+@app.context_processor
+def inject_i18n():
+    return {'lang': get_lang(), 't': t}
+
+
+# ---------------------------------------------------------------------------
+# Voice-over clips
+# ---------------------------------------------------------------------------
+# Recorded clips replace the old browser text-to-speech. Found by filename
+# convention, so adding a clip needs no modules.json change:
+#   static/audio/m<module>/s<section #>-q<question #>-<lang>.mp3
+#   static/audio/m<module>/s<section #>-practical-<lang>.mp3
+# (.m4a / .wav also accepted). No clip for the current language → silent.
+
+AUDIO_EXTS = ('.mp3', '.m4a', '.wav')
+
+
+def audio_url(module_id, section_num, item, lang=None):
+    lang = lang or get_lang()
+    rel_dir = f'audio/m{module_id}'
+    base = f's{section_num}-{item}-{lang}'
+    for ext in AUDIO_EXTS:
+        if os.path.exists(os.path.join(app.static_folder, rel_dir, base + ext)):
+            return url_for('static', filename=f'{rel_dir}/{base}{ext}')
     return None
 
 
@@ -84,8 +159,13 @@ def youtube_embed_url(url):
     start = params.get('t', ['0'])[0].rstrip('s')
     # autoplay + enablejsapi: main.js tries to play with sound, and falls back
     # to muted autoplay + a "Tap for sound" button if the browser blocks it.
-    return (f"https://www.youtube-nocookie.com/embed/{video_id}?start={start}"
-            f"&rel=0&modestbranding=1&autoplay=1&playsinline=1&enablejsapi=1")
+    embed = (f"https://www.youtube-nocookie.com/embed/{video_id}?start={start}"
+             f"&rel=0&modestbranding=1&autoplay=1&playsinline=1&enablejsapi=1")
+    if get_lang() == 'es':
+        # Spanish player UI + Spanish captions on by default. Captions only
+        # appear if the video actually has a Spanish subtitle track.
+        embed += "&hl=es&cc_lang_pref=es&cc_load_policy=1"
+    return embed
 
 
 app.jinja_env.globals['youtube_embed'] = youtube_embed_url
@@ -115,6 +195,17 @@ def sync_progress():
 # Routes
 # ---------------------------------------------------------------------------
 
+@app.route('/lang/<code>')
+def set_lang(code):
+    nxt = request.args.get('next') or url_for('index')
+    if not nxt.startswith('/') or nxt.startswith('//'):
+        nxt = url_for('index')   # local redirects only
+    resp = redirect(nxt)
+    if code in LANGS:
+        resp.set_cookie('lang', code, max_age=365 * 24 * 3600, samesite='Lax')
+    return resp
+
+
 @app.route('/')
 def index():
     welcome_video = load_content().get('welcome_video', '')
@@ -131,7 +222,7 @@ def welcome_start():
     if not first_name or not last_name or not email:
         welcome_video = load_content().get('welcome_video', '')
         return render_template('welcome.html', welcome_video=welcome_video,
-                               error="Please enter your first name, last name, and email before continuing.")
+                               error=t('form_error'))
 
     session['user'] = {
         'first_name': first_name,
@@ -150,7 +241,7 @@ def modules():
     progress_by_module = {
         p['module_id']: p for p in db.get_progress_for_email(user['email'])
     }
-    return render_template('module_select.html', modules=load_modules(),
+    return render_template('module_select.html', modules=localize(load_modules()),
                            progress_by_module=progress_by_module)
 
 
@@ -210,6 +301,7 @@ def step(module_id, step_num):
         return redirect(url_for('index'))
     if module.get('coming_soon'):
         return redirect(url_for('modules'))
+    module = localize(module)
 
     steps = build_steps(module)
     current = session.get('current_step', 0)
@@ -250,6 +342,8 @@ def step(module_id, step_num):
         next_url = url_for('step', module_id=module_id, step_num=next_step_num)
 
     quiz_failed = (session.get('quiz_failed_section') == step_data.get('section_id'))
+    section_num = next(i + 1 for i, s in enumerate(module['sections'])
+                       if s['id'] == step_data['section_id'])
 
     if step_data['type'] == 'lesson':
         # Viewing a lesson unlocks the next step (the quiz).
@@ -277,6 +371,8 @@ def step(module_id, step_num):
             next_url=next_url,
             quiz_failed=quiz_failed,
             restudy_url=restudy_url,
+            question_audio=[audio_url(module_id, section_num, f'q{i + 1}')
+                            for i in range(len(step_data['quiz']['questions']))],
         )
     elif step_data['type'] == 'practical':
         # Unlike a lesson, viewing doesn't unlock the next step — the student
@@ -290,6 +386,7 @@ def step(module_id, step_num):
             prev_url=prev_url,
             next_url=next_url,
             already_confirmed=step_num < current,
+            practical_audio=audio_url(module_id, section_num, 'practical'),
         )
 
     return redirect(url_for('index'))
@@ -448,7 +545,7 @@ def complete(module_id):
     display_num = f"{len(steps) + 2:02d}"
 
     return render_template('complete.html',
-        module=module,
+        module=localize(module),
         user=session.get('user', {}),
         cert_number=session.get('cert_number'),
         completed_at=session.get('completed_at'),

@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Knowledge Check — The Marshall Project{% endblock %}
+{% block title %}{{ t('knowledge_check') }} — {{ t('site_title') }}{% endblock %}
 
 {% block header_right %}
 <div class="step-indicator">
-  KNOWLEDGE CHECK <span class="dot"></span> {{ display_num }}
+  {{ t('knowledge_check') | upper }} <span class="dot"></span> {{ display_num }}
 </div>
 {% endblock %}
 
 {% block body %}
 <main class="main-content">
   <h1 class="page-title">{{ step.section_title }}</h1>
-  <div class="section-badge">Knowledge Check</div>
-  <p class="quiz-instruction">Select the best answer.</p>
+  <div class="section-badge">{{ t('knowledge_check') }}</div>
+  <p class="quiz-instruction">{{ t('select_best_answer') }}</p>
 
   {% set questions = step.quiz.questions %}
 
@@ -24,12 +24,14 @@
     {% set q_idx = loop.index0 %}
     {% set letters = ['A', 'B', 'C', 'D', 'E'] %}
 
-    <div class="quiz-q" data-q="{{ q_idx }}" data-total="{{ questions | length }}">
+    <div class="quiz-q" data-q="{{ q_idx }}" data-audio="{{ question_audio[q_idx] or '' }}">
     <div class="read-aloud-row">
       <p class="quiz-question">{{ q.text }}</p>
-      <button type="button" class="read-aloud-btn" aria-label="Read question aloud" title="Read aloud">
+      {% if question_audio[q_idx] %}
+      <button type="button" class="read-aloud-btn" aria-label="{{ t('read_aloud') }}" title="{{ t('read_aloud') }}">
         <svg viewBox="0 0 24 24"><polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
       </button>
+      {% endif %}
     </div>
 
     <ul class="quiz-options" data-correct="{{ q.correct }}">
@@ -47,7 +49,7 @@
       {% endfor %}
     </ul>
 
-    <div class="quiz-counter">QUESTION {{ loop.index }} OF {{ questions | length }}</div>
+    <div class="quiz-counter">{{ t('question_x_of_y', n=loop.index, total=questions | length) }}</div>
     </div>
 
     {% if not loop.last %}<hr style="border:none;border-top:1px solid var(--gray-light);margin:24px 0;">{% endif %}
@@ -62,7 +64,7 @@
   <div class="banner-icon">
     <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </div>
-  <p>Review the material again — including the previous section, if there is one — and make sure there are no words or concepts you don't understand. Then come back and try again.</p>
+  <p>{{ t('failure_banner') }}</p>
 </div>
 
 <!-- Navigation -->
@@ -73,7 +75,7 @@
     <a href="{{ prev_url }}" class="nav-btn active" aria-label="Previous">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
-    <span class="nav-label">PREVIOUS</span>
+    <span class="nav-label">{{ t('previous') }}</span>
   </div>
 
   <!-- START SECTION OVER — hidden by default; JS shows it on wrong answer -->
@@ -81,7 +83,7 @@
     <a href="{{ restudy_url }}" class="nav-btn active" aria-label="Review and retry">
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
-    <span class="nav-label">REVIEW &<br>RETRY</span>
+    <span class="nav-label">{{ t('review_retry') }}</span>
   </div>
 
   <!-- NEXT — JS enables it only on correct answer -->
@@ -89,7 +91,7 @@
     <button id="nav-next" type="button" form="quiz-form" class="nav-btn inactive" aria-label="Next">
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
     </button>
-    <span class="nav-label">NEXT</span>
+    <span class="nav-label">{{ t('next') }}</span>
   </div>
 
 </nav>

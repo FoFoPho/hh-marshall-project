@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,14 @@
     </a>
     <div class="header-right-group">
       {% block header_right %}{% endblock %}
-      <a href="{{ url_for('supervisor_dashboard') }}" class="supervisor-link">Supervisor Dashboard</a>
+      {% if not (request.endpoint or '').startswith('supervisor') %}
+      {% set here = request.full_path.rstrip('?') if request.method == 'GET' else url_for('index') %}
+      <div class="lang-toggle" role="group" aria-label="Language / Idioma">
+        <a href="{{ url_for('set_lang', code='en', next=here) }}" class="{{ 'active' if lang == 'en' }}" lang="en">EN</a>
+        <a href="{{ url_for('set_lang', code='es', next=here) }}" class="{{ 'active' if lang == 'es' }}" lang="es">ES</a>
+      </div>
+      {% endif %}
+      <a href="{{ url_for('supervisor_dashboard') }}" class="supervisor-link">{{ t('supervisor_dashboard') }}</a>
     </div>
   </header>
 

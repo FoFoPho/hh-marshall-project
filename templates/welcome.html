@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome — The Marshall Project{% endblock %}
+{% block title %}{{ t('welcome_page_title') }} — {{ t('site_title') }}{% endblock %}
 
 {% block header_right %}
 <div class="step-indicator">
-  WELCOME <span class="dot"></span> 01
+  {{ t('welcome_step') }} <span class="dot"></span> 01
 </div>
 {% endblock %}
 
 {% block body %}
 <main class="main-content">
-  <h1 class="page-title">Welcome to The Marshall Project</h1>
+  <h1 class="page-title">{{ t('welcome_title') }}</h1>
 
   {% if welcome_video %}
   <div class="video-wrapper">
-    <div class="video-label-bar">WELCOME VIDEO</div>
+    <div class="video-label-bar">{{ t('welcome_video') }}</div>
     <iframe
       class="video-embed"
       src="{{ youtube_embed(welcome_video) }}"
@@ -23,12 +23,12 @@
     </iframe>
     <button type="button" class="video-sound-btn" hidden>
       <svg viewBox="0 0 24 24"><polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
-      Tap for sound
+      {{ t('tap_for_sound') }}
     </button>
   </div>
   {% endif %}
 
-  <p class="welcome-subtitle">Before we begin, tell us a little about yourself.</p>
+  <p class="welcome-subtitle">{{ t('welcome_subtitle') }}</p>
 
   <form class="user-form" method="POST" action="{{ url_for('welcome_start') }}">
     {% if error %}
@@ -37,30 +37,30 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label" for="first_name">First Name <span class="required-mark">*</span></label>
+        <label class="form-label" for="first_name">{{ t('first_name') }} <span class="required-mark">*</span></label>
         <input class="form-input" type="text" id="first_name" name="first_name"
                value="{{ request.form.get('first_name', '') }}" required>
       </div>
       <div class="form-group">
-        <label class="form-label" for="last_name">Last Name <span class="required-mark">*</span></label>
+        <label class="form-label" for="last_name">{{ t('last_name') }} <span class="required-mark">*</span></label>
         <input class="form-input" type="text" id="last_name" name="last_name"
                value="{{ request.form.get('last_name', '') }}" required>
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label" for="email">Email Address <span class="required-mark">*</span></label>
+        <label class="form-label" for="email">{{ t('email') }} <span class="required-mark">*</span></label>
         <input class="form-input" type="email" id="email" name="email"
                value="{{ request.form.get('email', '') }}" required>
       </div>
       <div class="form-group">
-        <label class="form-label" for="job_title">Job Title</label>
+        <label class="form-label" for="job_title">{{ t('job_title') }}</label>
         <input class="form-input" type="text" id="job_title" name="job_title"
                value="{{ request.form.get('job_title', '') }}">
       </div>
     </div>
 
-    <p class="form-hint">Your first name, last name, and email are used to save your progress, so you can continue later if you need to.</p>
+    <p class="form-hint">{{ t('form_hint') }}</p>
 
     <!-- Nav -->
     <div class="nav-bar">
@@ -69,7 +69,7 @@
         <button type="submit" class="nav-btn active" aria-label="Next">
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <span class="nav-label">NEXT</span>
+        <span class="nav-label">{{ t('next') }}</span>
       </div>
     </div>
   </form>
