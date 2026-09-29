@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-24 (Session 18)  
-**Last session:** Module 7 added, practical exercises, video autoplay, recorded voice-over clips, EN | ES Spanish toggle
+**Last updated:** 2026-09-29 (Session 19)  
+**Last session:** Separate Spanish-dubbed videos (`video_url_es` / `welcome_video_es`) replace subtitle-only Spanish
 
 ---
 
@@ -178,9 +178,12 @@ Recorded clips, played automatically. **Replaced the browser text-to-speech voic
 EN | ES pill in the header (`base.html`, hidden on `/supervisor*` pages, which stay English). Choice stored in a `lang` cookie (1 year), deliberately **not** the Flask session, because `start_module()` calls `session.clear()`. `GET /lang/<code>?next=<path>` sets it and returns to the same page (local paths only).
 
 - **Site text:** `content/ui_strings.json`, `{key: {en, es}}`, used in templates as `{{ t('key') }}` (`t()` in `app.py`). Strings may contain `<br>`/`<strong>`; `{placeholders}` are HTML-escaped.
-- **Course content:** add `<field>_es` next to any field in `modules.json` (`title_es`, `text_es`, `options_es`, `practical.text_es`, `video_label_es`, `estimated_time_es`, … even `video_url_es` for a Spanish-dubbed video). `localize()` swaps them in; anything untranslated falls back to English. `options_es` must stay in the same order as `options` because grading uses the `correct` index. Translated so far: all UI text, every module card title/time, Module 7 content. Module 1 content is not translated (hidden as Coming Soon).
+- **Course content:** add `<field>_es` next to any field in `modules.json` (`title_es`, `text_es`, `options_es`, `practical.text_es`, `video_label_es`, `estimated_time_es`, `video_url_es`, …). `localize()` swaps them in; anything untranslated **or blank** falls back to English. `options_es` must stay in the same order as `options` because grading uses the `correct` index. Translated so far: all UI text, every module card title/time, Module 7 content. Module 1 content is not translated (hidden as Coming Soon).
 - **Translations are Claude drafts** (formal *usted*), pending review by a Spanish speaker the user is lining up. Apply corrections directly in the two JSON files, then re-run `tools/voiceover_scripts.py` to see which Spanish clips need re-recording.
-- **YouTube subtitles:** in Spanish, embeds add `hl=es&cc_lang_pref=es&cc_load_policy=1`. That only selects a **real Spanish caption track**. The Module 7 video (now `-qK40HfWO2A`, "Section 7b") has an uploaded Spanish track, verified showing Spanish captions in WebKit + Chromium. **Every new video needs its own Spanish track** added in YouTube Studio → Subtitles (Studio can auto-translate the English captions as a starting point); without one, Spanish mode falls back to English captions or none.
+- **Videos: separate Spanish video per spot.** Each lesson page has `video_url` (English, default) and optional `video_url_es` (Spanish-dubbed); the welcome page has `welcome_video` / `welcome_video_es`. In Spanish mode:
+  - **Spanish video set** → it plays with `hl=es` (Spanish player UI) and **no forced captions**. `youtube_embed_url()` recognizes it by checking the URL against every `*_es` video link in `modules.json` (`spanish_video_urls()`).
+  - **No Spanish video yet (missing or blank)** → fallback: the English video with Spanish captions forced on (`hl=es&cc_lang_pref=es&cc_load_policy=1`). Captions only appear if the English video has a **real Spanish caption track** (YouTube Studio → Subtitles). The Module 7 video (`-qK40HfWO2A`) has one.
+  - Spanish videos so far: Module 7 (`Z0nPb84ukmw`). Others to follow; the user is producing them.
 
 ---
 
@@ -289,7 +292,8 @@ The user drops a `.docx` script per module into `Modules/` (untracked in git —
 
 ```
 Section – <Section Title>
-Video: <youtube.com/watch?v=... or youtu.be/... link>
+Video EN: <youtube.com/watch?v=... or youtu.be/... link>   (older scripts: just "Video:")
+Video SP: <link>     ← optional; missing/blank until the Spanish version exists
 Text:
 <lesson blurb — becomes brief_text>
 
@@ -308,11 +312,21 @@ Notes for processing the next one:
 - Video links may be `youtu.be/ID` short links — `youtube_embed_url()` in `app.py` now handles both that and `youtube.com/watch?v=ID`, so either format works as-is. Normalize to `https://www.youtube.com/watch?v=ID` when writing to `modules.json` for consistency (strip `?si=`/playlist/index tracking params).
 - If a section's answer key is missing (happened for Module 1's first section), infer likely answers from the lesson text but **confirm with the user before finalizing** — don't guess silently on quiz content that gates certification.
 - Section title vs. content mismatches happen (Module 1's "Bolt Testing" section was actually about reading a tape measure) — flag and confirm rather than transcribing blindly.
+- `Video SP:` → `video_url_es` on the same page (normalize the same way). If it's blank or absent, leave the field out; Spanish mode falls back to the English video + Spanish captions. The user may also just send a Spanish link later for an existing section — add `video_url_es` next to its `video_url`.
 - `video_label` per section (e.g. "BASIC SAFETY TRAINING VIDEO"), `brief_label` standardized to `"SAFETY BRIEF"` across all sections.
 
 ---
 
 ## Session Log
+
+### 2026-09-29 (Session 19) — Separate Spanish Videos
+
+**What changed:**
+- `app.py` — Spanish mode now plays a separate Spanish-dubbed video when one is set (`video_url_es` on lesson pages, new `welcome_video_es` via `welcome_video_url()`), instead of only switching subtitles. `youtube_embed_url()` skips forced captions for those (`spanish_video_urls()`); the English video + Spanish captions remains the fallback. `localize()` now treats a blank `_es` field as untranslated (previously `"video_url_es": ""` would have hidden the video).
+- `content/modules.json` — Module 7 gets `video_url_es` = `Z0nPb84ukmw` ("PM Safety Training - Section 7b SP"), from the updated script doc's `Video SP:` line.
+- `HANDOFF.md` — "Spanish" section and "Module Script Docs" format (`Video EN:` / `Video SP:` lines).
+
+**Verified:** Flask test client with fake Spanish links injected in memory, welcome + Module 7 lesson, EN/ES × {no Spanish link, blank, set}: EN always English video without `hl=es`; ES without a link → English video + `hl=es&cc_lang_pref=es&cc_load_policy=1` (unchanged from before); ES with link → Spanish video, `hl=es`, no `cc_*`. No JS/template changes, so autoplay behavior is untouched. **Not verified:** a real Spanish-dubbed video (none exist yet).
 
 ### 2026-09-24 (Session 18) — Module 7, Read-Aloud, Practical Exercises
 

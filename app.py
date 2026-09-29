@@ -81,8 +81,8 @@ def localize(obj, lang=None):
     for k, v in obj.items():
         if k.endswith('_es'):
             continue
-        if lang == 'es' and f'{k}_es' in obj:
-            v = obj[f'{k}_es']
+        if lang == 'es' and obj.get(f'{k}_es') not in (None, ''):
+            v = obj[f'{k}_es']   # blank translation → keep English
         out[k] = localize(v, lang)
     return out
 
@@ -162,10 +162,38 @@ def youtube_embed_url(url):
     embed = (f"https://www.youtube-nocookie.com/embed/{video_id}?start={start}"
              f"&rel=0&modestbranding=1&autoplay=1&playsinline=1&enablejsapi=1")
     if get_lang() == 'es':
-        # Spanish player UI + Spanish captions on by default. Captions only
-        # appear if the video actually has a Spanish subtitle track.
-        embed += "&hl=es&cc_lang_pref=es&cc_load_policy=1"
+        embed += "&hl=es"   # Spanish player UI
+        if url not in spanish_video_urls():
+            # No Spanish-dubbed video for this spot yet, so this is the English
+            # video: turn Spanish captions on. They only appear if the video
+            # actually has a Spanish subtitle track.
+            embed += "&cc_lang_pref=es&cc_load_policy=1"
     return embed
+
+
+def spanish_video_urls():
+    """Every Spanish-dubbed video link in modules.json (`video_url_es`,
+    `welcome_video_es`). Those play as-is, without forced captions."""
+    found = set()
+
+    def walk(obj):
+        if isinstance(obj, list):
+            for x in obj:
+                walk(x)
+        elif isinstance(obj, dict):
+            for k, v in obj.items():
+                if k in ('video_url_es', 'welcome_video_es') and v:
+                    found.add(v)
+                walk(v)
+
+    walk(load_content())
+    return found
+
+
+def welcome_video_url():
+    """Welcome-page video in the current language (Spanish falls back to English)."""
+    return localize({k: v for k, v in load_content().items()
+                     if k.startswith('welcome_video')}).get('welcome_video', '')
 
 
 app.jinja_env.globals['youtube_embed'] = youtube_embed_url
@@ -208,7 +236,7 @@ def set_lang(code):
 
 @app.route('/')
 def index():
-    welcome_video = load_content().get('welcome_video', '')
+    welcome_video = welcome_video_url()
     return render_template('welcome.html', welcome_video=welcome_video)
 
 
@@ -220,7 +248,7 @@ def welcome_start():
     email      = db.normalize_email(request.form.get('email', ''))
 
     if not first_name or not last_name or not email:
-        welcome_video = load_content().get('welcome_video', '')
+        welcome_video = welcome_video_url()
         return render_template('welcome.html', welcome_video=welcome_video,
                                error=t('form_error'))
 
