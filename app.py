@@ -199,6 +199,12 @@ def welcome_video_url():
 app.jinja_env.globals['youtube_embed'] = youtube_embed_url
 
 
+def welcome_page_audio():
+    """Read-out of the welcome page text, played after the welcome video ends
+    (static/audio/m0/s0-page-<lang>.mp3). None → silent."""
+    return audio_url(0, 0, 'page')
+
+
 def sync_progress():
     """Push the current session's progress on the active module to the DB."""
     user = session.get('user')
@@ -237,7 +243,8 @@ def set_lang(code):
 @app.route('/')
 def index():
     welcome_video = welcome_video_url()
-    return render_template('welcome.html', welcome_video=welcome_video)
+    return render_template('welcome.html', welcome_video=welcome_video,
+                           page_audio=welcome_page_audio())
 
 
 @app.route('/start', methods=['POST'])
@@ -250,6 +257,7 @@ def welcome_start():
     if not first_name or not last_name or not email:
         welcome_video = welcome_video_url()
         return render_template('welcome.html', welcome_video=welcome_video,
+                               page_audio=welcome_page_audio(),
                                error=t('form_error'))
 
     session['user'] = {

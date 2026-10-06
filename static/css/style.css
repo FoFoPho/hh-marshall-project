@@ -573,6 +573,18 @@ html, body {
   text-align: center;
 }
 
+.welcome-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 640px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.welcome-subtitle-row .welcome-subtitle { margin-bottom: 0; width: auto; }
+
 .user-form {
   background: var(--white);
   border: 1px solid var(--gray-light);

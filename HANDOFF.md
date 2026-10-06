@@ -3,7 +3,7 @@
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
 **Last updated:** 2026-10-06 (Session 20)  
-**Last session:** Module 0 (Welcome) videos wired in; `Modules/` reorganized per module
+**Last session:** Module 0 (Welcome) videos wired in; welcome page text read aloud after the video ends
 
 ---
 
@@ -168,6 +168,7 @@ Recorded clips, played automatically. **Replaced the browser text-to-speech voic
 - **Files are found by name — no `modules.json` edit needed:** `static/audio/m<module>/s<section #>-q<question #>-<lang>.mp3` and `static/audio/m<module>/s<section #>-practical-<lang>.mp3` (`.m4a`/`.wav` also accepted; `<lang>` is `en` or `es`; section # is 1-based position in the module). Lookup is `audio_url()` in `app.py`.
 - **No clip for the current language → silent**, and the speaker button isn't shown. There is deliberately no fallback to the other language's clip or to text-to-speech.
 - **Script for the voice talent:** `python3 tools/voiceover_scripts.py <module id>` prints every clip's file name and exact wording (EN + ES) straight from `modules.json`/`ui_strings.json`. The user's drop folder is each module's own `Modules/Module <id>/Audio/` (untracked, like the script docx files). Copy finished clips into `static/audio/m<id>/` with the listed names. **Re-run the script after any wording change** (e.g. Spanish corrections): changed text means that clip must be re-recorded.
+- **Welcome page read-out (Module 0):** `static/audio/m0/s0-page-<lang>.mp3` is the page text read aloud (subtitle, field names, hint). `welcome_page_audio()` in `app.py` finds it; `welcome.html` shows a speaker button beside the subtitle; `main.js` plays it once when the welcome video's YouTube player reports ENDED (`onStateChange`), and the button replays it. Same blocked-autoplay retry as the rest. The wording comes from `ui_strings.json` (`welcome_subtitle`, `first_name`, `last_name`, `email`, `job_title`, `form_hint`), so changing any of those means re-recording both clips.
 - **Playback** (`Narration` in `static/js/main.js`): 1s after load (`READ_DELAY_MS`) plays Q1's clip; each correct answer plays the next unanswered question's clip; clicking any answer stops the current clip. Practical page plays its clip after 1s. A speaker button replays.
 - **Autoplay limit:** Safari blocks sound before the user clicks on the page. `audio.play()` rejecting with `NotAllowedError` → the speaker button pulses (`.audio-blocked`) and the first click/tap/keypress anywhere plays the clip.
 
@@ -328,6 +329,8 @@ Notes for processing the next one:
 - `Modules/` is now `Module 0` … `Module 7`, each with an `Audio/` folder and its script `.docx` (see "Module Script Docs"). `tools/voiceover_scripts.py` docstring path updated.
 - New `Temp Dumps/` folder: the user drops finished audio there; Claude renames and files it (module clips → `Modules/Module <id>/Audio/` only, not `static/audio/` until deploy).
 - Production tracking for each module lives in the Safety Course - Animations project (`Storyboards/Section N/Production Checklist - Section N.xlsx`), updated by Claude.
+
+- **Later in session — welcome page read-out:** `app.py` (`welcome_page_audio()`), `templates/welcome.html` (`.welcome-subtitle-row` + speaker button), `static/css/style.css`, `static/js/main.js` (`afterVideo`, `onStateChange`), clips in `static/audio/m0/`. **Verified** in headless Chromium with a stand-in YouTube player firing ENDED: nothing plays before the end, the right EN/ES clip plays after it, the button replays, a blocked play (NotAllowedError) arms the pulse and the first click plays it, no clip → no button and silent. **Not verified:** real end of the real video, and Safari/WebKit.
 
 **Verified:** Flask test client — `/` in EN embeds the English video; in ES embeds the Spanish video with `hl=es` and no forced captions. **Not verified:** playback in a real browser; embedding enabled on both YouTube videos.
 

@@ -28,7 +28,14 @@
   </div>
   {% endif %}
 
-  <p class="welcome-subtitle">{{ t('welcome_subtitle') }}</p>
+  <div class="welcome-subtitle-row"{% if page_audio %} data-audio="{{ page_audio }}"{% endif %}>
+    <p class="welcome-subtitle">{{ t('welcome_subtitle') }}</p>
+    {% if page_audio %}
+    <button type="button" class="read-aloud-btn" aria-label="{{ t('read_aloud') }}" title="{{ t('read_aloud') }}">
+      <svg viewBox="0 0 24 24"><polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+    </button>
+    {% endif %}
+  </div>
 
   <form class="user-form" method="POST" action="{{ url_for('welcome_start') }}">
     {% if error %}

@@ -88,6 +88,16 @@
   const AUTOPLAY_CHECK_MS = 1500;
   const videoFrames = document.querySelectorAll('iframe.video-embed');
 
+  // Welcome page only: clip to read once the video finishes (replay button too).
+  const afterVideo = document.querySelector('.welcome-subtitle-row[data-audio]');
+  let afterVideoPlayed = false;
+  if (afterVideo) {
+    const replay = afterVideo.querySelector('.read-aloud-btn');
+    if (replay) replay.addEventListener('click', function () {
+      Narration.play(afterVideo.getAttribute('data-audio'), afterVideo);
+    });
+  }
+
   if (videoFrames.length) {
     const prevReady = window.onYouTubeIframeAPIReady;
     window.onYouTubeIframeAPIReady = function () {
@@ -106,6 +116,13 @@
 
     const player = new YT.Player(iframe, {
       events: {
+        onStateChange: function (e) {
+          // Welcome page: read the rest of the page aloud once the video ends.
+          if (e.data === YT.PlayerState.ENDED && afterVideo && !afterVideoPlayed) {
+            afterVideoPlayed = true;
+            Narration.play(afterVideo.getAttribute('data-audio'), afterVideo);
+          }
+        },
         onReady: function () {
           player.playVideo();
           setTimeout(function () {
