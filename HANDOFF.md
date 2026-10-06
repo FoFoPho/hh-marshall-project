@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-09-29 (Session 19)  
-**Last session:** Separate Spanish-dubbed videos (`video_url_es` / `welcome_video_es`) replace subtitle-only Spanish
+**Last updated:** 2026-10-06 (Session 20)  
+**Last session:** Module 0 (Welcome) videos wired in; `Modules/` reorganized per module
 
 ---
 
@@ -167,7 +167,7 @@ Recorded clips, played automatically. **Replaced the browser text-to-speech voic
 
 - **Files are found by name — no `modules.json` edit needed:** `static/audio/m<module>/s<section #>-q<question #>-<lang>.mp3` and `static/audio/m<module>/s<section #>-practical-<lang>.mp3` (`.m4a`/`.wav` also accepted; `<lang>` is `en` or `es`; section # is 1-based position in the module). Lookup is `audio_url()` in `app.py`.
 - **No clip for the current language → silent**, and the speaker button isn't shown. There is deliberately no fallback to the other language's clip or to text-to-speech.
-- **Script for the voice talent:** `python3 tools/voiceover_scripts.py <module id>` prints every clip's file name and exact wording (EN + ES) straight from `modules.json`/`ui_strings.json`. The user's drop folder is `Modules/Audio/` (untracked, like the script docx files). Copy finished clips into `static/audio/m<id>/` with the listed names. **Re-run the script after any wording change** (e.g. Spanish corrections): changed text means that clip must be re-recorded.
+- **Script for the voice talent:** `python3 tools/voiceover_scripts.py <module id>` prints every clip's file name and exact wording (EN + ES) straight from `modules.json`/`ui_strings.json`. The user's drop folder is each module's own `Modules/Module <id>/Audio/` (untracked, like the script docx files). Copy finished clips into `static/audio/m<id>/` with the listed names. **Re-run the script after any wording change** (e.g. Spanish corrections): changed text means that clip must be re-recorded.
 - **Playback** (`Narration` in `static/js/main.js`): 1s after load (`READ_DELAY_MS`) plays Q1's clip; each correct answer plays the next unanswered question's clip; clicking any answer stops the current clip. Practical page plays its clip after 1s. A speaker button replays.
 - **Autoplay limit:** Safari blocks sound before the user clicks on the page. `audio.play()` rejecting with `NotAllowedError` → the speaker button pulses (`.audio-blocked`) and the first click/tap/keypress anywhere plays the clip.
 
@@ -262,7 +262,7 @@ To adjust text positions, edit the float constants in `certificate.py`. Page is 
 ## Pending / Next Steps
 
 - [ ] **Set a real `SUPERVISOR_PASSWORD` on Railway before relying on the dashboard.** Without one, it falls back to a hardcoded dev password (`DEV_SUPERVISOR_PASSWORD` in `app.py`) that's plainly visible in the source — fine for local dev, not acceptable once this matters in production. See "Supervisor Dashboard" below.
-- [ ] Fill in Modules 2, 3, and 4 content — user is dropping script docs into `Modules/` (see "Module Script Docs" below) one at a time for conversion into `modules.json`
+- [ ] Fill in Modules 2, 3, and 4 content — user is dropping script docs into `Modules/Module <id>/` (see "Module Script Docs" below) one at a time for conversion into `modules.json`
 - [ ] Record the live Railway URL above
 - [ ] Consider adding a logo bar / splash screen
 
@@ -288,7 +288,9 @@ Password-gated internal page at `/supervisor` (redirects to `/supervisor/login` 
 
 ## Module Script Docs
 
-The user drops a `.docx` script per module into `Modules/` (untracked in git — source files, not app code) for conversion into `content/modules.json`. Confirmed format (validated against Module 1's script):
+**Folder layout (since 2026-10-06):** `Modules/Module 0` … `Modules/Module 7`, each with an `Audio/` folder (voice-over scripts and finished clips) and the module's `.docx` (Module 0 = the welcome video; its script is also kept in the Safety Course - Animations project, `Storyboards/Section 0 - Welcome/Script/`).
+
+The user drops a `.docx` script per module into that module's folder, `Modules/Module <id>/` (untracked in git — source files, not app code) for conversion into `content/modules.json`. Confirmed format (validated against Module 1's script):
 
 ```
 Section – <Section Title>
@@ -308,7 +310,7 @@ Answer Key
 Newer scripts (Module 7 onward) use a slightly different format: options as `A: <option>` bullets with **✓ marking the correct answer** (no separate Answer Key — strip the ✓ when transcribing), `Text: (no text)` meaning no brief, and a `Section N Practical Exercise` block that becomes the section's `practical.text`.
 
 Notes for processing the next one:
-- `.docx` isn't readable directly — convert first: `textutil -convert txt -stdout "Modules/<file>.docx"`.
+- `.docx` isn't readable directly — convert first: `textutil -convert txt -stdout "Modules/Module <id>/<file>.docx"`.
 - Video links may be `youtu.be/ID` short links — `youtube_embed_url()` in `app.py` now handles both that and `youtube.com/watch?v=ID`, so either format works as-is. Normalize to `https://www.youtube.com/watch?v=ID` when writing to `modules.json` for consistency (strip `?si=`/playlist/index tracking params).
 - If a section's answer key is missing (happened for Module 1's first section), infer likely answers from the lesson text but **confirm with the user before finalizing** — don't guess silently on quiz content that gates certification.
 - Section title vs. content mismatches happen (Module 1's "Bolt Testing" section was actually about reading a tape measure) — flag and confirm rather than transcribing blindly.
@@ -318,6 +320,18 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-10-06 (Session 20) — Module 0 Welcome, Modules Folder Reorg
+
+**What changed:**
+- `content/modules.json` — top-level `welcome_video` is now the Module 0 English video (`OLJLflXU2eU`) and new `welcome_video_es` is the Spanish one (`TCN6SXloa1M`), replacing the Module 1 placeholder. **Local only: not committed or deployed** (git failed with an Xcode license error; the user also wants nothing deployed until the module is complete).
+- `Modules/` is now `Module 0` … `Module 7`, each with an `Audio/` folder and its script `.docx` (see "Module Script Docs"). `tools/voiceover_scripts.py` docstring path updated.
+- New `Temp Dumps/` folder: the user drops finished audio there; Claude renames and files it (module clips → `Modules/Module <id>/Audio/` only, not `static/audio/` until deploy).
+- Production tracking for each module lives in the Safety Course - Animations project (`Storyboards/Section N/Production Checklist - Section N.xlsx`), updated by Claude.
+
+**Verified:** Flask test client — `/` in EN embeds the English video; in ES embeds the Spanish video with `hl=es` and no forced captions. **Not verified:** playback in a real browser; embedding enabled on both YouTube videos.
+
+**Still open for Module 0:** Spanish review (deferred until after push), a Constantin live-action segment to be added later (videos will be replaced then), commit/deploy.
 
 ### 2026-09-29 (Session 19) — Separate Spanish Videos
 
@@ -331,7 +345,7 @@ Notes for processing the next one:
 ### 2026-09-24 (Session 18) — Module 7, Read-Aloud, Practical Exercises
 
 **What changed:**
-- `content/modules.json` — Module 7 (Power Tool Safety) from `Modules/Module 7 - Power Tool Safety.docx`: one section with video (no brief text), 2-question knowledge check, and a practical exercise. Modules 5 and 6 added as Coming Soon stubs so the grid reads 1–7. Module 7's `estimated_time` is a placeholder "2 hours" copied from the others (the script didn't say).
+- `content/modules.json` — Module 7 (Power Tool Safety) from `Modules/Module 7/Module 7 - Power Tool Safety.docx`: one section with video (no brief text), 2-question knowledge check, and a practical exercise. Modules 5 and 6 added as Coming Soon stubs so the grid reads 1–7. Module 7's `estimated_time` is a placeholder "2 hours" copied from the others (the script didn't say).
 - `app.py` — `build_steps()` emits a `practical` step after a section's quiz when `section.practical` is set; `step()` renders `practical.html`; new `POST /module/<id>/practical/<section_id>` (`submit_practical()`); `complete()` also requires `current_step > len(steps)`.
 - `templates/practical.html` (new), `templates/quiz.html` (each question wrapped in `.quiz-q` with a speaker button), `templates/module_select.html` (new `drill` icon), `static/css/style.css` (read-aloud button/pulse, practical card), `static/js/main.js` (`ReadAloud` helper + quiz/practical wiring).
 
@@ -440,7 +454,7 @@ Notes for processing the next one:
 ### 2026-09-02 (Session 5) — Module 1 Real Content + youtu.be Embed Fix
 
 **What changed:**
-- `content/modules.json` — replaced Module 1's placeholder "Pinch Point Safety" section with 3 real sections transcribed from `Modules/Module 1 - Test Script.docx`: Basic Safety Training (5 quiz questions), Intro to Fabrication Drawings | The Basics (4 questions), Reading a Tape Measure (1 question, retitled from "Bolt Testing" in the script to match its actual content)
+- `content/modules.json` — replaced Module 1's placeholder "Pinch Point Safety" section with 3 real sections transcribed from `Modules/Module 1/Module 1 - Test Script.docx`: Basic Safety Training (5 quiz questions), Intro to Fabrication Drawings | The Basics (4 questions), Reading a Tape Measure (1 question, retitled from "Bolt Testing" in the script to match its actual content)
 - `app.py` — `youtube_embed_url()` now handles `youtu.be/ID` short links in addition to `youtube.com/watch?v=ID` (two of the three script videos were short links, which previously embedded blank)
 
 **Decisions made:**

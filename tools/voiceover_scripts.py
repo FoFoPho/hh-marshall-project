@@ -2,7 +2,7 @@
 what it should say, in English and Spanish, generated from modules.json and
 ui_strings.json so the recordings always match the on-screen text.
 
-    python3 tools/voiceover_scripts.py 7 > "Modules/Audio/Module 7 - Voice-Over Scripts.md"
+    python3 tools/voiceover_scripts.py 7 > "Modules/Module 7/Audio/Module 7 - Voice-Over Scripts.md"
 
 Re-run after any wording change (e.g. Spanish corrections) — any clip whose
 text changed needs re-recording. Finished clips go in
