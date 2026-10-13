@@ -122,6 +122,7 @@ Add more objects to the `questions` array. All questions are shown on one quiz p
 Set `"coming_soon": true` on the module. The card greys out and `/module/<id>` (and its steps) redirect back to the module grid. Remove the flag (or set it to `false`) to bring it back. No module is hidden this way right now (Module 1 was until Session 21). Modules with no `sections` also show as Coming Soon automatically.
 
 ### Add a new module:
+**Default estimated completion time for every new module: `"estimated_time": "15-30 minutes"` / `"estimated_time_es": "15 a 30 minutos"`** (set by the user, Session 21; Modules 1-6 use it, Module 7 still says "2 hours" from before).
 Add a new object to the top-level `modules` array. Use the next number (5, 6, etc.) and set the icon to one of: `hardhat`, `stairs`, `crosshair`, `forklift` (or add a new SVG in `module_select.html`).
 
 ---
@@ -332,6 +333,8 @@ Notes for processing the next one:
 
 **Verified:** Flask test client against a throwaway database, EN and ES: module card available; lesson embeds the right video per language (Spanish has `hl=es`, no forced captions); quiz page has 8 audio clips in the right language and 32 radio options; a wrong answer keeps the next step locked; the correct key unlocks the practical; the practical stays locked until confirmed; completion page and cert number appear; every referenced audio file exists. Headless Chromium: Q1's clip plays 1 s after the quiz loads and each correct answer plays the next question's clip (EN and ES); no horizontal overflow; Spanish quiz page screenshot checked.
 **Later in session:** after YouTube finished processing, both videos returned 200 from YouTube's oEmbed lookup and played in the app's real player in headless Chromium (EN and ES, played with sound, no "Tap for sound" fallback needed). **Not verified:** Safari/WebKit, the real clips by ear, and playback of the full video.
+
+**Later in session (user request):** Module 1's estimated time is `15-30 minutes` / `15 a 30 minutos`, which is now the default for all new modules (Modules 2-6 stubs were set to it too). The `hardhat` icon in `templates/module_select.html` was redrawn as a real hard hat (the old one looked like a bell); Modules 1 and 5 use it.
 
 **Open:** the "company's reporting system" is still generic in the practical; Spanish review of all Module 1 Spanish after release; the edit package's English edit (brief, 57 clips) is the user's separate task.
 

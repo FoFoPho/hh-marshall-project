@@ -9,12 +9,13 @@
 {% macro module_icon(icon) %}
 {% if icon == 'hardhat' %}
 <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-  <!-- Hard hat -->
-  <path d="M14 48 C14 32 25 18 40 16 C55 18 66 32 66 48" />
-  <path d="M8 48 H72" stroke-width="2.5"/>
-  <path d="M8 48 C8 52 12 54 14 54 H66 C68 54 72 52 72 48" />
-  <path d="M28 16 C28 10 35 8 40 8 C45 8 52 10 52 16" />
-  <line x1="40" y1="8" x2="40" y2="48"/>
+  <!-- Hard hat: dome, raised centre ridge, ribs, and a brim -->
+  <path d="M15 52 C15 34 26 21 40 21 C54 21 65 34 65 52" />
+  <path d="M33 22 C33 14 47 14 47 22" />
+  <path d="M33 22 C32 31 32 42 32 52" />
+  <path d="M47 22 C48 31 48 42 48 52" />
+  <path d="M6 52 H74" stroke-width="2.5"/>
+  <path d="M6 52 C6 57 10 60 15 60 H65 C70 60 74 57 74 52" />
 </svg>
 {% elif icon == 'stairs' %}
 <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
