@@ -2,8 +2,8 @@
 
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
-**Last updated:** 2026-10-06 (Session 20)  
-**Last session:** Module 0 (Welcome) videos wired in; welcome page text read aloud after the video ends
+**Last updated:** 2026-10-13 (Session 21)  
+**Last session:** Module 1 (Safety Orientation & Reporting) built into the app (local, not yet committed or deployed)
 
 ---
 
@@ -119,7 +119,7 @@ This adds a Practical Exercise page right after that section's quiz. Sections wi
 Add more objects to the `questions` array. All questions are shown on one quiz page; all must be correct to pass.
 
 ### Hide a module as "Coming Soon" without deleting its content:
-Set `"coming_soon": true` on the module. The card greys out and `/module/<id>` (and its steps) redirect back to the module grid. Remove the flag (or set it to `false`) to bring it back. Module 1 is currently hidden this way (Session 18). Modules with no `sections` also show as Coming Soon automatically.
+Set `"coming_soon": true` on the module. The card greys out and `/module/<id>` (and its steps) redirect back to the module grid. Remove the flag (or set it to `false`) to bring it back. No module is hidden this way right now (Module 1 was until Session 21). Modules with no `sections` also show as Coming Soon automatically.
 
 ### Add a new module:
 Add a new object to the top-level `modules` array. Use the next number (5, 6, etc.) and set the icon to one of: `hardhat`, `stairs`, `crosshair`, `forklift` (or add a new SVG in `module_select.html`).
@@ -179,7 +179,7 @@ Recorded clips, played automatically. **Replaced the browser text-to-speech voic
 EN | ES pill in the header (`base.html`, hidden on `/supervisor*` pages, which stay English). Choice stored in a `lang` cookie (1 year), deliberately **not** the Flask session, because `start_module()` calls `session.clear()`. `GET /lang/<code>?next=<path>` sets it and returns to the same page (local paths only).
 
 - **Site text:** `content/ui_strings.json`, `{key: {en, es}}`, used in templates as `{{ t('key') }}` (`t()` in `app.py`). Strings may contain `<br>`/`<strong>`; `{placeholders}` are HTML-escaped.
-- **Course content:** add `<field>_es` next to any field in `modules.json` (`title_es`, `text_es`, `options_es`, `practical.text_es`, `video_label_es`, `estimated_time_es`, `video_url_es`, …). `localize()` swaps them in; anything untranslated **or blank** falls back to English. `options_es` must stay in the same order as `options` because grading uses the `correct` index. Translated so far: all UI text, every module card title/time, Module 7 content. Module 1 content is not translated (hidden as Coming Soon).
+- **Course content:** add `<field>_es` next to any field in `modules.json` (`title_es`, `text_es`, `options_es`, `practical.text_es`, `video_label_es`, `estimated_time_es`, `video_url_es`, …). `localize()` swaps them in; anything untranslated **or blank** falls back to English. `options_es` must stay in the same order as `options` because grading uses the `correct` index. Translated so far: all UI text, every module card title/time, Module 1 and Module 7 content (Spanish is Claude's draft, formal *usted*, pending a fluent-speaker review after release).
 - **Translations are Claude drafts** (formal *usted*), pending review by a Spanish speaker the user is lining up. Apply corrections directly in the two JSON files, then re-run `tools/voiceover_scripts.py` to see which Spanish clips need re-recording.
 - **Videos: separate Spanish video per spot.** Each lesson page has `video_url` (English, default) and optional `video_url_es` (Spanish-dubbed); the welcome page has `welcome_video` / `welcome_video_es`. In Spanish mode:
   - **Spanish video set** → it plays with `hl=es` (Spanish player UI) and **no forced captions**. `youtube_embed_url()` recognizes it by checking the URL against every `*_es` video link in `modules.json` (`spanish_video_urls()`).
@@ -263,6 +263,7 @@ To adjust text positions, edit the float constants in `certificate.py`. Page is 
 ## Pending / Next Steps
 
 - [ ] **Set a real `SUPERVISOR_PASSWORD` on Railway before relying on the dashboard.** Without one, it falls back to a hardcoded dev password (`DEV_SUPERVISOR_PASSWORD` in `app.py`) that's plainly visible in the source — fine for local dev, not acceptable once this matters in production. See "Supervisor Dashboard" below.
+- [ ] Deploy Module 1 once the user gives the go-ahead and both YouTube videos finish processing (set to Unlisted, embedding on)
 - [ ] Fill in Modules 2, 3, and 4 content — user is dropping script docs into `Modules/Module <id>/` (see "Module Script Docs" below) one at a time for conversion into `modules.json`
 - [ ] Record the live Railway URL above
 - [ ] Consider adding a logo bar / splash screen
@@ -321,6 +322,18 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-10-13 (Session 21) — Module 1: Safety Orientation & Reporting
+
+**What changed (all local; NOT committed or deployed yet — waiting for the user's go-ahead):**
+- `content/modules.json` — Module 1 replaced. The old Module 1 was a placeholder (3 sections: Basic Safety Training, Fabrication Drawings, Tape Measure; hidden as Coming Soon); it is gone from the file but recoverable from git history. New Module 1: one section `safety-orientation-and-reporting`, one lesson page (English `hL1roQKNQBQ`, Spanish `bWnhVcBBSEo`, no brief text), an 8-question quiz (4 options each; answer key from the approved outline: C, B, D, B, C, D, D, B → `correct` 2, 1, 3, 1, 2, 3, 3, 1), and a practical ("Practice filling out a report for a fake situation using the company's reporting system."). Full `_es` fields. Card icon `hardhat` and `"2 hours"` are placeholders the user said are fine for now. Quiz text came from the approved outline; English is verbatim except nothing was reworded.
+- `static/audio/m1/` — 18 clips: `s1-q1..q8-en/es.mp3` and `s1-practical-en/es.mp3` (masters stay in `Modules/Module 1/Audio/`). `python3 tools/voiceover_scripts.py 1` lists exactly these 18 names; none missing, none extra.
+- Narration, storyboard, clips, and the edit package live in the Safety Course - Animations project (`Storyboards/Section 1 - Safety Orientation and Reporting`); its `Production Checklist - Section 1.xlsx` tracks them.
+
+**Verified:** Flask test client against a throwaway database, EN and ES: module card available; lesson embeds the right video per language (Spanish has `hl=es`, no forced captions); quiz page has 8 audio clips in the right language and 32 radio options; a wrong answer keeps the next step locked; the correct key unlocks the practical; the practical stays locked until confirmed; completion page and cert number appear; every referenced audio file exists. Headless Chromium: Q1's clip plays 1 s after the quiz loads and each correct answer plays the next question's clip (EN and ES); no horizontal overflow; Spanish quiz page screenshot checked.
+**Later in session:** after YouTube finished processing, both videos returned 200 from YouTube's oEmbed lookup and played in the app's real player in headless Chromium (EN and ES, played with sound, no "Tap for sound" fallback needed). **Not verified:** Safari/WebKit, the real clips by ear, and playback of the full video.
+
+**Open:** the "company's reporting system" is still generic in the practical; Spanish review of all Module 1 Spanish after release; the edit package's English edit (brief, 57 clips) is the user's separate task.
 
 ### 2026-10-06 (Session 20) — Module 0 Welcome, Modules Folder Reorg
 
