@@ -3,7 +3,7 @@
 This document is updated every session. Check the date at the top to confirm you have the latest version before starting work.
 
 **Last updated:** 2026-10-15 (Session 21)  
-**Last session:** Module 1 videos replaced with the corrected v2 edit (after the reviewer's Round 1 corrections)
+**Last session:** Module 1 videos replaced with the corrected v3 edit (reviewer's Round 1-3 corrections plus the standard Marshall Project closing bumper)
 
 ---
 
@@ -337,6 +337,8 @@ Notes for processing the next one:
 **Later in session (user request):** Module 1's estimated time is `15-30 minutes` / `15 a 30 minutos`, which is now the default for all new modules (Modules 2-6 stubs were set to it too). The `hardhat` icon in `templates/module_select.html` was redrawn as a real hard hat (the old one looked like a bell); Modules 1 and 5 use it.
 
 **Later (Oct 15) — corrected videos:** Jake Haag (Hammer Haag Steel, Issue Authority In-Charge) reviewed Module 1 on Oct 14 and asked for six changes; nine replacement shots (Round 1) and two style corrections (Round 2) were generated, the video was re-edited, and v2 was uploaded. `content/modules.json` Module 1 now points at the v2 videos: English `4QJeqmZWq6Q`, Spanish `a3WV0y-2psE` (the first uploads, `hL1roQKNQBQ` and `bWnhVcBBSEo`, are no longer used by the app). Nothing else in the module changed (quiz, practical, audio). Round details live in the Safety Course - Animations project: `Storyboards/Section 1 - .../Corrections/Round 01 - 2026-10-14 - Jake Haag/` and the Review Log tab of `Production Checklist - Section 1.xlsx`; Jake still needs to re-review before the Review Log rows are marked Resolved.
+
+**Later (Oct 15) — v3 videos:** Jake's second review asked for one more fix (the seat belt in the forklift example, shot 11, had to look clearly unfastened; replaced as 11R3) and a standard closing for every video (the Marshall Project logo bumper, added in the edit). The v3 videos are live in `content/modules.json`: English `KJMhsUdbdo4`, Spanish `6mGEWakqWEk`. The v2 videos (`4QJeqmZWq6Q`, `a3WV0y-2psE`) and v1 (`hL1roQKNQBQ`, `bWnhVcBBSEo`) are no longer used by the app. Nothing else in the module changed. Jake still needs to re-review before the Review Log rows (Production Checklist - Section 1.xlsx) are marked Resolved. Production notes: `Corrections/Round 01..03` folders in the Safety Course - Animations project hold the review emails and briefs; every edit package has a Logo Bumper folder (see Templates/Edit Package Standard.md).
 
 **Open:** the "company's reporting system" is still generic in the practical; Spanish review of all Module 1 Spanish after release; the edit package's English edit (brief, 57 clips) is the user's separate task.
 
