@@ -178,11 +178,309 @@
       "id": 2,
       "title": "Module 2",
       "title_es": "Módulo 2",
-      "icon": "stairs",
+      "icon": "glasses",
       "estimated_time": "15-30 minutes",
       "estimated_time_es": "15 a 30 minutos",
       "welcome_video": "",
-      "sections": []
+      "sections": [
+        {
+          "id": "personal-protective-equipment",
+          "title": "Personal Protective Equipment",
+          "title_es": "Equipo de protección personal",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=uGi_HqdpIwA",
+              "video_url_es": "https://www.youtube.com/watch?v=Zmd3rTxG3c4",
+              "video_label": "PERSONAL PROTECTIVE EQUIPMENT VIDEO",
+              "video_label_es": "VIDEO DE EQUIPO DE PROTECCIÓN PERSONAL",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "When must you wear the company’s baseline shop-floor protection?",
+                "text_es": "¿Cuándo debe usar la protección básica de la empresa para el piso del taller?",
+                "options": [
+                  "Only when operating machinery.",
+                  "Only when a supervisor is nearby.",
+                  "Whenever you enter the shop floor.",
+                  "Only during welding."
+                ],
+                "options_es": [
+                  "Solo cuando opere maquinaria.",
+                  "Solo cuando haya un supervisor cerca.",
+                  "Siempre que entre al piso del taller.",
+                  "Solo durante la soldadura."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Which option provides appropriate protection for an employee who wears prescription glasses?",
+                "text_es": "¿Qué opción brinda protección adecuada a un empleado que usa lentes con receta?",
+                "options": [
+                  "Ordinary prescription glasses alone.",
+                  "Approved prescription safety glasses with side protection, or approved protective eyewear that fits properly over prescription glasses.",
+                  "Ordinary sunglasses.",
+                  "Any glasses with thick lenses."
+                ],
+                "options_es": [
+                  "Solo lentes comunes con receta.",
+                  "Lentes de seguridad con receta aprobados y con protección lateral, o protección ocular aprobada que le quede bien sobre los lentes con receta.",
+                  "Lentes de sol comunes.",
+                  "Cualquier lente con cristales gruesos."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "Under our shop policy, what must you wear beneath welding helmets and face shields, including those rated for grinding?",
+                "text_es": "Según la política de nuestro taller, ¿qué debe usar debajo de los cascos de soldar y los protectores faciales, incluidos los diseñados para esmerilar?",
+                "options": [
+                  "Nothing else.",
+                  "Ordinary sunglasses.",
+                  "Safety glasses with side protection.",
+                  "Ordinary prescription glasses without protective features."
+                ],
+                "options_es": [
+                  "Nada más.",
+                  "Lentes de sol comunes.",
+                  "Lentes de seguridad con protección lateral.",
+                  "Lentes comunes con receta sin características de protección."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Which footwear is permitted on the shop floor?",
+                "text_es": "¿Qué calzado se permite en el piso del taller?",
+                "options": [
+                  "Any closed-toe shoe.",
+                  "Safety shoes with a bent toe cap.",
+                  "Steel or composite toe safety shoes or boots in good condition.",
+                  "Torn safety boots, provided they still have toe caps."
+                ],
+                "options_es": [
+                  "Cualquier zapato cerrado.",
+                  "Zapatos de seguridad con la puntera doblada.",
+                  "Zapatos o botas de seguridad con puntera de acero o de material compuesto en buen estado.",
+                  "Botas de seguridad rotas, siempre que todavía tengan puntera."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Which pants are permitted on the shop floor?",
+                "text_es": "¿Qué pantalones se permiten en el piso del taller?",
+                "options": [
+                  "Shorts during hot weather.",
+                  "Durable pants with rolled-up legs.",
+                  "Long pants with small holes.",
+                  "Full-length work pants made from durable material, without tears, holes, or rolled-up legs."
+                ],
+                "options_es": [
+                  "Pantalones cortos cuando hace calor.",
+                  "Pantalones resistentes con las piernas dobladas hacia arriba.",
+                  "Pantalones largos con agujeros pequeños.",
+                  "Pantalones de trabajo largos de un material resistente, sin roturas, agujeros ni piernas dobladas hacia arriba."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "Which glove should you use?",
+                "text_es": "¿Qué guante debe usar?",
+                "options": [
+                  "Any glove available.",
+                  "The glove selected for the task and hazards, following any machine restrictions.",
+                  "The thickest glove, regardless of the task.",
+                  "The same glove for every job."
+                ],
+                "options_es": [
+                  "Cualquier guante disponible.",
+                  "El guante seleccionado para la tarea y los peligros, respetando cualquier restricción de la máquina.",
+                  "El guante más grueso, sin importar la tarea.",
+                  "El mismo guante para todos los trabajos."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "Why can gloves be dangerous around plate rollers, drills, and other rotating machines?",
+                "text_es": "¿Por qué pueden ser peligrosos los guantes cerca de roladoras de placa, taladros y otras máquinas giratorias?",
+                "options": [
+                  "They always damage the equipment.",
+                  "They can catch on moving parts and pull your hand into the machine.",
+                  "They prevent all hand movement.",
+                  "They replace the need for guards."
+                ],
+                "options_es": [
+                  "Siempre dañan el equipo.",
+                  "Pueden engancharse en las piezas en movimiento y jalar su mano hacia la máquina.",
+                  "Impiden todo movimiento de la mano.",
+                  "Reemplazan la necesidad de las protecciones."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should a fitter do before tack welding?",
+                "text_es": "¿Qué debe hacer un ajustador antes de hacer soldadura de punteo?",
+                "options": [
+                  "Skip welding protection because the weld is short.",
+                  "Look away while striking the arc.",
+                  "Put on the appropriate welding protection, including a helmet or hand shield with the correct filter shade, safety glasses, suitable gloves, and clothing that protects all exposed skin.",
+                  "Wear only safety glasses."
+                ],
+                "options_es": [
+                  "Omitir la protección para soldar porque la soldadura es corta.",
+                  "Mirar hacia otro lado al encender el arco.",
+                  "Ponerse la protección adecuada para soldar, incluido un casco o una careta de mano con el tono de filtro correcto, lentes de seguridad, guantes adecuados y ropa que proteja toda la piel expuesta.",
+                  "Usar solo lentes de seguridad."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "What protection is required for a quick spray touch-up?",
+                "text_es": "¿Qué protección se requiere para un retoque rápido con pistola?",
+                "options": [
+                  "Safety glasses and gloves only.",
+                  "No respirator if the task takes less than a minute.",
+                  "The same PPE as other spray painting: an appropriate respirator, eye protection, a paint suit, steel-toe shoes, and chemical-resistant gloves.",
+                  "Whatever the employee finds comfortable."
+                ],
+                "options_es": [
+                  "Solo lentes de seguridad y guantes.",
+                  "Ningún respirador si la tarea dura menos de un minuto.",
+                  "El mismo EPP que para cualquier otro trabajo de pintura con pistola: un respirador adecuado, protección ocular, un traje de pintura, zapatos con puntera de acero y guantes resistentes a sustancias químicas.",
+                  "Lo que el empleado encuentre cómodo."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "What is an acceptable substitute for a required abrasive-blasting respirator?",
+                "text_es": "¿Qué es un sustituto aceptable del respirador requerido para chorro abrasivo?",
+                "options": [
+                  "A cloth mask.",
+                  "An ordinary dust mask.",
+                  "Safety glasses alone.",
+                  "None of these. Use the specified blasting respiratory protection."
+                ],
+                "options_es": [
+                  "Un cubrebocas de tela.",
+                  "Una mascarilla común contra el polvo.",
+                  "Solo lentes de seguridad.",
+                  "Ninguno de estos. Use la protección respiratoria específica para chorro abrasivo."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "When should you put on required hearing protection?",
+                "text_es": "¿Cuándo debe ponerse la protección auditiva requerida?",
+                "options": [
+                  "Before entering the noise area or starting the noisy task.",
+                  "After your ears begin ringing.",
+                  "Only when the noise feels uncomfortable.",
+                  "Only at the end of the shift."
+                ],
+                "options_es": [
+                  "Antes de entrar al área con ruido o de comenzar la tarea ruidosa.",
+                  "Después de que le empiecen a zumbar los oídos.",
+                  "Solo cuando el ruido le resulte incómodo.",
+                  "Solo al final del turno."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "Does a user seal check replace a respirator fit test?",
+                "text_es": "¿La verificación de sellado del usuario sustituye la prueba de ajuste del respirador?",
+                "options": [
+                  "Yes.",
+                  "No. They serve different purposes, and both are required when applicable.",
+                  "Yes, if the respirator is new.",
+                  "Yes, if you tighten the straps."
+                ],
+                "options_es": [
+                  "Sí.",
+                  "No. Sirven para fines diferentes, y ambas son obligatorias cuando corresponde.",
+                  "Sí, si el respirador es nuevo.",
+                  "Sí, si aprieta las correas."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if your PPE is damaged, modified, or does not fit properly?",
+                "text_es": "¿Qué debe hacer si su EPP está dañado, modificado o no le queda bien?",
+                "options": [
+                  "Continue until the end of the shift.",
+                  "Modify it yourself.",
+                  "Do not use unsuitable PPE. Obtain suitable protection before continuing the affected work.",
+                  "Work without it."
+                ],
+                "options_es": [
+                  "Seguir usándolo hasta el final del turno.",
+                  "Modificarlo usted mismo.",
+                  "No usar EPP inadecuado. Conseguir la protección adecuada antes de continuar con el trabajo afectado.",
+                  "Trabajar sin él."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Does PPE replace guards, ventilation, or safe work procedures?",
+                "text_es": "¿El EPP sustituye las protecciones de máquina, la ventilación o los procedimientos de trabajo seguro?",
+                "options": [
+                  "Yes, if enough PPE is worn.",
+                  "No. Use PPE together with the required protective measures.",
+                  "Only during short tasks.",
+                  "Only for experienced employees."
+                ],
+                "options_es": [
+                  "Sí, si se usa suficiente EPP.",
+                  "No. Use el EPP junto con las medidas de protección requeridas.",
+                  "Solo durante tareas cortas.",
+                  "Solo para empleados con experiencia."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "When is listening to music using headphones or music earbuds permitted on the shop floor?",
+                "text_es": "¿Cuándo se permite escuchar música con audífonos o auriculares de botón en el piso del taller?",
+                "options": [
+                  "When the music is quiet.",
+                  "When worn under earmuffs.",
+                  "When only one earbud is used.",
+                  "Never, for any reason."
+                ],
+                "options_es": [
+                  "Cuando la música está baja.",
+                  "Cuando se usan debajo de las orejeras.",
+                  "Cuando se usa un solo auricular.",
+                  "Nunca, por ningún motivo."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "How should disposable foam earplugs be fitted?",
+                "text_es": "¿Cómo se deben colocar los tapones desechables de espuma?",
+                "options": [
+                  "Push them in without compressing the foam.",
+                  "With clean hands, roll each plug thin, pull the ear up and back, insert gently, and hold while it expands.",
+                  "Leave most of the foam outside the ear canal.",
+                  "Insert them only after your ears begin ringing."
+                ],
+                "options_es": [
+                  "Meterlos sin comprimir la espuma.",
+                  "Con las manos limpias, enrollar cada tapón hasta dejarlo delgado, jalar la oreja hacia arriba y hacia atrás, insertarlo con cuidado y sostenerlo mientras se expande.",
+                  "Dejar la mayor parte de la espuma fuera del canal auditivo.",
+                  "Colocarlos solo después de que le empiecen a zumbar los oídos."
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Using the training PPE in the training room, gather all the PPE required for your position. Then call the Supervisor over to check it. 2. Demonstrate to the Supervisor how to properly insert earplugs.",
+            "text_es": "1. Con el EPP de capacitación que está en el salón de capacitación, reúna todo el EPP requerido para su puesto. Luego llame al supervisor para que lo revise. 2. Demuestre al supervisor cómo insertar correctamente los tapones para los oídos."
+          }
+        }
+      ]
     },
     {
       "id": 3,

@@ -324,6 +324,19 @@ Notes for processing the next one:
 
 ## Session Log
 
+### 2026-10-20 (Session 22) — Module 2: Personal Protective Equipment
+
+**What changed:**
+- `content/modules.json` — Module 2 now has one section `personal-protective-equipment` ("Personal Protective Equipment" / "Equipo de protección personal"), one lesson page (English `uGi_HqdpIwA`, Spanish `Zmd3rTxG3c4`, both Unlisted, v2 videos), a 16-question quiz (answer key C, B, C, C, D, B, B, C, C, D, A, B, C, B, D, B → `correct` 2,1,2,2,3,1,1,2,2,3,0,1,2,1,3,1) and a practical (two steps: gather the training PPE for your position and have the Supervisor check it; demonstrate inserting earplugs). Full `_es` fields. Time `15-30 minutes` / `15 a 30 minutos`. Quiz and practical text came from `Modules/Module 2/module-2-quiz-and-practical.json`.
+- `static/audio/m2/` — 34 clips: `s1-q1..q16-en/es.mp3` and `s1-practical-en/es.mp3`. **Naming gotcha:** the app numbers audio by the section's position inside the module, and Module 2 has one section, so the files are `s1-…` even though the production masters in `Modules/Module 2/Audio/` are named `s2-…` (they were named for "Section 2" in the production pipeline). Masters are untouched.
+- `templates/module_select.html` — new `glasses` icon (safety glasses) used by Module 2.
+
+**Verified (Flask, local):** card renders with the glasses icon markup; step 1 embeds the English video, and in Spanish the Spanish video with the Spanish video label; step 2 (quiz) has 16 questions with `data-audio` pointing at `/static/audio/m2/s1-qN-en.mp3`, and the `-es` clips in Spanish. The glasses icon was not looked at on screen.
+
+**Video production (outside this repo):** EN and ES v2 renders from DaVinci Resolve, 946 s, 1920x1080, in `Content Exports/2026/10 20 2026 - Marshall Project - Module 2/` (v1 files kept). Production Checklist, edit notes and HUB status live in `Safety Course - Animations/Storyboards/Section 2 - Personal Protective Equipment/`.
+
+**Still open:** Jake's safety review in context (shots 130, 166–171, 174, 44B, 63A, 72A/72B), a fluent Spanish review of narration and on-screen text, and the final revision round.
+
 ### 2026-10-13 (Session 21) — Module 1: Safety Orientation & Reporting
 
 **What changed (all local; NOT committed or deployed yet — waiting for the user's go-ahead):**
