@@ -228,6 +228,14 @@ def latest_signoff(c, video_id, role):
                      (video_id, role)).fetchone()
 
 
+def stale_blockers(c, video_id, since):
+    """Open 'blocks release' reports filed after a sign-off was recorded."""
+    marks = ','.join('?' * len(OPEN_STATUSES))
+    return c.execute(f"SELECT COUNT(*) FROM reports WHERE video_id = ? AND severity = 'blocks' "
+                     f"AND status IN ({marks}) AND created_at > ?",
+                     [video_id, *OPEN_STATUSES, since]).fetchone()[0]
+
+
 def signoff_state(c, video, role):
     """What this role may do for this video, and why 'Approved' might be locked."""
     marks = ','.join('?' * len(OPEN_STATUSES))
@@ -243,8 +251,11 @@ def signoff_state(c, video, role):
         sp = latest_signoff(c, video['id'], 'spanish')
         if not sp or sp['decision'] != 'approved':
             reasons.append('The Spanish reviewer has not approved this Spanish video yet.')
-    return {'can_approve': not reasons, 'reasons': reasons,
-            'current': latest_signoff(c, video['id'], role),
+    current = latest_signoff(c, video['id'], role)
+    stale = (stale_blockers(c, video['id'], current['created_at'])
+             if current and current['decision'] != 'rejected' else 0)
+    return {'can_approve': not reasons, 'reasons': reasons, 'stale': stale,
+            'current': current,
             'spanish': latest_signoff(c, video['id'], 'spanish') if role == 'ia' else None}
 
 
@@ -449,8 +460,12 @@ def admin():
         counts = {r['status']: r['n'] for r in c.execute(
             'SELECT status, COUNT(*) AS n FROM reports GROUP BY status')}
     with conn() as c:
-        panel = [(v, latest_signoff(c, v['id'], 'ia'), latest_signoff(c, v['id'], 'spanish'))
-                 for v in load_videos()]
+        panel = []
+        for v in load_videos():
+            ia, sp = latest_signoff(c, v['id'], 'ia'), latest_signoff(c, v['id'], 'spanish')
+            panel.append((v, ia, sp,
+                          stale_blockers(c, v['id'], ia['created_at']) if ia and ia['decision'] != 'rejected' else 0,
+                          stale_blockers(c, v['id'], sp['created_at']) if sp and sp['decision'] != 'rejected' else 0))
     return render_template('punchlist_admin.html', rows=rows, filters=filters, counts=counts,
                            panel=panel, decision_labels=_labels(DECISIONS),
                            targets=TARGETS, target_labels=_labels(TARGETS),
@@ -504,6 +519,10 @@ def admin_reviewers():
                           (secrets.token_urlsafe(24), request.form['name'].strip()[:80], role,
                            (datetime.now(timezone.utc) + timedelta(days=days)).isoformat(timespec='seconds'),
                            now()))
+            elif action == 'extend':
+                c.execute('UPDATE reviewers SET expires_at = ?, active = 1 WHERE id = ?',
+                          ((datetime.now(timezone.utc) + timedelta(days=30)).isoformat(timespec='seconds'),
+                           int(request.form['id'])))
             elif action == 'toggle':
                 c.execute('UPDATE reviewers SET active = 1 - active WHERE id = ?',
                           (int(request.form['id']),))

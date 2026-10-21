@@ -16,7 +16,8 @@
   <tr><td>{{ r.name }}</td><td>{{ role_labels[r.role] }}</td>
   <td class="small"><input type="text" readonly value="{{ base }}{{ url_for('punchlist.reviewer_page', token=r.token) }}" onclick="this.select()"></td>
   <td class="small">{{ r.expires_at }}</td>
-  <td><form method="POST"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="{{ r.id }}"><button class="alt" type="submit">{{ 'Disable' if r.active else 'Enable' }}</button></form></td></tr>
+  <td><form method="POST" style="display:inline"><input type="hidden" name="action" value="extend"><input type="hidden" name="id" value="{{ r.id }}"><button class="alt" type="submit">Extend 30 days</button></form>
+  <form method="POST" style="display:inline"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="{{ r.id }}"><button class="alt" type="submit">{{ 'Disable' if r.active else 'Enable' }}</button></form></td></tr>
   {% endfor %}
 </table></div>
 {% endblock %}

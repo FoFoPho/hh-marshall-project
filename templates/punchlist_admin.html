@@ -6,9 +6,9 @@
 <p class="mut">{% for s in statuses %}{{ s }}: <strong>{{ counts.get(s, 0) }}</strong>{{ ' · ' if not loop.last }}{% endfor %}</p>
 <div class="card"><strong>Sign-offs</strong>
 <table><tr><th>Video</th><th>Issue Authority</th><th>Spanish reviewer</th></tr>
-{% for v, ia, sp in panel %}<tr><td class="small">{{ v.label }}</td>
-<td>{% if ia %}<span class="tag">{{ decision_labels[ia.decision] }}</span> <span class="small mut">{{ ia.reviewer_name }}, {{ ia.created_at }}</span>{% else %}<span class="mut">none</span>{% endif %}</td>
-<td>{% if v.language == 'es' %}{% if sp %}<span class="tag">{{ decision_labels[sp.decision] }}</span> <span class="small mut">{{ sp.reviewer_name }}, {{ sp.created_at }}</span>{% else %}<span class="mut">none</span>{% endif %}{% else %}<span class="mut">n/a</span>{% endif %}</td></tr>{% endfor %}
+{% for v, ia, sp, ia_stale, sp_stale in panel %}<tr><td class="small">{{ v.label }}</td>
+<td>{% if ia %}<span class="tag">{{ decision_labels[ia.decision] }}</span> <span class="small mut">{{ ia.reviewer_name }}, {{ ia.created_at }}</span>{% if ia_stale %}<br><span class="tag blocks">{{ ia_stale }} new blocker(s) since</span>{% endif %}{% else %}<span class="mut">none</span>{% endif %}</td>
+<td>{% if v.language == 'es' %}{% if sp %}<span class="tag">{{ decision_labels[sp.decision] }}</span> <span class="small mut">{{ sp.reviewer_name }}, {{ sp.created_at }}</span>{% if sp_stale %}<br><span class="tag blocks">{{ sp_stale }} new blocker(s) since</span>{% endif %}{% else %}<span class="mut">none</span>{% endif %}{% else %}<span class="mut">n/a</span>{% endif %}</td></tr>{% endfor %}
 </table></div>
 <form method="GET" class="card row">
   <select name="status"><option value="">Any status</option>{% for s in statuses %}<option value="{{ s }}" {{ 'selected' if filters.status == s }}>{{ s }}</option>{% endfor %}</select>
