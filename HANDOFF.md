@@ -208,7 +208,7 @@ Progress is persisted server-side in SQLite (`db.py`), keyed by `(email, module_
 4. Railway auto-detects Python + runs `gunicorn app:app` from Procfile
 5. **Required for resume to survive redeploys:** attach a Railway Volume to the service (e.g. mounted at `/data`) and set `DATABASE_PATH=/data/progress.db`. Without this, `progress.db` lives on the container's ephemeral filesystem and is wiped on every redeploy/restart — resume would silently stop working after each deploy.
 
-**Railway URL:** (already deployed — update this line with the live URL)
+**Railway URL:** https://marshall.tbvc.us (forwards to web-production-5562b.up.railway.app)
 
 ---
 
@@ -323,6 +323,18 @@ Notes for processing the next one:
 ---
 
 ## Session Log
+
+### 2026-10-21 (Session 23) — MP IA Punch List (correction tool)
+
+**What it is:** Marshall Project Issue Authority Punch List. Reviewers (Jake as Issue Authority, the Spanish reviewer, Forrest) open a private link, watch the published video in an embedded player, press **Flag this moment** (reads the YouTube player's current time), and file a report: category, severity, applies-to language, what is wrong, what it should be, exact Spanish wording, optional screenshots. An IA safety flag always counts as "blocks release".
+
+**Files:** `punchlist.py` (Flask blueprint at `/punchlist`), `templates/punchlist_*.html` (standalone pages, not `base.html`), `content/punchlist_videos.json` (the videos reviewers can pick; add a row per new video/version), registered in `app.py` with `punchlist.init_punchlist_db()` and `app.register_blueprint(punchlist.bp)`.
+
+**Storage:** separate `punchlist.db` and `punchlist_uploads/` next to `progress.db` (so they live on the Railway volume when `DATABASE_PATH` is set); the student database is untouched. Reports are append-only: status changes and notes are recorded as events, never edits.
+
+**Pages:** reviewer link `/punchlist/r/<token>` (created by a supervisor at `/punchlist/admin/reviewers`, expiring, can be disabled); supervisor list `/punchlist/admin` (filters) and `/punchlist/admin/report/<id>` (status, shot ID, fixed-in version, note, history); `/punchlist/export.json` (supervisor session, or header `X-Punchlist-Token` equal to the optional `PUNCHLIST_EXPORT_TOKEN` env var). Supervisor access uses the existing supervisor passwords.
+
+**Not built yet:** local script that pulls the export, grabs the video frame at each timecode, maps it to the shot ID, and writes the Production Checklist Review Log in Dropbox; directive generation per agent.
 
 ### 2026-10-20 (Session 22) — Module 2: Personal Protective Equipment
 

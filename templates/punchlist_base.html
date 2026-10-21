@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Punch List{% endblock %} — MP IA Punch List</title>
+  <style>
+    :root { --blue:#0b5cab; --ink:#1b1f24; --mut:#5d6672; --line:#d9dee4; --bg:#f4f6f8; --red:#b3261e; --amb:#a15c00; --grn:#1b7a3d; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.45 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color:var(--ink); background:var(--bg); }
+    header.top { background:#fff; border-bottom:1px solid var(--line); padding:12px 16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    header.top img { height:34px; }
+    header.top .t { font-weight:700; letter-spacing:.03em; }
+    header.top nav { margin-left:auto; display:flex; gap:14px; font-size:14px; }
+    a { color:var(--blue); }
+    main { max-width:980px; margin:0 auto; padding:16px; }
+    h1 { font-size:24px; margin:8px 0 4px; } h2 { font-size:18px; margin:22px 0 8px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px; margin:12px 0; }
+    label { display:block; font-weight:600; margin:14px 0 4px; font-size:14px; }
+    .hint { color:var(--mut); font-size:13px; font-weight:400; }
+    input[type=text], select, textarea, input[type=number], input[type=file] { width:100%; padding:10px; border:1px solid #b9c1ca; border-radius:8px; font:inherit; background:#fff; }
+    textarea { min-height:96px; resize:vertical; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; } .row > * { flex:1 1 200px; }
+    button, .btn { background:var(--blue); color:#fff; border:0; border-radius:8px; padding:10px 16px; font:inherit; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block; }
+    button.alt, .btn.alt { background:#fff; color:var(--blue); border:1px solid var(--blue); }
+    .tag { display:inline-block; padding:2px 8px; border-radius:99px; font-size:12px; font-weight:700; background:#e8edf2; }
+    .tag.blocks { background:#fde7e5; color:var(--red); } .tag.should { background:#fff1d6; color:var(--amb); } .tag.nice { background:#e6f2ea; color:var(--grn); }
+    .ok { background:#e6f2ea; border:1px solid #b6d9c1; padding:10px 14px; border-radius:8px; } .err { background:#fde7e5; border:1px solid #f1b8b3; padding:10px 14px; border-radius:8px; }
+    table { width:100%; border-collapse:collapse; font-size:14px; } th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--mut); font-weight:600; }
+    .tc { font-variant-numeric: tabular-nums; font-weight:700; }
+    .player { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:10px; overflow:hidden; } .player iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .mut { color:var(--mut); } .small { font-size:13px; }
+    .shots img { max-width:100%; border:1px solid var(--line); border-radius:8px; margin:6px 0; }
+  </style>
+</head>
+<body>
+<header class="top">
+  <img src="{{ url_for('static', filename='assets/Project Marshall Logo.png') }}" alt="The Marshall Project">
+  <span class="t">MP IA PUNCH LIST</span>
+  {% block nav %}{% endblock %}
+</header>
+<main>{% block body %}{% endblock %}</main>
+</body>
+</html>

@@ -13,10 +13,13 @@ from flask import (
 from markupsafe import Markup
 
 import db
+import punchlist
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-prod')
 db.init_db()
+punchlist.init_punchlist_db()
+app.register_blueprint(punchlist.bp)
 
 
 # ---------------------------------------------------------------------------

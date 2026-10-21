@@ -1,0 +1,28 @@
+{% extends "punchlist_base.html" %}
+{% block title %}Punch list reports{% endblock %}
+{% block nav %}<nav><a href="{{ url_for('punchlist.admin') }}">Reports</a><a href="{{ url_for('punchlist.admin_reviewers') }}">Reviewers</a><a href="{{ url_for('punchlist.export_json') }}">Export JSON</a><a href="{{ url_for('supervisor_dashboard') }}">Dashboard</a></nav>{% endblock %}
+{% block body %}
+<h1>Punch list reports</h1>
+<p class="mut">{% for s in statuses %}{{ s }}: <strong>{{ counts.get(s, 0) }}</strong>{{ ' · ' if not loop.last }}{% endfor %}</p>
+<form method="GET" class="card row">
+  <select name="status"><option value="">Any status</option>{% for s in statuses %}<option value="{{ s }}" {{ 'selected' if filters.status == s }}>{{ s }}</option>{% endfor %}</select>
+  <select name="severity"><option value="">Any severity</option>{% for k, l in severities %}<option value="{{ k }}" {{ 'selected' if filters.severity == k }}>{{ l }}</option>{% endfor %}</select>
+  <select name="category"><option value="">Any category</option>{% for k, l in categories %}<option value="{{ k }}" {{ 'selected' if filters.category == k }}>{{ l }}</option>{% endfor %}</select>
+  <select name="video_id"><option value="">Any video</option>{% for v in videos %}<option value="{{ v.id }}" {{ 'selected' if filters.video_id == v.id }}>{{ v.label }}</option>{% endfor %}</select>
+  <button type="submit">Filter</button>
+</form>
+<div class="card">
+{% if rows %}<table>
+  <tr><th>#</th><th>Time</th><th>Video</th><th>Problem</th><th>By</th><th>Status</th></tr>
+  {% for r in rows %}
+  <tr>
+    <td><a href="{{ url_for('punchlist.admin_report', report_id=r.id) }}">{{ r.id }}</a></td>
+    <td class="tc">{{ r.t_start|tc }}</td>
+    <td class="small">{{ r.video_label }}</td>
+    <td><span class="tag {{ r.severity }}">{{ sev_labels[r.severity] }}</span> {{ cat_labels[r.category] }}<br>{{ r.what_wrong[:160] }}</td>
+    <td class="small">{{ r.reviewer_name }}<br><span class="mut">{{ role_labels[r.reviewer_role] }}</span></td>
+    <td><span class="tag">{{ r.status }}</span>{% if r.shot_id %}<br><span class="small">shot {{ r.shot_id }}</span>{% endif %}</td>
+  </tr>{% endfor %}
+</table>{% else %}<p class="mut">No reports match.</p>{% endif %}
+</div>
+{% endblock %}

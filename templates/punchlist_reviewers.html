@@ -1,0 +1,22 @@
+{% extends "punchlist_base.html" %}
+{% block title %}Reviewers{% endblock %}
+{% block nav %}<nav><a href="{{ url_for('punchlist.admin') }}">&larr; Reports</a></nav>{% endblock %}
+{% block body %}
+<h1>Reviewers</h1>
+<form method="POST" class="card row">
+  <input type="hidden" name="action" value="add">
+  <div><label>Name</label><input type="text" name="name" required></div>
+  <div><label>Role</label><select name="role">{% for k, l in roles %}<option value="{{ k }}">{{ l }}</option>{% endfor %}</select></div>
+  <div><label>Link good for (days)</label><input type="number" name="days" value="30" min="1" max="365"></div>
+  <div style="align-self:end"><button type="submit">Create link</button></div>
+</form>
+<div class="card"><table>
+  <tr><th>Name</th><th>Role</th><th>Link</th><th>Expires</th><th></th></tr>
+  {% for r in rows %}
+  <tr><td>{{ r.name }}</td><td>{{ role_labels[r.role] }}</td>
+  <td class="small"><input type="text" readonly value="{{ base }}{{ url_for('punchlist.reviewer_page', token=r.token) }}" onclick="this.select()"></td>
+  <td class="small">{{ r.expires_at }}</td>
+  <td><form method="POST"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="{{ r.id }}"><button class="alt" type="submit">{{ 'Disable' if r.active else 'Enable' }}</button></form></td></tr>
+  {% endfor %}
+</table></div>
+{% endblock %}
