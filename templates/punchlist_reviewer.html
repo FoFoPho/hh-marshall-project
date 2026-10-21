@@ -10,30 +10,27 @@
 {% if sent == 'error' %}<div class="err">Something was missing. Please set the video, a time, and a description of what is wrong.</div>{% endif %}
 
 <form method="POST" action="{{ url_for('punchlist.submit_report', token=reviewer.token) }}" enctype="multipart/form-data" class="card" id="f">
+  <label for="module">Which module?</label>
+  <select name="module" id="module">
+    {% for mid, mlabel in modules %}<option value="{{ mid }}" {{ 'selected' if mid == current_module }}>{{ mlabel }}</option>{% endfor %}
+  </select>
+
   <label for="target">What is the problem with?</label>
   <select name="target" id="target">
     {% for k, label in targets %}<option value="{{ k }}">{{ label }}</option>{% endfor %}
   </select>
 
   <div id="otherbox" style="display:none">
-    <div class="row">
-      <div>
-        <label for="module">Which module?</label>
-        <select name="module" id="module">
-          {% for mid, mlabel in modules %}<option value="{{ mid }}" {{ 'selected' if mid == 2 }}>{{ mlabel }}</option>{% endfor %}
-        </select>
-      </div>
-      <div>
-        <label for="item_ref" id="item_label">Which one?</label>
-        <input type="text" name="item_ref" id="item_ref" placeholder="">
-      </div>
-    </div>
+    <label for="item_ref" id="item_label">Which one?</label>
+    <input type="text" name="item_ref" id="item_ref" placeholder="">
   </div>
 
   <div id="videobox">
+  <p id="novideo" class="mut" style="display:none">There is no video for this module yet. Pick another type of problem above.</p>
+  <div id="videoparts">
   <label for="video_id">Which video?</label>
   <select name="video_id" id="video_id">
-    {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}">{{ v.label }}</option>{% endfor %}
+    {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}" data-module="{{ v.module }}">{{ v.label }}</option>{% endfor %}
   </select>
 
   <div class="player" style="margin-top:12px"><div id="yt"></div></div>
@@ -51,6 +48,7 @@
       <button type="button" id="flag">Flag this moment</button>
       <button type="button" class="alt" id="flagEnd">Set end</button>
     </div>
+  </div>
   </div>
   </div>
 
@@ -139,8 +137,20 @@
   var player = null;
   function fmt(s){ s = Math.floor(s); var h = Math.floor(s/3600), m = Math.floor((s%3600)/60), x = s%60;
     return (h ? h + ':' + String(m).padStart(2,'0') : m) + ':' + String(x).padStart(2,'0'); }
+  function filterVideos(){
+    var m = document.getElementById('module').value, sel = document.getElementById('video_id'), first = null;
+    Array.prototype.forEach.call(sel.options, function(o){ var show = (o.dataset.module === m); o.hidden = !show; o.disabled = !show; if (show && !first) first = o; });
+    var cur = sel.options[sel.selectedIndex];
+    if (!cur || cur.disabled) { if (first) { sel.value = first.value; } }
+    var has = !!first;
+    document.getElementById('novideo').style.display = has ? 'none' : 'block';
+    document.getElementById('videoparts').style.display = has ? 'block' : 'none';
+    if (has && player && player.loadVideoById) player.loadVideoById(currentId());
+    document.getElementById('t_start').required = has && document.getElementById('target').value === 'video';
+  }
   function currentId(){ var o = document.getElementById('video_id'); return o.options[o.selectedIndex].dataset.yt; }
   function onYouTubeIframeAPIReady(){
+    filterVideos();
     player = new YT.Player('yt', { videoId: currentId(), host: 'https://www.youtube-nocookie.com',
       playerVars: { rel: 0, playsinline: 1, hl: 'en' }, width: '100%', height: '100%' });
   }
@@ -166,7 +176,9 @@
     if (!isVideo) { var h = hints[t] || ['Where?', '']; document.getElementById('item_label').textContent = h[0];
       var i = document.getElementById('item_ref'); i.placeholder = h[1]; i.required = (t === 'quiz'); }
   }
-  document.getElementById('target').addEventListener('change', toggleTarget); toggleTarget();
+  document.getElementById('target').addEventListener('change', function(){ toggleTarget(); filterVideos(); });
+  document.getElementById('module').addEventListener('change', filterVideos);
+  toggleTarget();
   function toggleEs(){ var c = document.getElementById('category').value;
     document.getElementById('esbox').style.display = (c === 'spanish_text' || c === 'spanish_vo') ? 'block' : 'none'; }
   document.getElementById('category').addEventListener('change', toggleEs); toggleEs();

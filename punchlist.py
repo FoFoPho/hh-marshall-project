@@ -160,10 +160,18 @@ def log_event(c, report_id, actor, kind, detail=''):
               (report_id, now(), actor, kind, detail))
 
 
-def load_videos():
+def _videos_config():
     path = os.path.join(os.path.dirname(__file__), 'content', 'punchlist_videos.json')
     with open(path, encoding='utf-8') as f:
         return json.load(f)
+
+
+def load_videos():
+    return _videos_config()['videos']
+
+
+def current_module():
+    return _videos_config().get('current_module')
 
 
 def video_by_id(video_id):
@@ -177,7 +185,16 @@ def load_modules():
 
 
 def module_choices():
-    return [(m['id'], f"Module {m['id']}") for m in load_modules()]
+    """Modules that are really in use: any with a video in the config or with content
+    in modules.json (the empty placeholder modules are left out). New modules appear
+    on their own once they have content or a video."""
+    titles = {0: 'Welcome'}
+    for m in load_modules():
+        if m.get('sections'):
+            titles[m['id']] = m['sections'][0]['title']
+    for v in load_videos():
+        titles.setdefault(v['module'], '')
+    return [(mid, f"Module {mid}" + (f" - {t}" if t else '')) for mid, t in sorted(titles.items())]
 
 
 def quiz_question_text(module_id, ref):
@@ -311,7 +328,7 @@ def reviewer_page(token):
                 signoffs.append((v, signoff_state(c, v, reviewer['role'])))
     return render_template('punchlist_reviewer.html', reviewer=reviewer, videos=videos,
                            signoffs=signoffs, decisions=DECISIONS, decision_labels=_labels(DECISIONS),
-                           targets=TARGETS, modules=module_choices(),
+                           targets=TARGETS, modules=module_choices(), current_module=current_module(),
                            categories=CATEGORIES, severities=SEVERITIES, applies=APPLIES,
                            reports=mine, cat_labels=_labels(CATEGORIES),
                            sev_labels=_labels(SEVERITIES),
@@ -358,6 +375,8 @@ def submit_report(token):
         t_start = parse_time(form.get('t_start'))
         t_end = parse_time(form.get('t_end'))
         bad = video is None or t_start is None
+        if not bad and form.get('module') and str(video.get('module')) != form.get('module'):
+            bad = True
         if not bad:
             module = video.get('module')
             label = video['label']
