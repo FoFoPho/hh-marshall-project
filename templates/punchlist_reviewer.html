@@ -91,10 +91,10 @@
 </form>
 
 {% if signoffs %}
-<h2 id="signoff">Sign off</h2>
+<h2 id="signoff">Sign off <span class="hint" id="so-scope"></span></h2>
 <p class="mut">{% if reviewer.role == 'ia' %}Your approval is final for each video. Approval is for the exact version shown; a new version needs a new sign-off.{% else %}Confirm the Spanish narration, on-screen text and quiz wording of each Spanish video. The Issue Authority can't approve a Spanish video until you have.{% endif %}</p>
 {% for v, st in signoffs %}
-<div class="card">
+<div class="card so-card" data-module="{{ v.module }}">
   <strong>{{ v.label }}</strong>
   {% if st.current %}<p class="small">Your latest: <span class="tag">{{ decision_labels[st.current.decision] }}</span> on {{ st.current.created_at }}{% if st.current.note %} &middot; {{ st.current.note }}{% endif %}</p>{% endif %}
   {% if reviewer.role == 'ia' and v.language == 'es' %}<p class="small">Spanish reviewer: {% if st.spanish %}<span class="tag">{{ decision_labels[st.spanish.decision] }}</span> ({{ st.spanish.reviewer_name }}){% else %}<span class="mut">no sign-off yet</span>{% endif %}</p>{% endif %}
@@ -148,6 +148,11 @@
     if (has && player && player.loadVideoById) player.loadVideoById(currentId());
     document.getElementById('t_start').required = has && document.getElementById('target').value === 'video';
   }
+  function filterSignoffs(){
+    var m = document.getElementById('module').value, shown = 0;
+    document.querySelectorAll('.so-card').forEach(function(c){ var s = (c.dataset.module === m); c.style.display = s ? 'block' : 'none'; if (s) shown++; });
+    var sc = document.getElementById('so-scope'); if (sc) sc.textContent = shown ? '(for the module chosen above)' : '(no videos for this module)';
+  }
   function currentId(){ var o = document.getElementById('video_id'); return o.options[o.selectedIndex].dataset.yt; }
   function onYouTubeIframeAPIReady(){
     filterVideos();
@@ -177,7 +182,8 @@
       var i = document.getElementById('item_ref'); i.placeholder = h[1]; i.required = (t === 'quiz'); }
   }
   document.getElementById('target').addEventListener('change', function(){ toggleTarget(); filterVideos(); });
-  document.getElementById('module').addEventListener('change', filterVideos);
+  document.getElementById('module').addEventListener('change', function(){ filterVideos(); filterSignoffs(); });
+  filterSignoffs();
   toggleTarget();
   function toggleEs(){ var c = document.getElementById('category').value;
     document.getElementById('esbox').style.display = (c === 'spanish_text' || c === 'spanish_vo') ? 'block' : 'none'; }
