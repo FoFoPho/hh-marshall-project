@@ -4,9 +4,10 @@
 {% block body %}
 <h1>Report #{{ r.id }} <span class="tag">{{ r.status }}</span> <span class="tag {{ r.severity }}">{{ sev_labels[r.severity] }}</span></h1>
 <div class="card">
-  <p><strong>{{ r.video_label }}</strong> at <span class="tc">{{ r.t_start|tc }}</span>{% if r.t_end %} to <span class="tc">{{ r.t_end|tc }}</span>{% endif %}
-  {% if video %} &middot; <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v={{ video.youtube_id }}&t={{ r.t_start|int }}s">open at that time</a>{% endif %}</p>
+  <p><strong>{{ r.video_label }}</strong>{% if r.t_start is not none %} at <span class="tc">{{ r.t_start|tc }}</span>{% if r.t_end %} to <span class="tc">{{ r.t_end|tc }}</span>{% endif %}{% endif %}
+  {% if video and r.t_start is not none %} &middot; <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v={{ video.youtube_id }}&t={{ r.t_start|int }}s">open at that time</a>{% endif %}</p>
   <p class="mut small">{{ cat_labels[r.category] }} &middot; applies to: {{ app_labels[r.applies_to] }} &middot; from {{ r.reviewer_name }} ({{ role_labels[r.reviewer_role] }}) &middot; {{ r.created_at }}</p>
+  {% if r.item_text %}<label>Question as it appears (English)</label><div class="mut">{{ r.item_text }}</div>{% endif %}
   <label>What is wrong</label><div>{{ r.what_wrong }}</div>
   {% if r.should_be %}<label>What it should be</label><div>{{ r.should_be }}</div>{% endif %}
   {% if r.spanish_wording %}<label>Correct Spanish wording</label><div>{{ r.spanish_wording }}</div>{% endif %}

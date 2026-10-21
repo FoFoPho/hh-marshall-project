@@ -29,6 +29,8 @@ CATEGORIES = [
     ('english_vo', 'English narration wording or pronunciation'),
     ('audio', 'Audio (levels, cutoffs, noise)'),
     ('timing', 'Timing (too fast, too slow, long text)'),
+    ('quiz_wording', 'Quiz wording, answer key, or translation'),
+    ('webapp_issue', 'Web app behavior or layout'),
     ('other', 'Something else'),
 ]
 SEVERITIES = [
@@ -36,10 +38,19 @@ SEVERITIES = [
     ('should', 'Should fix'),
     ('nice', 'Nice to have'),
 ]
+TARGETS = [
+    ('video', 'A moment in a video'),
+    ('quiz', 'A quiz question or its answers'),
+    ('practical', 'The practical exercise'),
+    ('audio_clip', 'A voice-over or audio clip (not in the video)'),
+    ('webapp', 'The web app (pages, buttons, layout, certificate)'),
+    ('other', 'Something else about this module'),
+]
 ROLES = [
     ('ia', 'Issue Authority (safety)'),
     ('spanish', 'Spanish reviewer'),
     ('content', 'Content reviewer'),
+    ('general', 'Reviewer'),
     ('owner', 'Owner / editor'),
 ]
 STATUSES = ['new', 'triaged', 'sent', 'fixed', 'verified', 'closed', 'wontfix']
@@ -91,9 +102,13 @@ def init_punchlist_db():
             CREATE TABLE IF NOT EXISTS reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 reviewer_id INTEGER NOT NULL,
-                video_id TEXT NOT NULL,
+                target TEXT NOT NULL DEFAULT 'video',
+                module INTEGER,
+                item_ref TEXT,
+                item_text TEXT,
+                video_id TEXT NOT NULL DEFAULT '',
                 video_label TEXT NOT NULL,
-                t_start REAL NOT NULL,
+                t_start REAL,
                 t_end REAL,
                 category TEXT NOT NULL,
                 severity TEXT NOT NULL,
@@ -141,6 +156,32 @@ def load_videos():
 
 def video_by_id(video_id):
     return next((v for v in load_videos() if v['id'] == video_id), None)
+
+
+def load_modules():
+    path = os.path.join(os.path.dirname(__file__), 'content', 'modules.json')
+    with open(path, encoding='utf-8') as f:
+        return json.load(f).get('modules', [])
+
+
+def module_choices():
+    return [(m['id'], f"Module {m['id']}") for m in load_modules()]
+
+
+def quiz_question_text(module_id, ref):
+    """Snapshot of the English question text for 'Q7' / '7' in this module."""
+    digits = ''.join(ch for ch in (ref or '') if ch.isdigit())
+    if not digits:
+        return ''
+    n = int(digits)
+    for m in load_modules():
+        if m['id'] != module_id:
+            continue
+        flat = [q for sec in m.get('sections', []) for q in sec.get('quiz', {}).get('questions', [])]
+        if 1 <= n <= len(flat):
+            q = flat[n - 1]
+            return q.get('text', '') + ' | ' + ' / '.join(q.get('options', []))
+    return ''
 
 
 def fmt_time(seconds):
@@ -213,6 +254,7 @@ def reviewer_page(token):
         mine = c.execute('SELECT * FROM reports WHERE reviewer_id = ? ORDER BY id DESC',
                          (reviewer['id'],)).fetchall()
     return render_template('punchlist_reviewer.html', reviewer=reviewer, videos=videos,
+                           targets=TARGETS, modules=module_choices(),
                            categories=CATEGORIES, severities=SEVERITIES, applies=APPLIES,
                            reports=mine, cat_labels=_labels(CATEGORIES),
                            sev_labels=_labels(SEVERITIES),
@@ -244,24 +286,47 @@ def _save_images(c, report_id):
 def submit_report(token):
     reviewer = get_reviewer(token)
     form = request.form
-    video = video_by_id(form.get('video_id', ''))
-    t_start = parse_time(form.get('t_start'))
-    t_end = parse_time(form.get('t_end'))
+    target = form.get('target', 'video')
     what_wrong = (form.get('what_wrong') or '').strip()
-    if (not video or t_start is None or not what_wrong
-            or form.get('category') not in _labels(CATEGORIES)
-            or form.get('severity') not in _labels(SEVERITIES)
-            or form.get('applies_to') not in _labels(APPLIES)):
+    bad = (target not in _labels(TARGETS) or not what_wrong
+           or form.get('category') not in _labels(CATEGORIES)
+           or form.get('severity') not in _labels(SEVERITIES)
+           or form.get('applies_to') not in _labels(APPLIES))
+    video = t_start = t_end = module = None
+    item_ref = (form.get('item_ref') or '').strip()[:200]
+    item_text = ''
+    label = ''
+    if not bad and target == 'video':
+        video = video_by_id(form.get('video_id', ''))
+        t_start = parse_time(form.get('t_start'))
+        t_end = parse_time(form.get('t_end'))
+        bad = video is None or t_start is None
+        if not bad:
+            module = video.get('module')
+            label = video['label']
+    elif not bad:
+        try:
+            module = int(form.get('module', ''))
+        except ValueError:
+            bad = True
+        if module not in {mid for mid, _ in module_choices()}:
+            bad = True
+        if target == 'quiz' and not item_ref:
+            bad = True
+        if not bad:
+            item_text = quiz_question_text(module, item_ref) if target == 'quiz' else ''
+            label = f"Module {module} - {_labels(TARGETS)[target]}" + (f" - {item_ref}" if item_ref else '')
+    if bad:
         return redirect(url_for('punchlist.reviewer_page', token=token, sent='error'))
     # An Issue Authority safety flag always blocks release.
     severity = 'blocks' if (reviewer['role'] == 'ia' and form['category'] == 'safety') else form['severity']
     with conn() as c:
         cur = c.execute(
-            '''INSERT INTO reports (reviewer_id, video_id, video_label, t_start, t_end, category,
-               severity, applies_to, what_wrong, should_be, spanish_wording, created_at)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?)''',
-            (reviewer['id'], video['id'], video['label'], t_start, t_end, form['category'],
-             severity, form['applies_to'], what_wrong[:4000],
+            '''INSERT INTO reports (reviewer_id, target, module, item_ref, item_text, video_id,
+               video_label, t_start, t_end, category, severity, applies_to, what_wrong, should_be,
+               spanish_wording, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+            (reviewer['id'], target, module, item_ref, item_text, video['id'] if video else '',
+             label, t_start, t_end, form['category'], severity, form['applies_to'], what_wrong[:4000],
              (form.get('should_be') or '').strip()[:4000],
              (form.get('spanish_wording') or '').strip()[:4000], now()))
         report_id = cur.lastrowid
@@ -295,7 +360,7 @@ def _report_rows(filters):
     sql = ('SELECT r.*, v.name AS reviewer_name, v.role AS reviewer_role '
            'FROM reports r JOIN reviewers v ON v.id = r.reviewer_id WHERE 1=1')
     args = []
-    for key in ('status', 'severity', 'category', 'video_id'):
+    for key in ('status', 'severity', 'category', 'video_id', 'target'):
         if filters.get(key):
             sql += f' AND r.{key} = ?'
             args.append(filters[key])
@@ -308,7 +373,7 @@ def _report_rows(filters):
 @bp.route('/admin')
 @supervisor_only
 def admin():
-    filters = {k: request.args.get(k, '') for k in ('status', 'severity', 'category', 'video_id')}
+    filters = {k: request.args.get(k, '') for k in ('status', 'severity', 'category', 'video_id', 'target')}
     if 'status' not in request.args:
         filters['status'] = ''
     rows = _report_rows(filters)
@@ -316,6 +381,7 @@ def admin():
         counts = {r['status']: r['n'] for r in c.execute(
             'SELECT status, COUNT(*) AS n FROM reports GROUP BY status')}
     return render_template('punchlist_admin.html', rows=rows, filters=filters, counts=counts,
+                           targets=TARGETS, target_labels=_labels(TARGETS),
                            statuses=STATUSES, categories=CATEGORIES, severities=SEVERITIES,
                            videos=load_videos(), cat_labels=_labels(CATEGORIES),
                            sev_labels=_labels(SEVERITIES), role_labels=_labels(ROLES))
@@ -347,6 +413,7 @@ def admin_report(report_id):
         events = c.execute('SELECT * FROM events WHERE report_id = ? ORDER BY id', (report_id,)).fetchall()
         files = c.execute('SELECT * FROM attachments WHERE report_id = ?', (report_id,)).fetchall()
     return render_template('punchlist_report.html', r=report, events=events, files=files,
+                           target_labels=_labels(TARGETS),
                            statuses=STATUSES, cat_labels=_labels(CATEGORIES),
                            sev_labels=_labels(SEVERITIES), role_labels=_labels(ROLES),
                            app_labels=_labels(APPLIES), video=video_by_id(report['video_id']))
@@ -397,7 +464,8 @@ def export_json():
         events = [dict(e) for e in c.execute('SELECT * FROM events ORDER BY id')]
         files = [dict(a) for a in c.execute('SELECT * FROM attachments ORDER BY id')]
     for r in reports:
-        r['timecode'] = fmt_time(r['t_start']) + (f" - {fmt_time(r['t_end'])}" if r['t_end'] else '')
+        r['timecode'] = (fmt_time(r['t_start']) + (f" - {fmt_time(r['t_end'])}" if r['t_end'] else '')
+                         if r['t_start'] is not None else '')
         r['video'] = video_by_id(r['video_id'])
         r['events'] = [e for e in events if e['report_id'] == r['id']]
         r['attachments'] = [a for a in files if a['report_id'] == r['id']]

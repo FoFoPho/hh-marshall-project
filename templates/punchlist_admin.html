@@ -8,6 +8,7 @@
   <select name="status"><option value="">Any status</option>{% for s in statuses %}<option value="{{ s }}" {{ 'selected' if filters.status == s }}>{{ s }}</option>{% endfor %}</select>
   <select name="severity"><option value="">Any severity</option>{% for k, l in severities %}<option value="{{ k }}" {{ 'selected' if filters.severity == k }}>{{ l }}</option>{% endfor %}</select>
   <select name="category"><option value="">Any category</option>{% for k, l in categories %}<option value="{{ k }}" {{ 'selected' if filters.category == k }}>{{ l }}</option>{% endfor %}</select>
+  <select name="target"><option value="">Anything</option>{% for k, l in targets %}<option value="{{ k }}" {{ 'selected' if filters.target == k }}>{{ l }}</option>{% endfor %}</select>
   <select name="video_id"><option value="">Any video</option>{% for v in videos %}<option value="{{ v.id }}" {{ 'selected' if filters.video_id == v.id }}>{{ v.label }}</option>{% endfor %}</select>
   <button type="submit">Filter</button>
 </form>
@@ -17,7 +18,7 @@
   {% for r in rows %}
   <tr>
     <td><a href="{{ url_for('punchlist.admin_report', report_id=r.id) }}">{{ r.id }}</a></td>
-    <td class="tc">{{ r.t_start|tc }}</td>
+    <td class="tc">{{ r.t_start|tc if r.t_start is not none else '-' }}</td>
     <td class="small">{{ r.video_label }}</td>
     <td><span class="tag {{ r.severity }}">{{ sev_labels[r.severity] }}</span> {{ cat_labels[r.category] }}<br>{{ r.what_wrong[:160] }}</td>
     <td class="small">{{ r.reviewer_name }}<br><span class="mut">{{ role_labels[r.reviewer_role] }}</span></td>

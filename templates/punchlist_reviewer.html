@@ -8,6 +8,27 @@
 {% if sent == 'error' %}<div class="err">Something was missing. Please set the video, a time, and a description of what is wrong.</div>{% endif %}
 
 <form method="POST" action="{{ url_for('punchlist.submit_report', token=reviewer.token) }}" enctype="multipart/form-data" class="card" id="f">
+  <label for="target">What is the problem with?</label>
+  <select name="target" id="target">
+    {% for k, label in targets %}<option value="{{ k }}">{{ label }}</option>{% endfor %}
+  </select>
+
+  <div id="otherbox" style="display:none">
+    <div class="row">
+      <div>
+        <label for="module">Which module?</label>
+        <select name="module" id="module">
+          {% for mid, mlabel in modules %}<option value="{{ mid }}" {{ 'selected' if mid == 2 }}>{{ mlabel }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="item_ref" id="item_label">Which one?</label>
+        <input type="text" name="item_ref" id="item_ref" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <div id="videobox">
   <label for="video_id">Which video?</label>
   <select name="video_id" id="video_id">
     {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}">{{ v.label }}</option>{% endfor %}
@@ -28,6 +49,7 @@
       <button type="button" id="flag">Flag this moment</button>
       <button type="button" class="alt" id="flagEnd">Set end</button>
     </div>
+  </div>
   </div>
 
   <div class="row">
@@ -74,7 +96,7 @@
   <tr><th>Time</th><th>Video</th><th>Problem</th><th>Status</th></tr>
   {% for r in reports %}
   <tr>
-    <td class="tc">{{ r.t_start|tc }}</td>
+    <td class="tc">{{ r.t_start|tc if r.t_start is not none else '-' }}</td>
     <td class="small">{{ r.video_label }}</td>
     <td>{{ cat_labels[r.category] }} <span class="tag {{ r.severity }}">{{ sev_labels[r.severity] }}</span><br>{{ r.what_wrong }}</td>
     <td><span class="tag">{{ r.status }}</span>{% if r.fixed_in %}<br><span class="small mut">fixed in {{ r.fixed_in }}</span>{% endif %}</td>
@@ -99,6 +121,22 @@
   document.getElementById('flagEnd').addEventListener('click', function(){
     if (player && player.getCurrentTime) { document.getElementById('t_end').value = fmt(player.getCurrentTime()); }
   });
+  var hints = {
+    quiz: ['Which question number?', 'e.g. 7 (the number shown on the quiz page)'],
+    practical: ['Which step? (optional)', 'e.g. step 2'],
+    audio_clip: ['Which clip?', 'e.g. quiz question 4 in Spanish, or narration part 7'],
+    webapp: ['Which page or button?', 'e.g. certificate page, Start Section Over'],
+    other: ['Where? (optional)', '']
+  };
+  function toggleTarget(){
+    var t = document.getElementById('target').value, isVideo = (t === 'video');
+    document.getElementById('videobox').style.display = isVideo ? 'block' : 'none';
+    document.getElementById('otherbox').style.display = isVideo ? 'none' : 'block';
+    document.getElementById('t_start').required = isVideo;
+    if (!isVideo) { var h = hints[t] || ['Where?', '']; document.getElementById('item_label').textContent = h[0];
+      var i = document.getElementById('item_ref'); i.placeholder = h[1]; i.required = (t === 'quiz'); }
+  }
+  document.getElementById('target').addEventListener('change', toggleTarget); toggleTarget();
   function toggleEs(){ var c = document.getElementById('category').value;
     document.getElementById('esbox').style.display = (c === 'spanish_text' || c === 'spanish_vo') ? 'block' : 'none'; }
   document.getElementById('category').addEventListener('change', toggleEs); toggleEs();

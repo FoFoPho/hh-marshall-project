@@ -326,7 +326,7 @@ Notes for processing the next one:
 
 ### 2026-10-21 (Session 23) — MP IA Punch List (correction tool)
 
-**What it is:** Marshall Project Issue Authority Punch List. Reviewers (Jake as Issue Authority, the Spanish reviewer, Forrest) open a private link, watch the published video in an embedded player, press **Flag this moment** (reads the YouTube player's current time), and file a report: category, severity, applies-to language, what is wrong, what it should be, exact Spanish wording, optional screenshots. An IA safety flag always counts as "blocks release".
+**What it is:** Marshall Project Issue Authority Punch List. Reviewers (Jake as Issue Authority, the Spanish reviewer, Forrest) open a private link, watch the published video in an embedded player, press **Flag this moment** (reads the YouTube player's current time), and file a report: category, severity, applies-to language, what is wrong, what it should be, exact Spanish wording, optional screenshots. An IA safety flag always counts as "blocks release". Reports are not limited to video: the first dropdown ("What is the problem with?") also covers a quiz question (stores a snapshot of the English question text from `modules.json`), the practical, a voice-over/audio clip outside the video, the web app, or anything else, each tied to a module and an optional item reference.
 
 **Files:** `punchlist.py` (Flask blueprint at `/punchlist`), `templates/punchlist_*.html` (standalone pages, not `base.html`), `content/punchlist_videos.json` (the videos reviewers can pick; add a row per new video/version), registered in `app.py` with `punchlist.init_punchlist_db()` and `app.register_blueprint(punchlist.bp)`.
 
