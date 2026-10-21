@@ -53,6 +53,8 @@ ROLES = [
     ('general', 'Reviewer'),
     ('owner', 'Owner / editor'),
 ]
+OPEN_STATUSES = ('new', 'triaged', 'sent')
+DECISIONS = [('approved', 'Approved'), ('conditions', 'Approved with conditions'), ('rejected', 'Not approved')]
 STATUSES = ['new', 'triaged', 'sent', 'fixed', 'verified', 'closed', 'wontfix']
 APPLIES = [('both', 'Both languages'), ('en', 'English only'), ('es', 'Spanish only')]
 
@@ -119,6 +121,16 @@ def init_punchlist_db():
                 status TEXT NOT NULL DEFAULT 'new',
                 shot_id TEXT,
                 fixed_in TEXT,
+                created_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS signoffs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                reviewer_id INTEGER NOT NULL,
+                role TEXT NOT NULL,
+                video_id TEXT NOT NULL,
+                decision TEXT NOT NULL,
+                note TEXT,
+                typed_name TEXT NOT NULL,
                 created_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS events (
@@ -210,6 +222,32 @@ def parse_time(text):
     return total
 
 
+def latest_signoff(c, video_id, role):
+    return c.execute('SELECT s.*, v.name AS reviewer_name FROM signoffs s JOIN reviewers v ON v.id = s.reviewer_id '
+                     'WHERE s.video_id = ? AND s.role = ? ORDER BY s.id DESC LIMIT 1',
+                     (video_id, role)).fetchone()
+
+
+def signoff_state(c, video, role):
+    """What this role may do for this video, and why 'Approved' might be locked."""
+    marks = ','.join('?' * len(OPEN_STATUSES))
+    sql = f"SELECT COUNT(*) FROM reports WHERE video_id = ? AND severity = 'blocks' AND status IN ({marks})"
+    args = [video['id'], *OPEN_STATUSES]
+    if role == 'spanish':
+        sql += " AND (category LIKE 'spanish%' OR applies_to IN ('es'))"
+    open_blocks = c.execute(sql, args).fetchone()[0]
+    reasons = []
+    if open_blocks:
+        reasons.append(f'{open_blocks} open "blocks release" report(s) on this video must be fixed first.')
+    if role == 'ia' and video.get('language') == 'es':
+        sp = latest_signoff(c, video['id'], 'spanish')
+        if not sp or sp['decision'] != 'approved':
+            reasons.append('The Spanish reviewer has not approved this Spanish video yet.')
+    return {'can_approve': not reasons, 'reasons': reasons,
+            'current': latest_signoff(c, video['id'], role),
+            'spanish': latest_signoff(c, video['id'], 'spanish') if role == 'ia' else None}
+
+
 def _labels(pairs):
     return dict(pairs)
 
@@ -253,7 +291,15 @@ def reviewer_page(token):
     with conn() as c:
         mine = c.execute('SELECT * FROM reports WHERE reviewer_id = ? ORDER BY id DESC',
                          (reviewer['id'],)).fetchall()
+    signoffs = []
+    if reviewer['role'] in ('ia', 'spanish'):
+        with conn() as c:
+            for v in videos:
+                if reviewer['role'] == 'spanish' and v.get('language') != 'es':
+                    continue
+                signoffs.append((v, signoff_state(c, v, reviewer['role'])))
     return render_template('punchlist_reviewer.html', reviewer=reviewer, videos=videos,
+                           signoffs=signoffs, decisions=DECISIONS, decision_labels=_labels(DECISIONS),
                            targets=TARGETS, modules=module_choices(),
                            categories=CATEGORIES, severities=SEVERITIES, applies=APPLIES,
                            reports=mine, cat_labels=_labels(CATEGORIES),
@@ -335,6 +381,28 @@ def submit_report(token):
     return redirect(url_for('punchlist.reviewer_page', token=token, sent='ok'))
 
 
+@bp.route('/r/<token>/signoff', methods=['POST'])
+def submit_signoff(token):
+    reviewer = get_reviewer(token)
+    video = video_by_id(request.form.get('video_id', ''))
+    decision = request.form.get('decision')
+    note = (request.form.get('note') or '').strip()[:2000]
+    typed = (request.form.get('typed_name') or '').strip()
+    role = reviewer['role']
+    ok = (video and role in ('ia', 'spanish') and decision in _labels(DECISIONS)
+          and not (role == 'spanish' and video.get('language') != 'es')
+          and typed.lower() == reviewer['name'].strip().lower()
+          and (decision == 'approved' or note))
+    if ok:
+        with conn() as c:
+            if decision == 'approved' and not signoff_state(c, video, role)['can_approve']:
+                ok = False
+            else:
+                c.execute('INSERT INTO signoffs (reviewer_id, role, video_id, decision, note, typed_name, created_at) '
+                          'VALUES (?,?,?,?,?,?,?)', (reviewer['id'], role, video['id'], decision, note, typed, now()))
+    return redirect(url_for('punchlist.reviewer_page', token=token, sent='signed' if ok else 'signerror') + '#signoff')
+
+
 @bp.route('/file/<int:attachment_id>')
 def attachment(attachment_id):
     token = request.args.get('t', '')
@@ -380,7 +448,11 @@ def admin():
     with conn() as c:
         counts = {r['status']: r['n'] for r in c.execute(
             'SELECT status, COUNT(*) AS n FROM reports GROUP BY status')}
+    with conn() as c:
+        panel = [(v, latest_signoff(c, v['id'], 'ia'), latest_signoff(c, v['id'], 'spanish'))
+                 for v in load_videos()]
     return render_template('punchlist_admin.html', rows=rows, filters=filters, counts=counts,
+                           panel=panel, decision_labels=_labels(DECISIONS),
                            targets=TARGETS, target_labels=_labels(TARGETS),
                            statuses=STATUSES, categories=CATEGORIES, severities=SEVERITIES,
                            videos=load_videos(), cat_labels=_labels(CATEGORIES),
@@ -463,13 +535,15 @@ def export_json():
             'JOIN reviewers v ON v.id = r.reviewer_id ORDER BY r.id')]
         events = [dict(e) for e in c.execute('SELECT * FROM events ORDER BY id')]
         files = [dict(a) for a in c.execute('SELECT * FROM attachments ORDER BY id')]
+        signoffs = [dict(x) for x in c.execute('SELECT s.*, v.name AS reviewer_name FROM signoffs s '
+                                               'JOIN reviewers v ON v.id = s.reviewer_id ORDER BY s.id')]
     for r in reports:
         r['timecode'] = (fmt_time(r['t_start']) + (f" - {fmt_time(r['t_end'])}" if r['t_end'] else '')
                          if r['t_start'] is not None else '')
         r['video'] = video_by_id(r['video_id'])
         r['events'] = [e for e in events if e['report_id'] == r['id']]
         r['attachments'] = [a for a in files if a['report_id'] == r['id']]
-    return jsonify(reports)
+    return jsonify({'reports': reports, 'signoffs': signoffs})
 
 
 @bp.route('/export/file/<int:attachment_id>')

@@ -334,6 +334,8 @@ Notes for processing the next one:
 
 **Pages:** reviewer link `/punchlist/r/<token>` (created by a supervisor at `/punchlist/admin/reviewers`, expiring, can be disabled); supervisor list `/punchlist/admin` (filters) and `/punchlist/admin/report/<id>` (status, shot ID, fixed-in version, note, history); `/punchlist/export.json` (supervisor session, or header `X-Punchlist-Token` equal to the optional `PUNCHLIST_EXPORT_TOKEN` env var). Supervisor access uses the existing supervisor passwords.
 
+**Sign-off:** the Issue Authority (role `ia`) signs off per video version; the Spanish reviewer (role `spanish`) signs off the Spanish videos. Choices are Approved, Approved with conditions, Not approved (note required except for Approved); the reviewer types their name to confirm. Approved is locked while any open "blocks release" report exists on that video (for the Spanish reviewer, open Spanish-category ones), and the IA can't approve a Spanish video until the Spanish reviewer has. Sign-offs are append-only and keyed to the video id (so a new version needs a new sign-off); `/punchlist/export.json` is `{reports: [...], signoffs: [...]}`.
+
 **Not built yet:** local script that pulls the export, grabs the video frame at each timecode, maps it to the shot ID, and writes the Production Checklist Review Log in Dropbox; directive generation per agent.
 
 ### 2026-10-20 (Session 22) — Module 2: Personal Protective Equipment

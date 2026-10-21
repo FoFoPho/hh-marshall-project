@@ -5,6 +5,8 @@
 <p class="mut">Marshall Project Issue Authority Punch List. Reviewing as <strong>{{ role_label }}</strong>. Watch the video, pause at the problem, press <em>Flag this moment</em>, and describe what should change. One problem per report.</p>
 
 {% if sent == 'ok' %}<div class="ok">Thanks. Your report was saved. You can add another below.</div>{% endif %}
+{% if sent == 'signed' %}<div class="ok">Your sign-off was recorded.</div>{% endif %}
+{% if sent == 'signerror' %}<div class="err">The sign-off was not recorded. Type your name exactly as shown, add a note if you are not approving outright, and check that nothing is blocking approval.</div>{% endif %}
 {% if sent == 'error' %}<div class="err">Something was missing. Please set the video, a time, and a description of what is wrong.</div>{% endif %}
 
 <form method="POST" action="{{ url_for('punchlist.submit_report', token=reviewer.token) }}" enctype="multipart/form-data" class="card" id="f">
@@ -89,6 +91,33 @@
 
   <p><button type="submit">Send report</button></p>
 </form>
+
+{% if signoffs %}
+<h2 id="signoff">Sign off</h2>
+<p class="mut">{% if reviewer.role == 'ia' %}Your approval is final for each video. Approval is for the exact version shown; a new version needs a new sign-off.{% else %}Confirm the Spanish narration, on-screen text and quiz wording of each Spanish video. The Issue Authority can't approve a Spanish video until you have.{% endif %}</p>
+{% for v, st in signoffs %}
+<div class="card">
+  <strong>{{ v.label }}</strong>
+  {% if st.current %}<p class="small">Your latest: <span class="tag">{{ decision_labels[st.current.decision] }}</span> on {{ st.current.created_at }}{% if st.current.note %} &middot; {{ st.current.note }}{% endif %}</p>{% endif %}
+  {% if reviewer.role == 'ia' and v.language == 'es' %}<p class="small">Spanish reviewer: {% if st.spanish %}<span class="tag">{{ decision_labels[st.spanish.decision] }}</span> ({{ st.spanish.reviewer_name }}){% else %}<span class="mut">no sign-off yet</span>{% endif %}</p>{% endif %}
+  {% for why in st.reasons %}<p class="err small">{{ why }}</p>{% endfor %}
+  <form method="POST" action="{{ url_for('punchlist.submit_signoff', token=reviewer.token) }}">
+    <input type="hidden" name="video_id" value="{{ v.id }}">
+    <div class="row">
+      <div><label>Decision</label>
+        <select name="decision">
+          {% for k, l in decisions %}<option value="{{ k }}" {{ 'disabled' if k == 'approved' and not st.can_approve }}>{{ l }}</option>{% endfor %}
+        </select></div>
+      <div><label>Type your name to confirm <span class="hint">({{ reviewer.name }})</span></label>
+        <input type="text" name="typed_name" autocomplete="off" required></div>
+    </div>
+    <label>Note <span class="hint">(required unless approving outright)</span></label>
+    <textarea name="note" style="min-height:60px"></textarea>
+    <p><button type="submit">Record sign-off</button></p>
+  </form>
+</div>
+{% endfor %}
+{% endif %}
 
 <h2>Your reports</h2>
 {% if reports %}
