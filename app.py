@@ -417,7 +417,8 @@ def step(module_id, step_num):
         # Unlike a lesson, viewing doesn't unlock the next step — the student
         # has to confirm via submit_practical(). Already past it (e.g. walking
         # forward again during a restudy) → show it as already confirmed.
-        return render_template('practical.html',
+        template = 'practical_photos.html' if step_data['practical'].get('photos') else 'practical.html'
+        return render_template(template,
             module=module,
             step=step_data,
             step_num=step_num,

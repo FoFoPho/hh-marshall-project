@@ -331,7 +331,7 @@ Notes for processing the next one:
 - `static/audio/m3/` — 10 clips `s1-q1..q4-en/es.mp3` and `s1-practical-en/es.mp3` (masters named `s3-…` in `Modules/Module 3/Audio/`; the app numbers audio by section position, so `s1-`).
 - Verified with the Flask test client: lesson embeds the right video per language; quiz has the 4 audio paths per language.
 
-**Do NOT release Module 3 to learners yet:** the practical says "photos displayed in the course": the photo set (stylized stills or real shop photos) and a new photo-review page format in the app are not decided or built. The module can ship without the practical page once Forrest decides, or wait.
+**Practical (decided Oct 22):** a photo review, built as `templates/practical_photos.html` (+ CSS, UI strings, and an `app.py` branch that uses it when `practical.photos` exists). 8 stylized people-free stills in `static/practical/m3/photo-01..08.jpg` (5 unsafe, 3 safe, shown in the order set in `content/modules.json`); the learner taps a big blue check (SAFE) or red X (UNSAFE), gets instant feedback, and for unsafe photos must type the hazard and what they would do (at least 8 characters); Next unlocks when all 8 are done. Answers are auto-checked against the key; typed answers are NOT stored. Source images and ANSWER KEY.md: `Safety Course - Animations/Storyboards/Section 3 - Walking-Working Surfaces/Assets/04 - Practical Photos/`.
 
 ### 2026-10-21 (Session 23) — MP IA Punch List (correction tool)
 

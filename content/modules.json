@@ -581,7 +581,57 @@
           },
           "practical": {
             "text": "1. Review each photo displayed in the course and select whether the walking-working surface is safe or unsafe. 2. For each unsafe photo, identify the hazard and enter what you would do to correct it or have it safely corrected.",
-            "text_es": "1. Revise cada foto que se muestra en el curso y seleccione si la superficie de tránsito y de trabajo es segura o insegura. 2. En cada foto insegura, identifique el peligro e ingrese qué haría para corregirlo o para que se corrija de forma segura."
+            "text_es": "1. Revise cada foto que se muestra en el curso y seleccione si la superficie de tránsito y de trabajo es segura o insegura. 2. En cada foto insegura, identifique el peligro e ingrese qué haría para corregirlo o para que se corrija de forma segura.",
+            "photos": [
+              {
+                "image": "practical/m3/photo-06.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m3/photo-01.jpg",
+                "answer": "unsafe",
+                "hazard": "A cord and a hose lie across the walkway and can trip someone.",
+                "hazard_es": "Un cable y una manguera cruzan el pasillo y pueden hacer tropezar a alguien."
+              },
+              {
+                "image": "practical/m3/photo-02.jpg",
+                "answer": "unsafe",
+                "hazard": "A cart is blocking the emergency exit route.",
+                "hazard_es": "Un carrito está bloqueando la ruta de salida de emergencia."
+              },
+              {
+                "image": "practical/m3/photo-07.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m3/photo-03.jpg",
+                "answer": "unsafe",
+                "hazard": "Scrap sticks out of the overfilled bin and a steel part hangs off the pallet into the aisle.",
+                "hazard_es": "Hay desechos que sobresalen del contenedor lleno y una pieza de acero cuelga de la tarima hacia el pasillo."
+              },
+              {
+                "image": "practical/m3/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "Unknown liquid is leaking onto the floor beside the machine. It is a slip hazard and should not be handled by someone who is not trained.",
+                "hazard_es": "Un líquido desconocido gotea al piso junto a la máquina. Es un riesgo de resbalón y no debe manejarlo alguien que no esté capacitado."
+              },
+              {
+                "image": "practical/m3/photo-08.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m3/photo-05.jpg",
+                "answer": "unsafe",
+                "hazard": "A loose pipe and hand tools are lying in the walkway and can trip someone or roll underfoot.",
+                "hazard_es": "Un tubo suelto y herramientas de mano están en el pasillo y pueden hacer tropezar a alguien o rodar bajo el pie."
+              }
+            ]
           }
         }
       ]
