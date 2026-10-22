@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 2 Issue Authority Review — The Marshall Project</title>
+<style>
+  :root { --blue:#0b5cab; --ink:#1b1f24; --mut:#5d6672; --line:#d9dee4; --bg:#f4f6f8; --red:#b3261e; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.45 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color:var(--ink); background:var(--bg); }
+  header { background:#fff; border-bottom:1px solid var(--line); padding:14px 16px; font-weight:700; letter-spacing:.03em; }
+  main { max-width:960px; margin:0 auto; padding:16px; }
+  h1 { font-size:24px; margin:8px 0 4px; } h2 { font-size:18px; margin:24px 0 8px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px; margin:12px 0; }
+  label { display:block; font-weight:600; margin:14px 0 4px; font-size:14px; }
+  .hint { color:var(--mut); font-size:13px; font-weight:400; } .mut { color:var(--mut); }
+  input[type=text], select, textarea { width:100%; padding:10px; border:1px solid #b9c1ca; border-radius:8px; font:inherit; background:#fff; }
+  textarea { min-height:90px; resize:vertical; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; } .row > * { flex:1 1 200px; }
+  button { background:var(--blue); color:#fff; border:0; border-radius:8px; padding:10px 16px; font:inherit; font-weight:600; cursor:pointer; }
+  button.alt { background:#fff; color:var(--blue); border:1px solid var(--blue); } button.del { background:#fff; color:var(--red); border:1px solid var(--red); padding:4px 10px; font-size:13px; }
+  .player { position:relative; width:100%; aspect-ratio:16/9; background:#000; border-radius:10px; overflow:hidden; } .player iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:99px; font-size:12px; font-weight:700; background:#e8edf2; }
+  .tag.blocks { background:#fde7e5; color:var(--red); }
+  table { width:100%; border-collapse:collapse; font-size:14px; } th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; } th { color:var(--mut); font-weight:600; }
+  .tc { font-variant-numeric: tabular-nums; font-weight:700; }
+  .note { background:#fff8e1; border:1px solid #f1d98a; padding:10px 14px; border-radius:8px; font-size:14px; }
+  .ok { background:#e6f2ea; border:1px solid #b6d9c1; padding:10px 14px; border-radius:8px; }
+  #fallback { display:none; }
+</style>
+</head>
+<body>
+<header>THE MARSHALL PROJECT &middot; MODULE 2 ISSUE AUTHORITY REVIEW</header>
+<main>
+<h1>Module 2: Personal Protective Equipment</h1>
+<p class="mut">Watch each video. When you see or hear a problem, pause, press <em>Flag this moment</em>, describe what should change, and add it to your list. When you are done, record your decision at the bottom and send us the file. Your list is saved on this computer as you go, so you can close the page and come back.</p>
+
+<div class="card">
+  <div class="row">
+    <div><label for="who">Your name</label><input type="text" id="who" placeholder="Jake"></div>
+    <div><label for="video">Which video?</label>
+      <select id="video">
+        <option value="m2-en-v2" data-yt="P0Xr5Femptg">Module 2 — English — v2</option>
+        <option value="m2-es-v2" data-yt="FWN21_FqH-w">Módulo 2 — Español — v2</option>
+      </select></div>
+  </div>
+  <div class="player" style="margin-top:12px"><div id="yt"></div></div>
+  <div id="fallback" class="note">The video could not play inside this page. <a id="ytlink" href="#" target="_blank" rel="noopener">Open it in YouTube</a>, pause at the problem, and type the time below. Or in YouTube press Share, tick "Start at", copy the link, and paste it here to fill in the time:
+    <input type="text" id="pasteurl" placeholder="https://youtu.be/…?t=372" style="margin-top:8px"></div>
+</div>
+
+<h2>Add a problem</h2>
+<div class="card">
+  <div class="row">
+    <div><label for="about">What is it about?</label>
+      <select id="about">
+        <option value="video">A moment in the video</option>
+        <option value="quiz">A quiz question or its answers</option>
+        <option value="practical">The practical exercise</option>
+        <option value="audio_clip">A voice-over or audio clip (not in the video)</option>
+        <option value="webapp">The web app</option>
+        <option value="other">Something else about this module</option>
+      </select></div>
+    <div id="refbox" style="display:none"><label for="ref" id="reflabel">Which one?</label><input type="text" id="ref" placeholder=""></div>
+  </div>
+  <div id="timebox" class="row" style="margin-top:4px">
+    <div><label for="t_start">Time of the problem <span class="hint">(m:ss)</span></label><input type="text" id="t_start" inputmode="numeric" placeholder="6:12"></div>
+    <div><label for="t_end">Until <span class="hint">(optional)</span></label><input type="text" id="t_end" inputmode="numeric" placeholder="6:20"></div>
+    <div style="align-self:end"><button type="button" id="flag">Flag this moment</button> <button type="button" class="alt" id="flagEnd">Set end</button></div>
+  </div>
+  <div class="row">
+    <div><label for="category">What kind of problem?</label>
+      <select id="category">
+        <option value="safety">Safety (unsafe or wrong behavior shown)</option>
+        <option value="continuity">Continuity (character, outfit, prop changes)</option>
+        <option value="look">Look / animation glitch (hands, faces, morphing)</option>
+        <option value="spanish_text">Spanish on-screen text</option>
+        <option value="spanish_vo">Spanish narration wording</option>
+        <option value="english_text">English on-screen text</option>
+        <option value="english_vo">English narration wording or pronunciation</option>
+        <option value="audio">Audio (levels, cutoffs, noise)</option>
+        <option value="timing">Timing (too fast, too slow, long text)</option>
+        <option value="quiz_wording">Quiz wording, answer key, or translation</option>
+        <option value="webapp_issue">Web app behavior or layout</option>
+        <option value="other">Something else</option>
+      </select></div>
+    <div><label for="severity">How serious?</label>
+      <select id="severity"><option value="blocks">Blocks release</option><option value="should" selected>Should fix</option><option value="nice">Nice to have</option></select></div>
+    <div><label for="applies">Applies to</label>
+      <select id="applies"><option value="both">Both languages</option><option value="en">English only</option><option value="es">Spanish only</option></select></div>
+  </div>
+  <label for="wrong">What is wrong? <span class="hint">Say what you see or hear.</span></label>
+  <textarea id="wrong"></textarea>
+  <label for="should">What should it be instead? <span class="hint">Optional but very helpful.</span></label>
+  <textarea id="should"></textarea>
+  <p><button type="button" id="add">Add to my list</button> <span id="added" class="hint"></span></p>
+</div>
+
+<h2>Your list <span class="hint" id="count"></span></h2>
+<div class="card" id="listcard"><p class="mut" id="empty">Nothing yet.</p><table id="list" style="display:none"><thead><tr><th>#</th><th>Time</th><th>Problem</th><th></th></tr></thead><tbody></tbody></table></div>
+
+<h2>Your decision</h2>
+<div class="card">
+  <div class="row">
+    <div><label for="decision">For this video</label>
+      <select id="decision"><option value="">Choose…</option><option value="approved">Approved</option><option value="conditions">Approved with conditions</option><option value="rejected">Not approved</option></select></div>
+    <div><label for="typed">Type your name to confirm</label><input type="text" id="typed" autocomplete="off"></div>
+  </div>
+  <label for="dnote">Note <span class="hint">(required unless approving outright)</span></label>
+  <textarea id="dnote" style="min-height:60px"></textarea>
+  <p class="note">Spanish: Charlie reviews the Spanish translation. Your approval of the Spanish video follows his.</p>
+</div>
+
+<h2>Send it to us</h2>
+<div class="card">
+  <p>When you are finished, press <strong>Download my review</strong> and email the file to Forrest. If email gives you trouble, press <strong>Copy my review</strong> and paste it into the email instead.</p>
+  <p><button type="button" id="download">Download my review</button> <button type="button" class="alt" id="copy">Copy my review</button> <span id="sent" class="hint"></span></p>
+</div>
+</main>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+(function(){
+  var KEY = 'mp-m2-ia-review-v1';
+  var state = { who:'', items:[], decisions:{} };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved) state = saved; } catch(e) {}
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+  function $(id){ return document.getElementById(id); }
+  function fmt(s){ s = Math.floor(s); var h=Math.floor(s/3600), m=Math.floor((s%3600)/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(x).padStart(2,'0'); }
+  function parse(t){ t=(t||'').trim(); if(!t) return null; var p=t.split(':').map(Number); if(p.some(isNaN)||p.length>3) return null; return p.reduce(function(a,b){return a*60+b;},0); }
+  function yt(){ var o=$('video'); return o.options[o.selectedIndex].dataset.yt; }
+  function vlabel(id){ var o=$('video'); for (var i=0;i<o.options.length;i++) if (o.options[i].value===id) return o.options[i].text; return id; }
+
+  function urlSeconds(u){ var m=(u||'').match(/[?&#](?:t|start)=([0-9hms]+)/i); if(!m) return null; var v=m[1];
+    if(/^\d+$/.test(v)) return parseInt(v,10); var h=(v.match(/(\d+)h/)||[])[1]||0, mi=(v.match(/(\d+)m/)||[])[1]||0, se=(v.match(/(\d+)s/)||[])[1]||0; return (+h)*3600+(+mi)*60+(+se); }
+  $('pasteurl').addEventListener('input', function(){ var s=urlSeconds(this.value); if(s!==null){ $('t_start').value=fmt(s); } });
+
+  var player = null, loaded = false;
+  window.onYouTubeIframeAPIReady = function(){
+    player = new YT.Player('yt', { videoId: yt(), playerVars:{ rel:0, playsinline:1 }, width:'100%', height:'100%',
+      events:{ onReady:function(){ loaded = true; }, onError:function(){ showFallback(); } } });
+  };
+  function showFallback(){ $('fallback').style.display='block'; $('ytlink').href='https://www.youtube.com/watch?v='+yt(); }
+  setTimeout(function(){ if(!loaded) showFallback(); }, 6000);
+  $('video').addEventListener('change', function(){ if(player && player.loadVideoById) player.loadVideoById(yt()); $('ytlink').href='https://www.youtube.com/watch?v='+yt(); renderDecision(); });
+  $('flag').addEventListener('click', function(){ if(player && player.getCurrentTime){ player.pauseVideo(); $('t_start').value = fmt(player.getCurrentTime()); } });
+  $('flagEnd').addEventListener('click', function(){ if(player && player.getCurrentTime){ $('t_end').value = fmt(player.getCurrentTime()); } });
+
+  var hints = { quiz:['Which question number?','e.g. 7'], practical:['Which step? (optional)','e.g. step 2'], audio_clip:['Which clip?','e.g. quiz question 4 in Spanish, or narration part 7'], webapp:['Which page or button?','e.g. certificate page'], other:['Where? (optional)',''] };
+  function aboutChange(){ var a=$('about').value, v=(a==='video'); $('timebox').style.display=v?'flex':'none'; $('refbox').style.display=v?'none':'block';
+    if(!v){ $('reflabel').textContent=hints[a][0]; $('ref').placeholder=hints[a][1]; } }
+  $('about').addEventListener('change', aboutChange); aboutChange();
+
+  function sentence(i){ return (i.about==='video' ? (i.t_start!=null? fmt(i.t_start)+(i.t_end!=null?'-'+fmt(i.t_end):'') : '') : (i.about+(i.ref?' '+i.ref:''))); }
+  function render(){
+    var tb=$('list').querySelector('tbody'); tb.innerHTML='';
+    state.items.forEach(function(it, n){
+      var tr=document.createElement('tr');
+      var td1=document.createElement('td'); td1.textContent=n+1;
+      var td2=document.createElement('td'); td2.className='tc'; td2.textContent=sentence(it);
+      var td3=document.createElement('td'); var tag=document.createElement('span'); tag.className='tag'+(it.severity==='blocks'?' blocks':''); tag.textContent=it.severity; td3.appendChild(tag); td3.appendChild(document.createTextNode(' '+it.category+' — '+it.what_wrong));
+      var td4=document.createElement('td'); var b=document.createElement('button'); b.className='del'; b.textContent='Remove'; b.onclick=function(){ state.items.splice(n,1); save(); render(); }; td4.appendChild(b);
+      tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4); tb.appendChild(tr);
+    });
+    $('list').style.display = state.items.length ? 'table' : 'none'; $('empty').style.display = state.items.length ? 'none' : 'block';
+    $('count').textContent = state.items.length ? '('+state.items.length+')' : '';
+  }
+  $('add').addEventListener('click', function(){
+    var about=$('about').value, wrong=$('wrong').value.trim(), ts=parse($('t_start').value), te=parse($('t_end').value);
+    if(!wrong){ $('added').textContent='Please say what is wrong.'; return; }
+    if(about==='video' && ts===null){ $('added').textContent='Please add a time (or press Flag this moment).'; return; }
+    if(about==='quiz' && !$('ref').value.trim()){ $('added').textContent='Please give the question number.'; return; }
+    state.items.push({ about:about, video:$('video').value, video_label:vlabel($('video').value), t_start:about==='video'?ts:null, t_end:about==='video'?te:null,
+      ref:about==='video'?'':$('ref').value.trim(), category:$('category').value, severity:$('severity').value, applies_to:$('applies').value,
+      what_wrong:wrong, should_be:$('should').value.trim(), added_at:new Date().toISOString() });
+    $('wrong').value=''; $('should').value=''; $('t_start').value=''; $('t_end').value=''; $('ref').value='';
+    $('added').textContent='Added.'; save(); render();
+  });
+  $('who').value = state.who || ''; $('who').addEventListener('input', function(){ state.who=this.value; save(); });
+
+  function renderDecision(){ var d=state.decisions[$('video').value]||{}; $('decision').value=d.decision||''; $('dnote').value=d.note||''; $('typed').value=d.typed||''; }
+  function saveDecision(){ state.decisions[$('video').value]={ decision:$('decision').value, note:$('dnote').value, typed:$('typed').value }; save(); }
+  ['decision','dnote','typed'].forEach(function(id){ $(id).addEventListener('input', saveDecision); $(id).addEventListener('change', saveDecision); });
+
+  function build(){
+    var out = { form:'module-2-issue-authority-review', version:1, module:2, reviewer:state.who||'', created_at:new Date().toISOString(), items:state.items, decisions:state.decisions };
+    return out;
+  }
+  function problems(){
+    var p=[]; if(!(state.who||'').trim()) p.push('Please type your name at the top.');
+    Object.keys(state.decisions).forEach(function(v){ var d=state.decisions[v];
+      if(d.decision){ if((d.typed||'').trim().toLowerCase()!==(state.who||'').trim().toLowerCase()) p.push('Type your name exactly to confirm the decision on '+vlabel(v)+'.');
+        if(d.decision!=='approved' && !(d.note||'').trim()) p.push('Add a note for the decision on '+vlabel(v)+'.'); } });
+    return p;
+  }
+  function text(){
+    var o=build(), L=['MODULE 2 ISSUE AUTHORITY REVIEW','Reviewer: '+o.reviewer,'Sent: '+o.created_at,''];
+    Object.keys(o.decisions).forEach(function(v){ var d=o.decisions[v]; if(d.decision) L.push('DECISION — '+vlabel(v)+': '+d.decision.toUpperCase()+(d.note?' — '+d.note:'')); });
+    L.push('');
+    o.items.forEach(function(i,n){ L.push((n+1)+'. ['+i.severity.toUpperCase()+'] '+i.video_label+' '+sentence(i)+' ('+i.category+', '+i.applies_to+')'); L.push('   Wrong: '+i.what_wrong); if(i.should_be) L.push('   Should be: '+i.should_be); });
+    L.push('','--- machine-readable copy below, please keep ---',JSON.stringify(o));
+    return L.join('\n');
+  }
+  $('download').addEventListener('click', function(){
+    var p=problems(); if(p.length){ alert(p.join('\n')); return; }
+    var blob=new Blob([text()],{type:'text/plain'}), a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='Module 2 IA Review - '+(state.who||'reviewer').replace(/[^A-Za-z0-9 _-]/g,'')+' - '+new Date().toISOString().slice(0,10)+'.txt'; document.body.appendChild(a); a.click(); a.remove();
+    $('sent').textContent='Downloaded. Email that file to Forrest.';
+  });
+  $('copy').addEventListener('click', function(){
+    var p=problems(); if(p.length){ alert(p.join('\n')); return; }
+    var t=text(); function done(){ $('sent').textContent='Copied. Paste it into an email to Forrest.'; }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done, function(){ fallbackCopy(t); done(); }); } else { fallbackCopy(t); done(); }
+  });
+  function fallbackCopy(t){ var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} ta.remove(); }
+  render(); renderDecision();
+})();
+</script>
+</body>
+</html>
