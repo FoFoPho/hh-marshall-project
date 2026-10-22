@@ -324,6 +324,8 @@ Notes for processing the next one:
 
 ## Session Log
 
+**OPEN SECURITY TODO (Oct 22, 2026):** Railway disclosed that an unauthorized party may have read customers' environment variables. When Railway's dashboard is back: (1) new `SECRET_KEY`; (2) replace every `SUPERVISOR_PASSWORD*` value (and any reuse elsewhere); (3) review Railway logs; (4) check GitHub FoFoPho security log and authorized apps; (5) export the dashboard CSV as a safety copy. See the Railway Deployment section.
+
 ### 2026-10-22 (Session 24) — Module 3: Walking-Working Surfaces (staged, NOT pushed)
 
 **What changed (local commit only, not pushed; Railway deploys were blocked by its outage):**
