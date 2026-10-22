@@ -486,11 +486,105 @@
       "id": 3,
       "title": "Module 3",
       "title_es": "Módulo 3",
-      "icon": "crosshair",
+      "icon": "stairs",
       "estimated_time": "15-30 minutes",
       "estimated_time_es": "15 a 30 minutos",
       "welcome_video": "",
-      "sections": []
+      "sections": [
+        {
+          "id": "walking-working-surfaces",
+          "title": "Walking-Working Surfaces",
+          "title_es": "Superficies de tránsito y de trabajo",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=ZD11q_fIALc",
+              "video_url_es": "https://www.youtube.com/watch?v=lvNuC85igE8",
+              "video_label": "WALKING-WORKING SURFACES VIDEO",
+              "video_label_es": "VIDEO DE SUPERFICIES DE TRÁNSITO Y DE TRABAJO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Which of these is a walking-working surface hazard?",
+                "text_es": "¿Cuál de estos es un peligro de las superficies de tránsito y de trabajo?",
+                "options": [
+                  "A clear, dry walkway.",
+                  "Tools stored in their proper place.",
+                  "A loose pipe or cord in a walkway.",
+                  "Steel secured in its storage area."
+                ],
+                "options_es": [
+                  "Un pasillo despejado y seco.",
+                  "Herramientas guardadas en su lugar.",
+                  "Un tubo o cable suelto en un pasillo.",
+                  "Acero asegurado en su área de almacenamiento."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Can you leave a cart in an emergency exit route if you plan to move it shortly?",
+                "text_es": "¿Puede dejar un carrito en una ruta de salida de emergencia si piensa moverlo en poco tiempo?",
+                "options": [
+                  "Yes, if you stay nearby.",
+                  "No. Emergency exit routes must remain clear.",
+                  "Yes, if there is room to squeeze past.",
+                  "Only during a busy shift."
+                ],
+                "options_es": [
+                  "Sí, si se queda cerca.",
+                  "No. Las rutas de salida de emergencia deben mantenerse despejadas.",
+                  "Sí, si hay espacio para pasar apretado.",
+                  "Solo durante un turno con mucho trabajo."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if you see a hazard you can easily and safely correct?",
+                "text_es": "¿Qué debe hacer si ve un peligro que puede corregir de forma fácil y segura?",
+                "options": [
+                  "Walk around it.",
+                  "Wait for someone else to notice.",
+                  "Correct it right away and document the concern using the reporting system.",
+                  "Leave it until the end of the shift."
+                ],
+                "options_es": [
+                  "Rodearlo.",
+                  "Esperar a que otra persona lo note.",
+                  "Corregirlo de inmediato y documentar la inquietud con el sistema de reportes.",
+                  "Dejarlo hasta el final del turno."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "What does “take control” mean when you find a hazard you cannot safely correct?",
+                "text_es": "¿Qué significa «tomar el control» cuando encuentra un peligro que no puede corregir de forma segura?",
+                "options": [
+                  "Walk around it and leave it for someone else.",
+                  "Try to move it, even if it puts you in danger.",
+                  "Stay safe, warn others, guard or block access, and call the supervisor so the hazard can be corrected.",
+                  "Report it later and continue working."
+                ],
+                "options_es": [
+                  "Rodearlo y dejárselo a otra persona.",
+                  "Intentar moverlo, aunque lo ponga en peligro.",
+                  "Mantenerse a salvo, avisar a los demás, proteger o bloquear el acceso y llamar al supervisor para que se corrija el peligro.",
+                  "Reportarlo más tarde y seguir trabajando."
+                ],
+                "correct": 2
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Review each photo displayed in the course and select whether the walking-working surface is safe or unsafe. 2. For each unsafe photo, identify the hazard and enter what you would do to correct it or have it safely corrected.",
+            "text_es": "1. Revise cada foto que se muestra en el curso y seleccione si la superficie de tránsito y de trabajo es segura o insegura. 2. En cada foto insegura, identifique el peligro e ingrese qué haría para corregirlo o para que se corrija de forma segura."
+          }
+        }
+      ]
     },
     {
       "id": 4,

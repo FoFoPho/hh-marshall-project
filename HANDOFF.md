@@ -324,6 +324,15 @@ Notes for processing the next one:
 
 ## Session Log
 
+### 2026-10-22 (Session 24) — Module 3: Walking-Working Surfaces (staged, NOT pushed)
+
+**What changed (local commit only, not pushed; Railway deploys were blocked by its outage):**
+- `content/modules.json` — Module 3: one section `walking-working-surfaces` ("Walking-Working Surfaces" / "Superficies de tránsito y de trabajo"), one lesson page (English `ZD11q_fIALc`, Spanish `lvNuC85igE8`, both Unlisted v1 videos, 176 s), a 4-question quiz (answer key C, B, C, C → `correct` 2, 1, 2, 2) and the practical (photo review). Icon `stairs`; time 15-30 minutes. Content came from `Modules/Module 3/module-3-quiz-and-practical.json`.
+- `static/audio/m3/` — 10 clips `s1-q1..q4-en/es.mp3` and `s1-practical-en/es.mp3` (masters named `s3-…` in `Modules/Module 3/Audio/`; the app numbers audio by section position, so `s1-`).
+- Verified with the Flask test client: lesson embeds the right video per language; quiz has the 4 audio paths per language.
+
+**Do NOT release Module 3 to learners yet:** the practical says "photos displayed in the course": the photo set (stylized stills or real shop photos) and a new photo-review page format in the app are not decided or built. The module can ship without the practical page once Forrest decides, or wait.
+
 ### 2026-10-21 (Session 23) — MP IA Punch List (correction tool)
 
 **What it is:** Marshall Project Issue Authority Punch List. Reviewers (Jake as Issue Authority, the Spanish reviewer, Forrest) open a private link, watch the published video in an embedded player, press **Flag this moment** (reads the YouTube player's current time), and file a report: category, severity, applies-to language, what is wrong, what it should be, exact Spanish wording, optional screenshots. An IA safety flag always counts as "blocks release". Reports are not limited to video: the first dropdown ("What is the problem with?") also covers a quiz question (stores a snapshot of the English question text from `modules.json`), the practical, a voice-over/audio clip outside the video, the web app, or anything else, each tied to a module and an optional item reference.
