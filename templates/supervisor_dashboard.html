@@ -16,6 +16,8 @@
 
   <div class="dashboard-actions">
     <a href="{{ url_for('supervisor_export_csv') }}" class="btn btn-export">Export CSV</a>
+    <a href="{{ url_for('punchlist.admin') }}" class="btn btn-export">Punch List Reports</a>
+    <a href="{{ url_for('punchlist.admin_reviewers') }}" class="btn btn-export">Punch List Links</a>
     <form method="POST" action="{{ url_for('supervisor_reset') }}"
           onsubmit="return confirm('This permanently deletes ALL progress for every student, including completed certificates. This cannot be undone. Continue?') && confirm('Are you absolutely sure? Type OK to permanently erase every record.');">
       <button type="submit" class="btn btn-reset">Reset All Data</button>
