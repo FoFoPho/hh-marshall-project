@@ -30,7 +30,7 @@
   <div id="videoparts">
   <label for="video_id">Which video?</label>
   <select name="video_id" id="video_id">
-    {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}" data-module="{{ v.module }}">{{ v.label }}</option>{% endfor %}
+    {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}" data-module="{{ v.module }}" data-lang="{{ v.language }}">{{ v.label }}</option>{% endfor %}
   </select>
 
   <div class="player" style="margin-top:12px"><div id="yt"></div></div>
@@ -138,10 +138,11 @@
   function fmt(s){ s = Math.floor(s); var h = Math.floor(s/3600), m = Math.floor((s%3600)/60), x = s%60;
     return (h ? h + ':' + String(m).padStart(2,'0') : m) + ':' + String(x).padStart(2,'0'); }
   function filterVideos(){
-    var m = document.getElementById('module').value, sel = document.getElementById('video_id'), first = null;
-    Array.prototype.forEach.call(sel.options, function(o){ var show = (o.dataset.module === m); o.hidden = !show; o.disabled = !show; if (show && !first) first = o; });
+    var m = document.getElementById('module').value, sel = document.getElementById('video_id'), first = null, pref = null;
+    var want = '{{ 'es' if reviewer.role == 'spanish' else 'en' }}';
+    Array.prototype.forEach.call(sel.options, function(o){ var show = (o.dataset.module === m); o.hidden = !show; o.disabled = !show; if (show && !first) first = o; if (show && !pref && o.dataset.lang === want) pref = o; });
     var cur = sel.options[sel.selectedIndex];
-    if (!cur || cur.disabled) { if (first) { sel.value = first.value; } }
+    if (!cur || cur.disabled || (cur.dataset.lang !== want && pref && !sel.dataset.touched)) { if (pref || first) { sel.value = (pref || first).value; } }
     var has = !!first;
     document.getElementById('novideo').style.display = has ? 'none' : 'block';
     document.getElementById('videoparts').style.display = has ? 'block' : 'none';
@@ -159,7 +160,7 @@
     player = new YT.Player('yt', { videoId: currentId(), host: 'https://www.youtube-nocookie.com',
       playerVars: { rel: 0, playsinline: 1, hl: 'en' }, width: '100%', height: '100%' });
   }
-  document.getElementById('video_id').addEventListener('change', function(){ if (player) player.loadVideoById(currentId()); });
+  document.getElementById('video_id').addEventListener('change', function(){ this.dataset.touched = '1'; if (player) player.loadVideoById(currentId()); });
   document.getElementById('flag').addEventListener('click', function(){
     if (player && player.getCurrentTime) { player.pauseVideo(); document.getElementById('t_start').value = fmt(player.getCurrentTime()); }
   });
