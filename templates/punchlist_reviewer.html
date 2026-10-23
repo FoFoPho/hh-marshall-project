@@ -12,12 +12,12 @@
 <form method="POST" action="{{ url_for('punchlist.submit_report', token=reviewer.token) }}" enctype="multipart/form-data" class="card" id="f">
   <label for="module">Which module?</label>
   <select name="module" id="module">
-    {% for mid, mlabel in modules %}<option value="{{ mid }}" {{ 'selected' if mid == current_module }}>{{ mlabel }}</option>{% endfor %}
+    {% for mid, mlabel in modules %}<option value="{{ mid }}" {{ 'selected' if mid == restore.get('m', current_module) }}>{{ mlabel }}</option>{% endfor %}
   </select>
 
   <label for="target">What is the problem with?</label>
   <select name="target" id="target">
-    {% for k, label in targets %}<option value="{{ k }}">{{ label }}</option>{% endfor %}
+    {% for k, label in targets %}<option value="{{ k }}" {{ 'selected' if k == restore.get('tg') }}>{{ label }}</option>{% endfor %}
   </select>
 
   <div id="otherbox" style="display:none">
@@ -29,8 +29,8 @@
   <p id="novideo" class="mut" style="display:none">There is no video for this module yet. Pick another type of problem above.</p>
   <div id="videoparts">
   <label for="video_id">Which video?</label>
-  <select name="video_id" id="video_id">
-    {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}" data-module="{{ v.module }}" data-lang="{{ v.language }}">{{ v.label }}</option>{% endfor %}
+  <select name="video_id" id="video_id" {% if restore.get('v') %}data-touched="1"{% endif %}>
+    {% for v in videos %}<option value="{{ v.id }}" data-yt="{{ v.youtube_id }}" data-module="{{ v.module }}" data-lang="{{ v.language }}" {{ 'selected' if v.id == restore.get('v') }}>{{ v.label }}</option>{% endfor %}
   </select>
 
   <div class="player" style="margin-top:12px"><div id="yt"></div></div>
@@ -157,8 +157,10 @@
   function currentId(){ var o = document.getElementById('video_id'); return o.options[o.selectedIndex].dataset.yt; }
   function onYouTubeIframeAPIReady(){
     filterVideos();
+    var back = {{ restore.get('t', 'null') }};
     player = new YT.Player('yt', { videoId: currentId(), host: 'https://www.youtube-nocookie.com',
-      playerVars: { rel: 0, playsinline: 1, hl: 'en' }, width: '100%', height: '100%' });
+      playerVars: { rel: 0, playsinline: 1, hl: 'en', start: back || 0 }, width: '100%', height: '100%',
+      events: { onReady: function(){ if (back) { player.seekTo(back, true); player.pauseVideo(); } } } });
   }
   document.getElementById('video_id').addEventListener('change', function(){ this.dataset.touched = '1'; if (player) player.loadVideoById(currentId()); });
   document.getElementById('flag').addEventListener('click', function(){

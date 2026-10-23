@@ -312,6 +312,21 @@ def get_reviewer(token):
 # Reviewer pages
 # ---------------------------------------------------------------------------
 
+def _restore_args(videos):
+    """Where the reviewer was when they filed the last report (module, problem type, video, time)."""
+    a = request.args
+    out = {}
+    if a.get('m', '').isdigit() and int(a['m']) in {mid for mid, _ in module_choices()}:
+        out['m'] = int(a['m'])
+    if a.get('tg') in _labels(TARGETS):
+        out['tg'] = a['tg']
+    if a.get('v') in {v['id'] for v in videos}:
+        out['v'] = a['v']
+        if a.get('t', '').isdigit():
+            out['t'] = int(a['t'])
+    return out
+
+
 @bp.route('/r/<token>')
 def reviewer_page(token):
     reviewer = get_reviewer(token)
@@ -333,7 +348,7 @@ def reviewer_page(token):
                            reports=mine, cat_labels=_labels(CATEGORIES),
                            sev_labels=_labels(SEVERITIES),
                            role_label=_labels(ROLES).get(reviewer['role'], reviewer['role']),
-                           sent=request.args.get('sent'))
+                           sent=request.args.get('sent'), restore=_restore_args(videos))
 
 
 def _save_images(c, report_id):
@@ -408,7 +423,9 @@ def submit_report(token):
         report_id = cur.lastrowid
         n = _save_images(c, report_id)
         log_event(c, report_id, reviewer['name'], 'created', f'{n} screenshot(s) attached')
-    return redirect(url_for('punchlist.reviewer_page', token=token, sent='ok'))
+    return redirect(url_for('punchlist.reviewer_page', token=token, sent='ok', m=module, tg=target,
+                            v=video['id'] if video else None,
+                            t=int(t_start) if t_start is not None else None))
 
 
 @bp.route('/r/<token>/signoff', methods=['POST'])
