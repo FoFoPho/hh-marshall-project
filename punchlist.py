@@ -542,6 +542,22 @@ def admin_report(report_id):
                            app_labels=_labels(APPLIES), video=video_by_id(report['video_id']))
 
 
+@bp.route('/admin/report/<int:report_id>/delete', methods=['POST'])
+@supervisor_only
+def admin_report_delete(report_id):
+    with conn() as c:
+        files = c.execute('SELECT filename FROM attachments WHERE report_id = ?', (report_id,)).fetchall()
+        for f in files:
+            try:
+                os.remove(os.path.join(_upload_dir(), f['filename']))
+            except OSError:
+                pass
+        c.execute('DELETE FROM attachments WHERE report_id = ?', (report_id,))
+        c.execute('DELETE FROM events WHERE report_id = ?', (report_id,))
+        c.execute('DELETE FROM reports WHERE id = ?', (report_id,))
+    return redirect(url_for('punchlist.admin'))
+
+
 @bp.route('/admin/reviewers', methods=['GET', 'POST'])
 @supervisor_only
 def admin_reviewers():

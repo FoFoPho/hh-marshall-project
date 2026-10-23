@@ -23,6 +23,9 @@
   <label>Note</label><textarea name="note"></textarea>
   <p><button type="submit">Save</button></p>
 </form>
+<form method="POST" action="{{ url_for('punchlist.admin_report_delete', report_id=r.id) }}" onsubmit="return confirm('Permanently delete this report, its screenshots and history? This cannot be undone.');" style="margin:16px 0">
+  <button type="submit" class="alt" style="color:#b00020;border-color:#b00020">Delete this report</button>
+</form>
 <h2>History</h2>
 <div class="card"><table>{% for e in events %}<tr><td class="small mut">{{ e.at }}</td><td>{{ e.actor }}</td><td>{{ e.kind }}</td><td>{{ e.detail }}</td></tr>{% endfor %}</table></div>
 {% endblock %}
