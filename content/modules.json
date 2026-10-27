@@ -640,11 +640,171 @@
       "id": 4,
       "title": "Module 4",
       "title_es": "Módulo 4",
-      "icon": "forklift",
+      "icon": "broom",
       "estimated_time": "15-30 minutes",
       "estimated_time_es": "15 a 30 minutos",
       "welcome_video": "",
-      "sections": []
+      "sections": [
+        {
+          "id": "keep-your-workspace-clean-and-organized",
+          "title": "Keep Your Workspace Clean and Organized",
+          "title_es": "Mantenga su espacio de trabajo limpio y ordenado",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=N3NC25brPcQ",
+              "video_url_es": "https://www.youtube.com/watch?v=CdO_Tl-e5fc",
+              "video_label": "KEEP YOUR WORKSPACE CLEAN AND ORGANIZED VIDEO",
+              "video_label_es": "VIDEO DE ESPACIO DE TRABAJO LIMPIO Y ORDENADO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Before starting a job, what should you check?",
+                "text_es": "¿Qué debe revisar antes de comenzar un trabajo?",
+                "options": [
+                  "Whether there is room to push clutter onto the floor.",
+                  "Whether someone else will clean the area later.",
+                  "Whether you can reach your tools safely and have enough clear space to work.",
+                  "Whether the clutter is hidden from view."
+                ],
+                "options_es": [
+                  "Si hay espacio para empujar el desorden al piso.",
+                  "Si otra persona limpiará el área más tarde.",
+                  "Si puede alcanzar sus herramientas de forma segura y tiene suficiente espacio libre para trabajar.",
+                  "Si el desorden está fuera de la vista."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "How should you collect small, loose metal pieces from your work area?",
+                "text_es": "¿Cómo debe recoger las piezas pequeñas de metal sueltas de su área de trabajo?",
+                "options": [
+                  "Brush them away with your bare hand.",
+                  "Use a brush and dustpan, then put them in the metal scrap bin.",
+                  "Blow them onto the floor.",
+                  "Put them in a regular trash bag."
+                ],
+                "options_es": [
+                  "Barrerlas con la mano desnuda.",
+                  "Usar un cepillo y un recogedor, y luego ponerlas en el contenedor para desechos de metal.",
+                  "Soplarlas hacia el piso.",
+                  "Ponerlas en una bolsa de basura común."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do with a part that is too heavy or awkward for you to move safely?",
+                "text_es": "¿Qué debe hacer con una pieza demasiado pesada o incómoda para moverla de forma segura?",
+                "options": [
+                  "Move it quickly before anyone walks by.",
+                  "Drag it into the aisle.",
+                  "Lean it against the edge of your work area.",
+                  "Leave it in place, keep others clear, and get help before moving it."
+                ],
+                "options_es": [
+                  "Moverla rápido antes de que pase alguien.",
+                  "Arrastrarla hacia el pasillo.",
+                  "Apoyarla contra el borde de su área de trabajo.",
+                  "Dejarla en su lugar, mantener a los demás alejados y pedir ayuda antes de moverla."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "When should you clean and organize your workspace?",
+                "text_es": "¿Cuándo debe limpiar y organizar su espacio de trabajo?",
+                "options": [
+                  "Only at the end of the week.",
+                  "Only when a supervisor asks.",
+                  "Only when you cannot find a tool.",
+                  "Before starting, as you work, and when you finish a task."
+                ],
+                "options_es": [
+                  "Solo al final de la semana.",
+                  "Solo cuando un supervisor se lo pida.",
+                  "Solo cuando no encuentre una herramienta.",
+                  "Antes de comenzar, mientras trabaja y al terminar una tarea."
+                ],
+                "correct": 3
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Review each workspace photo displayed in the course and mark it as ready for work or needing attention. 2. For each workspace that needs attention, identify the problems and enter what you would move, put away, or clean up, and where each item should go.",
+            "text_es": "1. Revise cada foto del espacio de trabajo que se muestra en el curso y márquela como lista para trabajar o que necesita atención. 2. En cada espacio de trabajo que necesita atención, identifique los problemas e ingrese qué movería, guardaría o limpiaría, y a dónde debe ir cada cosa.",
+            "photos": [
+              {
+                "image": "practical/m4/photo-01.jpg",
+                "answer": "unsafe",
+                "hazard": "Tools are buried under unused material and scrap, and loose metal pieces and trash are on the floor. Return tools to their drawers and holders, store leftover material on the rack, put small metal pieces in the metal scrap bin with a brush and dustpan, and put ordinary trash in the trash can.",
+                "hazard_es": "Las herramientas están enterradas bajo material sin usar y desechos, y hay piezas sueltas de metal y basura en el piso. Devuelva las herramientas a sus cajones y soportes, guarde el material sobrante en el estante, ponga las piezas pequeñas de metal en el contenedor de desechos de metal con un cepillo y un recogedor, y la basura común en el bote de basura."
+              },
+              {
+                "image": "practical/m4/photo-02.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m4/photo-03.jpg",
+                "answer": "unsafe",
+                "hazard": "Long steel stock sticks out of the rack into the walkway. Keep people clear and get authorized help to put it flat and fully supported inside the rack. Do not move it by hand.",
+                "hazard_es": "Una pieza larga de acero sobresale del estante hacia el pasillo. Mantenga a las personas alejadas y pida ayuda autorizada para acomodarla plana y bien apoyada dentro del estante. No la mueva a mano."
+              },
+              {
+                "image": "practical/m4/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "Metal scrap and regular trash are mixed, both bins are overfilled, and waste has spilled on the floor. Separate the metal scrap from the trash, use a brush and dustpan for small pieces, never reach into a bag with sharp metal, and empty both containers before they overflow.",
+                "hazard_es": "Los desechos de metal y la basura común están mezclados, ambos contenedores están sobrecargados y hay desechos en el piso. Separe el metal de la basura, use un cepillo y un recogedor para las piezas pequeñas, nunca meta la mano en una bolsa con metal filoso y vacíe ambos contenedores antes de que se desborden."
+              },
+              {
+                "image": "practical/m4/photo-05.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m4/photo-06.jpg",
+                "answer": "unsafe",
+                "hazard": "A cord and hose lie across the walkway, and a plugged-in machine was left in the aisle. Turn it off, unplug it by the plug, return it to its storage shelf, coil the cord, and put the hose back on its reel.",
+                "hazard_es": "Un cable y una manguera cruzan el pasillo, y se dejó una máquina conectada en el pasillo. Apáguela, desconéctela por el enchufe, devuélvala a su estante, enrolle el cable y vuelva a poner la manguera en su carrete."
+              },
+              {
+                "image": "practical/m4/photo-07.jpg",
+                "answer": "unsafe",
+                "hazard": "Boxes, a cart, and pallets block the exit, the fire extinguisher, and the electrical panel. Move them to their storage areas (get help for heavy loads) and keep the exit, extinguisher, and panel clear.",
+                "hazard_es": "Cajas, un carrito y tarimas bloquean la salida, el extintor y el tablero eléctrico. Llévelos a sus áreas de almacenamiento (pida ayuda con las cargas pesadas) y mantenga despejados la salida, el extintor y el tablero."
+              },
+              {
+                "image": "practical/m4/photo-08.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              }
+            ],
+            "labels": {
+              "instruction": "Look at each photo. Choose whether the workspace is ready for work or needs attention. For each workspace that needs attention, type the problems and what you would move, put away, or clean up, and where each item should go.",
+              "instruction_es": "Mire cada foto. Elija si el espacio de trabajo está listo para trabajar o necesita atención. En cada espacio que necesita atención, escriba los problemas y qué movería, guardaría o limpiaría, y a dónde debe ir cada cosa.",
+              "safe": "READY",
+              "safe_es": "LISTO",
+              "unsafe": "NEEDS ATTENTION",
+              "unsafe_es": "NECESITA ATENCIÓN",
+              "hazard_label": "The problems:",
+              "hazard_label_es": "Los problemas:",
+              "prompt": "What are the problems, and what would you move, put away, or clean up? Where should each item go?",
+              "prompt_es": "¿Cuáles son los problemas y qué movería, guardaría o limpiaría? ¿A dónde debe ir cada cosa?",
+              "not_quite_unsafe": "Not quite. This workspace needs attention.",
+              "not_quite_unsafe_es": "No exactamente. Este espacio necesita atención.",
+              "not_quite_safe": "Not quite. This workspace is ready for work.",
+              "not_quite_safe_es": "No exactamente. Este espacio está listo para trabajar."
+            }
+          }
+        }
+      ]
     },
     {
       "id": 5,

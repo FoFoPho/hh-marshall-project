@@ -9,6 +9,8 @@
     {"id": "m2-es-v2", "module": 2, "label": "Módulo 2 - Equipo de protección personal - Español - v2", "language": "es", "version": "v2", "youtube_id": "FWN21_FqH-w", "duration": 946},
     {"id": "m3-en-v1", "module": 3, "label": "Module 3 - Walking-Working Surfaces - English - v1", "language": "en", "version": "v1", "youtube_id": "ZD11q_fIALc", "duration": 176},
     {"id": "m3-es-v1", "module": 3, "label": "Módulo 3 - Superficies de trabajo y de paso - Español - v1", "language": "es", "version": "v1", "youtube_id": "lvNuC85igE8", "duration": 176},
+    {"id": "m4-en-v1", "module": 4, "label": "Module 4 - Keep Your Workspace Clean and Organized - English - v1", "language": "en", "version": "v1", "youtube_id": "N3NC25brPcQ", "duration": 165},
+    {"id": "m4-es-v1", "module": 4, "label": "Módulo 4 - Mantenga su espacio de trabajo limpio y ordenado - Español - v1", "language": "es", "version": "v1", "youtube_id": "CdO_Tl-e5fc", "duration": 165},
     {"id": "m7-en", "module": 7, "label": "Module 7 - Power Tool Safety - English", "language": "en", "version": "current", "youtube_id": "-qK40HfWO2A"},
     {"id": "m7-es", "module": 7, "label": "Módulo 7 - Seguridad con herramientas eléctricas - Español", "language": "es", "version": "current", "youtube_id": "Z0nPb84ukmw"}
   ]
