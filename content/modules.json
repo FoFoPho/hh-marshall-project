@@ -820,11 +820,240 @@
       "id": 6,
       "title": "Module 6",
       "title_es": "Módulo 6",
-      "icon": "stairs",
+      "icon": "bolt",
       "estimated_time": "15-30 minutes",
       "estimated_time_es": "15 a 30 minutos",
       "welcome_video": "",
-      "sections": []
+      "sections": [
+        {
+          "id": "electrical-safety",
+          "title": "Electrical Safety",
+          "title_es": "Seguridad eléctrica",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=-O6kVCzd13k",
+              "video_url_es": "https://www.youtube.com/watch?v=86OeaiGZor4",
+              "video_label": "ELECTRICAL SAFETY VIDEO",
+              "video_label_es": "VIDEO DE SEGURIDAD ELÉCTRICA",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "What should you do if you find an electrical hazard?",
+                "text_es": "¿Qué debe hacer si encuentra un peligro eléctrico?",
+                "options": [
+                  "Disconnect power if safe, take control of the area or appoint someone to keep others clear, and alert your supervisor and/or the Director of Safety. Do not just walk away.",
+                  "Work around it carefully.",
+                  "Use the equipment only for a short job.",
+                  "Attempt repairs yourself, even if you are not qualified."
+                ],
+                "options_es": [
+                  "Desconectar la corriente si es seguro, tomar el control del área o designar a alguien para mantener alejadas a las demás personas, y avisar a su supervisor y/o al Director de Seguridad. No simplemente irse.",
+                  "Trabajar alrededor con cuidado.",
+                  "Usar el equipo solo para un trabajo corto.",
+                  "Intentar repararlo usted mismo, aunque no esté calificado."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "Who may open equipment to reach electrical parts or perform electrical repairs?",
+                "text_es": "¿Quién puede abrir un equipo para llegar a las partes eléctricas o hacer reparaciones eléctricas?",
+                "options": [
+                  "Anyone who has used the machine before.",
+                  "Anyone who turns the power switch off.",
+                  "Employees who are qualified and authorized for that work.",
+                  "Anyone wearing work gloves."
+                ],
+                "options_es": [
+                  "Cualquier persona que ya haya usado la máquina.",
+                  "Cualquier persona que apague el interruptor.",
+                  "Los empleados calificados y autorizados para ese trabajo.",
+                  "Cualquier persona que use guantes de trabajo."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "Why are overhead power lines dangerous?",
+                "text_es": "¿Por qué son peligrosas las líneas eléctricas aéreas?",
+                "options": [
+                  "Only because they get in the way.",
+                  "Electricity can jump to nearby equipment or travel through objects touching a line, causing fatal injuries.",
+                  "They are dangerous only when they spark.",
+                  "They are safe if they look insulated."
+                ],
+                "options_es": [
+                  "Solo porque estorban.",
+                  "La electricidad puede saltar al equipo cercano o viajar por los objetos que tocan una línea, y causar lesiones mortales.",
+                  "Solo son peligrosas cuando sueltan chispas.",
+                  "Son seguras si parecen aisladas."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do before moving equipment or long material in an area with overhead power lines?",
+                "text_es": "¿Qué debe hacer antes de mover equipo o material largo en un área con líneas eléctricas aéreas?",
+                "options": [
+                  "Assume the route is safe because it was used yesterday.",
+                  "Look only at the ground for obstacles.",
+                  "Ask someone to hold the line out of the way.",
+                  "Look up, identify the lines, and check the entire route, including where the equipment or load could reach."
+                ],
+                "options_es": [
+                  "Suponer que la ruta es segura porque se usó ayer.",
+                  "Mirar solo el suelo en busca de obstáculos.",
+                  "Pedirle a alguien que sujete la línea para apartarla.",
+                  "Mirar hacia arriba, identificar las líneas y revisar toda la ruta, incluido el alcance que pueden tener el equipo o la carga."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "What should you do if you see equipment contacting a power line?",
+                "text_es": "¿Qué debe hacer si ve un equipo en contacto con una línea eléctrica?",
+                "options": [
+                  "Touch it to check whether it is energized.",
+                  "Keep yourself and others away and call 911.",
+                  "Pull anyone touching it away with your hands.",
+                  "Move the line with a piece of scrap."
+                ],
+                "options_es": [
+                  "Tocarlo para comprobar si está energizado.",
+                  "Alejarse y mantener alejadas a las demás personas, y llamar al 911.",
+                  "Jalar con las manos a quien lo esté tocando.",
+                  "Mover la línea con un trozo de desecho."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if you are inside a piece of equipment that contacts a power line?",
+                "text_es": "¿Qué debe hacer si está dentro de un equipo que toca una línea eléctrica?",
+                "options": [
+                  "Climb down immediately.",
+                  "Ask a coworker to help you get out.",
+                  "Stay inside unless fire or another immediate danger forces you to escape. Warn others to stay away, call 911, and wait until the power company confirms it is safe.",
+                  "Get out once the sparks stop."
+                ],
+                "options_es": [
+                  "Bajar de inmediato.",
+                  "Pedirle a un compañero que le ayude a salir.",
+                  "Permanecer adentro, a menos que un incendio u otro peligro inmediato lo obligue a escapar. Avisar a los demás que se mantengan alejados, llamar al 911 y esperar a que la compañía eléctrica confirme que es seguro.",
+                  "Salir cuando dejen de salir chispas."
+                ],
+                "correct": 2
+              },
+              {
+                "text": "When must you check an extension cord for damage under our shop rules?",
+                "text_es": "¿Cuándo debe revisar un cable de extensión para detectar daños, según las reglas de nuestro taller?",
+                "options": [
+                  "Only at the beginning of the day.",
+                  "Only at the end of the shift.",
+                  "Only when it stops working.",
+                  "Before each use."
+                ],
+                "options_es": [
+                  "Solo al comenzar el día.",
+                  "Solo al terminar el turno.",
+                  "Solo cuando deja de funcionar.",
+                  "Antes de cada uso."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "Can you cover a cord with sheet steel or cardboard to prevent tripping?",
+                "text_es": "¿Puede cubrir un cable con lámina de acero o cartón para evitar tropiezos?",
+                "options": [
+                  "Yes, if it stays in place.",
+                  "Yes, but only for short crossings.",
+                  "Only when no forklifts are nearby.",
+                  "No. Reroute the cord or use an approved cord protector rated for the traffic."
+                ],
+                "options_es": [
+                  "Sí, si se queda en su lugar.",
+                  "Sí, pero solo para cruces cortos.",
+                  "Solo cuando no hay montacargas cerca.",
+                  "No. Cambie la ruta del cable o use un protector para cables aprobado y clasificado para el tráfico."
+                ],
+                "correct": 3
+              },
+              {
+                "text": "What should you do with a damaged extension cord?",
+                "text_es": "¿Qué debe hacer con un cable de extensión dañado?",
+                "options": [
+                  "Do not use it. Take it to the tool room for repair by the maintenance department.",
+                  "Tape over the damage and keep working.",
+                  "Use it only for small tools.",
+                  "Leave it for someone else."
+                ],
+                "options_es": [
+                  "No usarlo. Llevarlo al cuarto de herramientas para que el departamento de mantenimiento lo repare.",
+                  "Cubrir el daño con cinta y seguir trabajando.",
+                  "Usarlo solo con herramientas pequeñas.",
+                  "Dejárselo a otra persona."
+                ],
+                "correct": 0
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Review the electrical-hazard photos displayed in the course, including overhead power lines and extension-cord examples. Select which conditions are safe and unsafe. 2. For each unsafe photo, identify the hazard and enter what you would do to keep people safe and have it corrected.",
+            "text_es": "1. Revise las fotos de peligros eléctricos que se muestran en el curso, incluidas las de líneas eléctricas aéreas y ejemplos de cables de extensión. Seleccione qué condiciones son seguras y cuáles son inseguras. 2. En cada foto insegura, identifique el peligro e ingrese qué haría para mantener a las personas a salvo y para que se corrija.",
+            "photos": [
+              {
+                "image": "practical/m6/photo-01.jpg",
+                "answer": "unsafe",
+                "hazard": "The cord has cut and crushed insulation and the wires are exposed. Do not use it or touch the damaged area. Keep others from using it, tell your supervisor and/or the Director of Safety, and take the disconnected cord to the tool room for repair or disposal by maintenance.",
+                "hazard_es": "El cable tiene el aislamiento cortado y aplastado y los alambres están expuestos. No lo use ni toque la zona dañada. Evite que otros lo usen, avise a su supervisor y/o al Director de Seguridad, y lleve el cable desconectado al cuarto de herramientas para que mantenimiento lo repare o lo deseche."
+              },
+              {
+                "image": "practical/m6/photo-02.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m6/photo-03.jpg",
+                "answer": "unsafe",
+                "hazard": "A forklift mast is raised close to overhead power lines. Keep people and equipment clear, stop work, and alert your supervisor and/or the Director of Safety. Treat every line as energized, and move equipment only after the whole route has been checked. If equipment touches a line, keep away, warn others, and call 911.",
+                "hazard_es": "El mástil de un montacargas está elevado cerca de líneas eléctricas aéreas. Mantenga alejadas a las personas y al equipo, deje de trabajar y avise a su supervisor y/o al Director de Seguridad. Trate toda línea como energizada y mueva el equipo solo después de revisar toda la ruta. Si el equipo toca una línea, aléjese, avise a los demás y llame al 911."
+              },
+              {
+                "image": "practical/m6/photo-04.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m6/photo-05.jpg",
+                "answer": "unsafe",
+                "hazard": "Electrical tape is wrapped around damage on the cord. Tape is not an acceptable repair. Do not use the cord or touch the damage. Keep it from being reused, report it, and take the disconnected cord to the tool room for repair or disposal by maintenance.",
+                "hazard_es": "Hay cinta eléctrica sobre un daño en el cable. La cinta no es una reparación aceptable. No use el cable ni toque el daño. Evite que se vuelva a usar, repórtelo y lleve el cable desconectado al cuarto de herramientas para que mantenimiento lo repare o lo deseche."
+              },
+              {
+                "image": "practical/m6/photo-06.jpg",
+                "answer": "unsafe",
+                "hazard": "A cord is covered with cardboard across a walking route. Cardboard does not protect a cord from being crushed and can cause a trip. Keep people clear, tell your supervisor, and have the cord checked and rerouted away from traffic or protected with a company-approved cord protector rated for the traffic.",
+                "hazard_es": "Un cable está cubierto con cartón en una ruta de paso. El cartón no protege el cable contra el aplastamiento y puede causar un tropiezo. Mantenga alejadas a las personas, avise a su supervisor y haga que se revise el cable y se cambie su ruta lejos del tráfico o se proteja con un protector para cables aprobado por la empresa y clasificado para el tráfico."
+              },
+              {
+                "image": "practical/m6/photo-07.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m6/photo-08.jpg",
+                "answer": "unsafe",
+                "hazard": "An electrical box is missing its cover and the wiring inside is exposed. Keep people clear and do not touch, open, or try to repair it. Tell your supervisor and/or the Director of Safety so a qualified, authorized person can make it safe before it returns to service.",
+                "hazard_es": "A una caja eléctrica le falta la tapa y el cableado interior está expuesto. Mantenga alejadas a las personas y no la toque, abra ni intente repararla. Avise a su supervisor y/o al Director de Seguridad para que una persona calificada y autorizada la deje segura antes de volver a ponerla en servicio."
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       "id": 7,
