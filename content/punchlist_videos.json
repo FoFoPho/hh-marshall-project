@@ -13,6 +13,10 @@
     {"id": "m4-es-v1", "module": 4, "label": "Módulo 4 - Mantenga su espacio de trabajo limpio y ordenado - Español - v1", "language": "es", "version": "v1", "youtube_id": "CdO_Tl-e5fc", "duration": 165},
     {"id": "m6-en-v1", "module": 6, "label": "Module 6 - Electrical Safety - English - v1", "language": "en", "version": "v1", "youtube_id": "-O6kVCzd13k", "duration": 363},
     {"id": "m6-es-v1", "module": 6, "label": "Módulo 6 - Seguridad eléctrica - Español - v1", "language": "es", "version": "v1", "youtube_id": "86OeaiGZor4", "duration": 363},
+    {"id": "m8-en-v1", "module": 8, "label": "Module 8 - Material Handling - English - v1", "language": "en", "version": "v1", "youtube_id": "xy9yW0nBwP8", "duration": 350},
+    {"id": "m8-es-v1", "module": 8, "label": "Módulo 8 - Manejo de materiales - Español - v1", "language": "es", "version": "v1", "youtube_id": "YwABuQMhHzM", "duration": 350},
+    {"id": "m9-en-v1", "module": 9, "label": "Module 9 - Stacking Steel - English - v1", "language": "en", "version": "v1", "youtube_id": "tX_vzoBYKHM", "duration": 221},
+    {"id": "m9-es-v1", "module": 9, "label": "Módulo 9 - Apilado de acero - Español - v1", "language": "es", "version": "v1", "youtube_id": "w3VW5-5WxRs", "duration": 221},
     {"id": "m7-en", "module": 7, "label": "Module 7 - Power Tool Safety - English", "language": "en", "version": "current", "youtube_id": "-qK40HfWO2A"},
     {"id": "m7-es", "module": 7, "label": "Módulo 7 - Seguridad con herramientas eléctricas - Español", "language": "es", "version": "current", "youtube_id": "Z0nPb84ukmw"}
   ]

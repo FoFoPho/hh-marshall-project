@@ -1116,6 +1116,308 @@
           }
         }
       ]
+    },
+    {
+      "id": 8,
+      "title": "Module 8",
+      "title_es": "Módulo 8",
+      "icon": "cart",
+      "estimated_time": "15-30 minutes",
+      "estimated_time_es": "15 a 30 minutos",
+      "welcome_video": "",
+      "sections": [
+        {
+          "id": "material-handling",
+          "title": "Material Handling",
+          "title_es": "Manejo de materiales",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=xy9yW0nBwP8",
+              "video_url_es": "https://www.youtube.com/watch?v=YwABuQMhHzM",
+              "video_label": "MATERIAL HANDLING VIDEO",
+              "video_label_es": "VIDEO DE MANEJO DE MATERIALES",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "What should you do when a load is too heavy or awkward to lift safely alone?",
+                "text_es": "¿Qué debe hacer cuando una carga es demasiado pesada o incómoda para levantarla solo con seguridad?",
+                "options": [
+                  "Lift it quickly before you get tired.",
+                  "Split the load, use suitable moving equipment, or arrange a controlled team lift."
+                ],
+                "options_es": [
+                  "Levantarla rápido antes de cansarse.",
+                  "Dividir la carga, usar equipo adecuado para moverla u organizar un levantamiento en equipo controlado."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if the load blocks your view of the path?",
+                "text_es": "¿Qué debe hacer si la carga le tapa la vista del camino?",
+                "options": [
+                  "Keep walking and listen for people.",
+                  "Set it down safely and change the way you move it so you can see your path."
+                ],
+                "options_es": [
+                  "Seguir caminando y escuchar si hay personas.",
+                  "Dejarla con seguridad y cambiar la forma de moverla para poder ver su camino."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "How should you turn while carrying a load?",
+                "text_es": "¿Cómo debe girar mientras lleva una carga?",
+                "options": [
+                  "Move your feet to turn your whole body.",
+                  "Keep your feet still and twist at the waist."
+                ],
+                "options_es": [
+                  "Mover los pies para girar todo el cuerpo.",
+                  "Mantener los pies quietos y torcer la cintura."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "What should you do if a piece of steel starts falling or rolling?",
+                "text_es": "¿Qué debe hacer si una pieza de acero empieza a caer o a rodar?",
+                "options": [
+                  "Catch it or stop it with your foot.",
+                  "Move clear and keep others away from its path."
+                ],
+                "options_es": [
+                  "Atraparla o detenerla con el pie.",
+                  "Alejarse y mantener a los demás fuera de su trayectoria."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "Where should you keep your hands and feet when setting a load down?",
+                "text_es": "¿Dónde debe mantener las manos y los pies al bajar una carga?",
+                "options": [
+                  "Clear of the landing area and any spaces where they could be trapped.",
+                  "Under the load to guide it into place."
+                ],
+                "options_es": [
+                  "Lejos del área donde caerá y de cualquier espacio donde podrían quedar atrapados.",
+                  "Debajo de la carga para guiarla a su lugar."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "Does completing this module authorize you to operate a crane or forklift?",
+                "text_es": "¿Completar este módulo lo autoriza a operar una grúa o un montacargas?",
+                "options": [
+                  "Yes, if you only need to move one load.",
+                  "No. You must complete equipment-specific training, demonstrate safe operation, and receive company authorization."
+                ],
+                "options_es": [
+                  "Sí, si solo necesita mover una carga.",
+                  "No. Debe completar la capacitación específica del equipo, demostrar que puede operarlo con seguridad y recibir la autorización de la empresa."
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Review the photos or short videos shown in the course. Identify which material-handling methods are safe and unsafe. 2. For each unsafe example, write what you would change. Include how you would move the load, keep your view clear, and protect your hands and feet when setting it down.",
+            "text_es": "1. Revise las fotos o los videos cortos que se muestran en el curso. Identifique qué métodos de manejo de materiales son seguros y cuáles son inseguros. 2. En cada ejemplo inseguro, escriba qué cambiaría. Incluya cómo movería la carga, cómo mantendría despejada su vista y cómo protegería sus manos y pies al bajarla.",
+            "photos": [
+              {
+                "image": "practical/m8/photo-01.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m8/photo-02.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m8/photo-03.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m8/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "The cart is piled so high that the view of the path is blocked. Do not push it like this. Split the load into smaller amounts or make two trips so you can see where you are going.",
+                "hazard_es": "El carro está tan cargado que tapa la vista del camino. No lo empuje así. Divida la carga en cantidades más pequeñas o haga dos viajes para poder ver por dónde va."
+              },
+              {
+                "image": "practical/m8/photo-05.jpg",
+                "answer": "unsafe",
+                "hazard": "A cord lies across the route. Clear it from the path before moving the load and put it on its storage hook, so no one trips and the load can move on a clear route.",
+                "hazard_es": "Hay un cable atravesado en la ruta. Quítelo del camino antes de mover la carga y guárdelo en su gancho, para que nadie tropiece y la carga pase por una ruta despejada."
+              },
+              {
+                "image": "practical/m8/photo-06.jpg",
+                "answer": "unsafe",
+                "hazard": "The round offcut lies loose beside the travel path and could roll. Secure it in a rack or with blocks or chocks designed to prevent rolling, and keep the route clear.",
+                "hazard_es": "La pieza redonda está suelta junto al camino y podría rodar. Asegúrela en un estante o con bloques o cuñas diseñados para evitar que ruede, y mantenga despejada la ruta."
+              },
+              {
+                "image": "practical/m8/photo-07.jpg",
+                "answer": "unsafe",
+                "hazard": "Loose tag-line rope is coiled where a helper must stand. Keep the rope clear of feet, never wrap it around a hand, arm or body, and lay it out away from the footing before the lift.",
+                "hazard_es": "La cuerda guía suelta está enrollada donde debe pararse el ayudante. Mantenga la cuerda lejos de los pies, nunca la enrolle en la mano, el brazo o el cuerpo, y tiéndala lejos del lugar donde se para antes del levantamiento."
+              },
+              {
+                "image": "practical/m8/photo-08.jpg",
+                "answer": "unsafe",
+                "hazard": "The landing bench is cluttered with loose scrap, so there is no stable surface to set the load down. Clear the bench and place the load on prepared, stable supports.",
+                "hazard_es": "La mesa donde se va a colocar la carga está llena de chatarra suelta y no hay una superficie estable. Despeje la mesa y coloque la carga sobre soportes preparados y estables."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Module 9",
+      "title_es": "Módulo 9",
+      "icon": "stack",
+      "estimated_time": "15-30 minutes",
+      "estimated_time_es": "15 a 30 minutos",
+      "welcome_video": "",
+      "sections": [
+        {
+          "id": "stacking-steel",
+          "title": "Stacking Steel",
+          "title_es": "Apilado de acero",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=tX_vzoBYKHM",
+              "video_url_es": "https://www.youtube.com/watch?v=w3VW5-5WxRs",
+              "video_label": "STACKING STEEL VIDEO",
+              "video_label_es": "VIDEO DE APILADO DE ACERO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Which horses may be used to support steel?",
+                "text_es": "¿Qué caballetes se pueden usar para sostener acero?",
+                "options": [
+                  "Bent or wobbly horses, if the load is small.",
+                  "Undamaged, stable horses with enough capacity for the full load."
+                ],
+                "options_es": [
+                  "Caballetes doblados o flojos, si la carga es pequeña.",
+                  "Caballetes sin daños y estables, con capacidad suficiente para toda la carga."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "How should round material be stored?",
+                "text_es": "¿Cómo se debe almacenar el material redondo?",
+                "options": [
+                  "In a rack that contains it, or secured with blocks or chocks that prevent rolling.",
+                  "Loose on top of a flat stack."
+                ],
+                "options_es": [
+                  "En un estante que lo contenga, o asegurado con bloques o cuñas que eviten que ruede.",
+                  "Suelto encima de una pila plana."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "Is it safe to add another layer just because there is room?",
+                "text_es": "¿Es seguro agregar otra capa solo porque hay espacio?",
+                "options": [
+                  "Yes, if it fits.",
+                  "No. The stack must remain stable and stay within its load and height limits."
+                ],
+                "options_es": [
+                  "Sí, si cabe.",
+                  "No. La pila debe mantenerse estable y dentro de sus límites de carga y de altura."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if a loaded stack is leaning or has damaged supports?",
+                "text_es": "¿Qué debe hacer si una pila cargada está inclinada o tiene soportes dañados?",
+                "options": [
+                  "Push it straight or repair the support while it is loaded.",
+                  "Stop work, keep people clear, and control the area. Correct the hazard safely if you know how, or get someone trained to do it."
+                ],
+                "options_es": [
+                  "Empujarla para enderezarla o reparar el soporte mientras está cargada.",
+                  "Dejar de trabajar, mantener alejadas a las personas y controlar el área. Corregir el peligro con seguridad si sabe cómo, o conseguir a alguien capacitado que lo haga."
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Review the photos displayed in the course. Select which steel stacks and supports are safe and unsafe. 2. For each unsafe example, identify the problem and write what must change. Explain how you would keep people clear while the hazard is being handled.",
+            "text_es": "1. Revise las fotos que se muestran en el curso. Seleccione qué pilas y soportes de acero son seguros y cuáles son inseguros. 2. En cada ejemplo inseguro, identifique el problema y escriba qué debe cambiar. Explique cómo mantendría alejadas a las personas mientras se maneja el peligro.",
+            "photos": [
+              {
+                "image": "practical/m9/photo-01.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m9/photo-02.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m9/photo-03.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m9/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "The support is bent and has a cracked weld. Do not use it. Take it out of service, keep people clear, and get someone trained to assess it before anything is loaded.",
+                "hazard_es": "El soporte está doblado y tiene una soldadura rajada. No lo use. Retírelo de servicio, mantenga alejadas a las personas y consiga a alguien capacitado que lo evalúe antes de cargar nada."
+              },
+              {
+                "image": "practical/m9/photo-05.jpg",
+                "answer": "unsafe",
+                "hazard": "The steel extends far beyond its supports, which are bunched at one end, so it could tip or sag. Do not load it. Space the supports so the steel is balanced.",
+                "hazard_es": "El acero se extiende mucho más allá de sus soportes, que están juntos en un extremo, y podría volcarse o combarse. No lo cargue. Separe los soportes para que el acero quede equilibrado."
+              },
+              {
+                "image": "practical/m9/photo-06.jpg",
+                "answer": "unsafe",
+                "hazard": "The spacers are not lined up and the plates are bending. Stop, keep people clear, and restack with undamaged spacers lined up vertically over the supports.",
+                "hazard_es": "Los separadores no están alineados y las placas se están doblando. Deténgase, mantenga alejadas a las personas y vuelva a apilar con separadores sin daños alineados verticalmente sobre los soportes."
+              },
+              {
+                "image": "practical/m9/photo-07.jpg",
+                "answer": "unsafe",
+                "hazard": "Loose round stock sits on top of flat material and could roll off. Keep round material in a rack designed to contain it, or secure it with blocks or chocks that prevent rolling.",
+                "hazard_es": "El material redondo suelto está encima de material plano y podría rodar. Mantenga el material redondo en un estante diseñado para contenerlo, o asegúrelo con bloques o cuñas que eviten que ruede."
+              },
+              {
+                "image": "practical/m9/photo-08.jpg",
+                "answer": "unsafe",
+                "hazard": "Stored steel sticks out into a marked walkway. Keep steel out of walkways and exits and move it fully inside the storage area.",
+                "hazard_es": "El acero almacenado sobresale hacia un pasillo marcado. Mantenga el acero fuera de los pasillos y las salidas y colóquelo por completo dentro del área de almacenamiento."
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
