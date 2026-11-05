@@ -17,6 +17,8 @@
     {"id": "m8-es-v3", "module": 8, "label": "Módulo 8 - Manejo de materiales - Español - v3", "language": "es", "version": "v3", "youtube_id": "nqet7NjxjoE", "duration": 350},
     {"id": "m9-en-v1", "module": 9, "label": "Module 9 - Stacking Steel - English - v1", "language": "en", "version": "v1", "youtube_id": "tX_vzoBYKHM", "duration": 221},
     {"id": "m9-es-v1", "module": 9, "label": "Módulo 9 - Apilado de acero - Español - v1", "language": "es", "version": "v1", "youtube_id": "w3VW5-5WxRs", "duration": 221},
+    {"id": "m10-en-v1", "module": 10, "label": "Module 10 - Pinch Points - English - v1", "language": "en", "version": "v1", "youtube_id": "mVO8onlVNro", "duration": 310},
+    {"id": "m10-es-v1", "module": 10, "label": "Módulo 10 - Puntos de atrapamiento - Español - v1", "language": "es", "version": "v1", "youtube_id": "w7duJHypoSo", "duration": 310},
     {"id": "m7-en", "module": 7, "label": "Module 7 - Power Tool Safety - English", "language": "en", "version": "current", "youtube_id": "-qK40HfWO2A"},
     {"id": "m7-es", "module": 7, "label": "Módulo 7 - Seguridad con herramientas eléctricas - Español", "language": "es", "version": "current", "youtube_id": "Z0nPb84ukmw"}
   ]

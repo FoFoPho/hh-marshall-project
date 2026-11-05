@@ -1418,6 +1418,157 @@
           }
         }
       ]
+    },
+    {
+      "id": 10,
+      "title": "Module 10",
+      "title_es": "Módulo 10",
+      "icon": "pinch",
+      "estimated_time": "15-30 minutes",
+      "estimated_time_es": "15 a 30 minutos",
+      "welcome_video": "",
+      "sections": [
+        {
+          "id": "pinch-points",
+          "title": "Pinch Points",
+          "title_es": "Puntos de atrapamiento",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=mVO8onlVNro",
+              "video_url_es": "https://www.youtube.com/watch?v=w7duJHypoSo",
+              "video_label": "PINCH POINTS VIDEO",
+              "video_label_es": "VIDEO DE PUNTOS DE ATRAPAMIENTO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "What is a pinch point?",
+                "text_es": "¿Qué es un punto de atrapamiento?",
+                "options": [
+                  "Any tool that can pinch your finger or hand.",
+                  "A place where your body can get caught, pinched, or crushed between objects."
+                ],
+                "options_es": [
+                  "Cualquier herramienta que pueda pellizcarle un dedo o una mano.",
+                  "Un lugar donde su cuerpo puede quedar atrapado, pellizcado o aplastado entre objetos."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you check before moving material?",
+                "text_es": "¿Qué debe revisar antes de mover material?",
+                "options": [
+                  "Where it could shift, swing, or roll, and whether anyone could be trapped.",
+                  "Only whether the material will fit at its destination."
+                ],
+                "options_es": [
+                  "Dónde podría desplazarse, balancearse o rodar, y si alguien podría quedar atrapado.",
+                  "Solo si el material cabrá en su destino."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "A part gets jammed behind a machine guard. What should you do?",
+                "text_es": "Una pieza se atora detrás de una guarda de la máquina. ¿Qué debe hacer?",
+                "options": [
+                  "Switch the machine off and reach around the guard.",
+                  "Keep clear. An authorized employee must isolate and control the hazardous energy before anyone reaches into the danger area."
+                ],
+                "options_es": [
+                  "Apagar la máquina y meter la mano por un lado de la guarda.",
+                  "Mantenerse alejado. Un empleado autorizado debe aislar y controlar la energía peligrosa antes de que alguien meta la mano en la zona de peligro."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do if a machine guard is damaged?",
+                "text_es": "¿Qué debe hacer si la guarda de una máquina está dañada?",
+                "options": [
+                  "Work carefully until it is repaired.",
+                  "Stop the affected work, keep people clear, and report the problem."
+                ],
+                "options_es": [
+                  "Trabajar con cuidado hasta que la reparen.",
+                  "Detener el trabajo afectado, mantener alejadas a las personas y reportar el problema."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "Can gloves protect your hand from a crushing load?",
+                "text_es": "¿Pueden los guantes proteger su mano de una carga que aplasta?",
+                "options": [
+                  "Yes, if they are thick enough.",
+                  "No. Keep your hands out of the pinch point."
+                ],
+                "options_es": [
+                  "Sí, si son lo bastante gruesos.",
+                  "No. Mantenga las manos fuera del punto de atrapamiento."
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Review the photos displayed in the course. Identify the pinch points in each example and select which are safe and unsafe. 2. For each unsafe example, explain where the employee should stand, where their hands and feet should be, and what must change before work continues.",
+            "text_es": "1. Revise las fotos que se muestran en el curso. Identifique los puntos de atrapamiento en cada ejemplo y seleccione cuáles son seguros y cuáles inseguros. 2. En cada ejemplo inseguro, explique dónde debe pararse el empleado, dónde deben estar sus manos y sus pies, y qué debe cambiar antes de continuar el trabajo.",
+            "photos": [
+              {
+                "image": "practical/m10/photo-01.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m10/photo-02.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m10/photo-03.jpg",
+                "answer": "safe",
+                "hazard": "",
+                "hazard_es": ""
+              },
+              {
+                "image": "practical/m10/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "The beam is almost against the rack and the gap is closing. Stop the move, keep people clear of the travel and fall area, and establish clearance before continuing.",
+                "hazard_es": "La viga está casi contra el estante y el espacio se está cerrando. Detenga el movimiento, mantenga alejadas a las personas de la zona de recorrido y de caída, y establezca el espacio libre antes de continuar."
+              },
+              {
+                "image": "practical/m10/photo-05.jpg",
+                "answer": "unsafe",
+                "hazard": "The sling is tightening around the steel. Keep hands out before tension is applied, stand beyond the lifting area, and stop until the rigging position is safe.",
+                "hazard_es": "La eslinga se está apretando alrededor del acero. Mantenga las manos fuera antes de aplicar tensión, párese fuera del área de izado y deténgase hasta que la posición del aparejo sea segura."
+              },
+              {
+                "image": "practical/m10/photo-06.jpg",
+                "answer": "unsafe",
+                "hazard": "The guard is missing and the roller nip and chain and sprocket are exposed. Stop, keep people clear, isolate the machine as required, report it, and restore the guard before use.",
+                "hazard_es": "Falta la guarda y quedan expuestos el punto de atrapamiento de los rodillos y la cadena con el piñón. Deténgase, mantenga alejadas a las personas, aísle la máquina según se requiera, repórtelo y restaure la guarda antes de usarla."
+              },
+              {
+                "image": "practical/m10/photo-07.jpg",
+                "answer": "unsafe",
+                "hazard": "A glove can snag on a rotating shaft and pull the hand in. Keep hands and body clear, do not wear gloves where they could be caught, and use the machine only with intact guarding.",
+                "hazard_es": "Un guante puede engancharse en un eje giratorio y jalar la mano. Mantenga las manos y el cuerpo alejados, no use guantes donde puedan engancharse y use la máquina solo con las guardas intactas."
+              },
+              {
+                "image": "practical/m10/photo-08.jpg",
+                "answer": "unsafe",
+                "hazard": "The gap between the forklift rear and the rack is too narrow and the rear swings outward. Do not squeeze through. Use a clear alternate route and get the operator's acknowledgment before crossing.",
+                "hazard_es": "El espacio entre la parte trasera del montacargas y el estante es muy estrecho y la parte trasera se balancea hacia afuera. No se meta por ahí. Use una ruta alterna libre y obtenga el reconocimiento del operador antes de cruzar."
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
