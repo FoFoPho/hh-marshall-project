@@ -1569,6 +1569,318 @@
           }
         }
       ]
+    },
+    {
+      "id": 11,
+      "title": "Module 11",
+      "title_es": "Módulo 11",
+      "icon": "hazmat",
+      "estimated_time": "15-30 minutes",
+      "estimated_time_es": "15 a 30 minutos",
+      "welcome_video": "",
+      "sections": [
+        {
+          "id": "hazardous-materials",
+          "title": "Hazardous Materials",
+          "title_es": "Materiales peligrosos",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=USM-ehQ4f1U",
+              "video_url_es": "https://www.youtube.com/watch?v=NTMnbr8ucIc",
+              "video_label": "HAZARDOUS MATERIALS VIDEO",
+              "video_label_es": "VIDEO DE MATERIALES PELIGROSOS",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Can hazardous exposure come from work being done nearby?",
+                "text_es": "¿Puede la exposición peligrosa venir de un trabajo que se hace cerca?",
+                "options": [
+                  "Yes. Fumes, vapors, dust, and gases can reach other employees.",
+                  "No. Only the person handling the product can be exposed."
+                ],
+                "options_es": [
+                  "Sí. Los humos, los vapores, el polvo y los gases pueden llegar a otros empleados.",
+                  "No. Solo puede estar expuesta la persona que maneja el producto."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "How do you find the correct SDS through a posted QR code?",
+                "text_es": "¿Cómo se encuentra la SDS correcta mediante un código QR colocado?",
+                "options": [
+                  "Open the sheet for any similar product.",
+                  "Scan the code, search for the product name, and match it to the container."
+                ],
+                "options_es": [
+                  "Abrir la hoja de cualquier producto parecido.",
+                  "Escanear el código, buscar el nombre del producto y compararlo con el envase."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do with an unidentified chemical?",
+                "text_es": "¿Qué debe hacer con un químico no identificado?",
+                "options": [
+                  "Open it and smell it.",
+                  "Do not use it until it has been properly identified and its hazards explained."
+                ],
+                "options_es": [
+                  "Abrirlo y olerlo.",
+                  "No usarlo hasta que se identifique correctamente y se expliquen sus peligros."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should happen if dust collection fails during work producing harmful dust?",
+                "text_es": "¿Qué debe ocurrir si falla la recolección de polvo durante un trabajo que produce polvo dañino?",
+                "options": [
+                  "Stop the operation producing the dust and keep others clear.",
+                  "Continue if you cannot smell anything."
+                ],
+                "options_es": [
+                  "Detener la operación que produce el polvo y mantener alejadas a las demás personas.",
+                  "Continuar si no huele nada."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "Why can a shielding-gas leak be dangerous?",
+                "text_es": "¿Por qué puede ser peligrosa una fuga de gas de protección?",
+                "options": [
+                  "All shielding gases catch fire.",
+                  "The gas can displace breathable oxygen."
+                ],
+                "options_es": [
+                  "Todos los gases de protección se incendian.",
+                  "El gas puede desplazar el oxígeno respirable."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What should you do about a dangerous spill or leak that you cannot safely control?",
+                "text_es": "¿Qué debe hacer ante un derrame o una fuga peligrosa que no puede controlar con seguridad?",
+                "options": [
+                  "Move clear, warn others, contact the supervisor from safety, and call 911 when emergency assistance is needed.",
+                  "Try to stop it before telling anyone."
+                ],
+                "options_es": [
+                  "Alejarse, avisar a los demás, comunicarse con el supervisor desde un lugar seguro y llamar al 911 cuando se necesite ayuda de emergencia.",
+                  "Intentar detenerla antes de avisar a alguien."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "What should you do after evacuating?",
+                "text_es": "¿Qué debe hacer después de evacuar?",
+                "options": [
+                  "Leave the group once you are outside.",
+                  "Stay with your group at the communicated safe location so everyone can be accounted for."
+                ],
+                "options_es": [
+                  "Dejar al grupo una vez afuera.",
+                  "Permanecer con su grupo en el lugar seguro indicado para que todos puedan ser contados."
+                ],
+                "correct": 1
+              }
+            ]
+          },
+          "practical": {
+            "text": "1. Scan an SDS QR code in the training room or course interface. Find the SDS that matches the example product label. 2. Identify the product's hazards and locate its first-aid, spill-response, and protective-equipment information. 3. Review animated welding, grinding, blasting, chemical-handling, and cylinder-storage examples. Identify unsafe conditions and explain what must change. 4. Review an animated dangerous spill or leak. Identify how to move clear, warn others, report the emergency, and remain with the group for accountability.",
+            "text_es": "1. Escanee un código QR de SDS en el salón de capacitación o en la interfaz del curso. Encuentre la SDS que corresponde a la etiqueta del producto de ejemplo. 2. Identifique los peligros del producto y ubique su información de primeros auxilios, de respuesta a derrames y de equipo de protección. 3. Revise los ejemplos animados de soldadura, esmerilado, limpieza con chorro abrasivo, manejo de químicos y almacenamiento de cilindros. Identifique las condiciones inseguras y explique qué debe cambiar. 4. Revise un derrame o una fuga peligrosa animada. Identifique cómo alejarse, avisar a los demás, reportar la emergencia y permanecer con el grupo para el conteo.",
+            "photos": [
+              {
+                "image": "practical/m11/photo-01.jpg",
+                "answer": "unsafe",
+                "hazard": "Scan the training code, search the exact product name, and open the matching SDS. Check that the name matches the container. A similar-looking product is not a substitute.",
+                "hazard_es": "Escanee el código de práctica, busque el nombre exacto del producto y abra la SDS que coincide. Verifique que el nombre coincida con el envase. Un producto parecido no es un sustituto."
+              },
+              {
+                "image": "practical/m11/photo-02.jpg",
+                "answer": "unsafe",
+                "hazard": "Use the SDS for this product. Identify the label hazards, then find Section 2 (hazards), Section 4 (first aid), Section 6 (spill response), Section 7 (handling and storage), and Section 8 (protective equipment). Check product-specific glove and splash protection on the SDS.",
+                "hazard_es": "Use la SDS de este producto. Identifique los peligros de la etiqueta y luego ubique la Sección 2 (peligros), la Sección 4 (primeros auxilios), la Sección 6 (respuesta a derrames), la Sección 7 (manejo y almacenamiento) y la Sección 8 (equipo de protección). Consulte en la SDS los guantes y la protección contra salpicaduras específicos del producto."
+              },
+              {
+                "image": "practical/m11/photo-03.jpg",
+                "answer": "unsafe",
+                "hazard": "Look for the extraction hood too far from the source, dust escaping collection, ordinary leather gloves at the chemical station, and an unidentified cylinder. Identify the material and coating first, place extraction to capture contamination before the breathing zone, stop dust-producing work and keep others clear if controls fail, check the SDS and glove compatibility for chemical protection, and identify cylinder contents from the label before use.",
+                "hazard_es": "Busque la campana de extracción demasiado lejos de la fuente, el polvo que escapa de la recolección, los guantes comunes de cuero en la estación de químicos y un cilindro sin identificar. Identifique primero el material y el recubrimiento, coloque la extracción para capturar la contaminación antes de la zona de respiración, detenga el trabajo que produce polvo y mantenga alejadas a las demás personas si fallan los controles, consulte la SDS y la compatibilidad de guantes para la protección química, e identifique el contenido del cilindro por la etiqueta antes de usarlo."
+              },
+              {
+                "image": "practical/m11/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "Protect yourself first and move clear. Warn others and keep them clear. Contact the supervisor from safety: what happened, where, and whether anyone is injured. Call 911 from a safe location when emergency assistance is needed. Leave by a route that avoids the hazard, gather with your group at the location the supervisor communicates, report anyone missing and their last known location, and do not reenter until responders authorize it. Do not approach the leak, attempt a repair, or make an unprotected rescue.",
+                "hazard_es": "Protéjase primero y aléjese. Avise a los demás y manténgalos alejados. Comuníquese con el supervisor desde un lugar seguro: qué ocurrió, dónde y si alguien está lesionado. Llame al 911 desde un lugar seguro cuando se necesite ayuda de emergencia. Salga por una ruta que evite el peligro, reúnase con su grupo en el lugar que indique el supervisor, reporte a cualquier persona que falte y el último lugar donde se le vio, y no vuelva a entrar hasta que los equipos de emergencia lo autoricen. No se acerque a la fuga, no intente repararla ni intente un rescate sin protección."
+              }
+            ],
+            "labels": {
+              "instruction": "Look at each scenario. Press READY TO PRACTICE, then type what you would do or find, following the four practical items.",
+              "instruction_es": "Mire cada escenario. Presione LISTO PARA PRACTICAR y escriba qué haría o qué encontraría, siguiendo los cuatro puntos del ejercicio práctico.",
+              "safe": "NEED A REVIEW FIRST",
+              "safe_es": "NECESITO REPASAR PRIMERO",
+              "unsafe": "READY TO PRACTICE",
+              "unsafe_es": "LISTO PARA PRACTICAR",
+              "hazard_label": "Check yourself:",
+              "hazard_label_es": "Compruebe sus respuestas:",
+              "prompt": "Describe each step you would take for this scenario.",
+              "prompt_es": "Describa cada paso que daría en este escenario.",
+              "not_quite_unsafe": "That is fine. Read the key points below, then type your answer.",
+              "not_quite_unsafe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta.",
+              "not_quite_safe": "That is fine. Read the key points below, then type your answer.",
+              "not_quite_safe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Module 12",
+      "title_es": "Módulo 12",
+      "icon": "firstaid",
+      "estimated_time": "15-30 minutes",
+      "estimated_time_es": "15 a 30 minutos",
+      "welcome_video": "",
+      "sections": [
+        {
+          "id": "injury-response",
+          "title": "Injury Response",
+          "title_es": "Respuesta a lesiones",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=716a-WM64eQ",
+              "video_url_es": "https://www.youtube.com/watch?v=uvVns1U1gOg",
+              "video_label": "INJURY RESPONSE VIDEO",
+              "video_label_es": "VIDEO DE RESPUESTA A LESIONES",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Does a small injury need to be reported?",
+                "text_es": "¿Se debe reportar una lesión pequeña?",
+                "options": [
+                  "Yes. Give it attention and report it through the digital reporting system.",
+                  "No, unless an ambulance is needed."
+                ],
+                "options_es": [
+                  "Sí. Atiéndala y repórtela mediante el sistema digital de reportes.",
+                  "No, a menos que se necesite una ambulancia."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "When should you complete the digital report?",
+                "text_es": "¿Cuándo debe completar el reporte digital?",
+                "options": [
+                  "Before getting first aid.",
+                  "As soon as practical after immediate care is underway."
+                ],
+                "options_es": [
+                  "Antes de recibir primeros auxilios.",
+                  "Tan pronto como sea posible, después de que la atención inmediata esté en marcha."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What if symptoms appear later?",
+                "text_es": "¿Qué debe hacer si los síntomas aparecen después?",
+                "options": [
+                  "Report them when you become aware of them.",
+                  "Ignore them because the incident has already passed."
+                ],
+                "options_es": [
+                  "Reportarlos cuando se dé cuenta de ellos.",
+                  "Ignorarlos porque el incidente ya pasó."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "What should you do for a serious injury?",
+                "text_es": "¿Qué debe hacer ante una lesión grave?",
+                "options": [
+                  "Wait for permission to call emergency services.",
+                  "Call 911 immediately, get help, and follow dispatcher instructions."
+                ],
+                "options_es": [
+                  "Esperar permiso para llamar a los servicios de emergencia.",
+                  "Llamar al 911 de inmediato, conseguir ayuda y seguir las instrucciones del operador de emergencias."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What must happen before the affected work resumes?",
+                "text_es": "¿Qué debe ocurrir antes de reanudar el trabajo afectado?",
+                "options": [
+                  "The hazard must be corrected, and the employee must be able to perform the work safely.",
+                  "The employee only needs to finish the report."
+                ],
+                "options_es": [
+                  "El peligro debe corregirse y el empleado debe poder realizar el trabajo con seguridad.",
+                  "El empleado solo necesita terminar el reporte."
+                ],
+                "correct": 0
+              }
+            ]
+          },
+          "practical": {
+            "text": "Use the animated scenarios and training-room supplies to practice these situations. 1. A small cut: Stop work, demonstrate basic care on a training aid, and complete a practice digital report. 2. Pain or irritation that appears later: Explain what to report and enter it in the practice system. 3. A serious injury: Assign response roles, simulate the emergency call, and explain how to keep others safe. 4. A chemical eye splash: Demonstrate the immediate eyewash response and getting help. Use a practice reporting form so drills do not create real incident records. Never call the real 911 number during a drill.",
+            "text_es": "Use los escenarios animados y los suministros del salón de capacitación para practicar estas situaciones. 1. Un corte pequeño: Detenga el trabajo, demuestre la atención básica en un maniquí de práctica y complete un reporte digital de práctica. 2. Dolor o irritación que aparece después: Explique qué debe reportar y regístrelo en el sistema de práctica. 3. Una lesión grave: Asigne los roles de respuesta, simule la llamada de emergencia y explique cómo mantener a salvo a los demás. 4. Una salpicadura química en el ojo: Demuestre la respuesta inmediata con el lavaojos y cómo pedir ayuda. Use un formulario de reporte de práctica para que los simulacros no generen registros de incidentes reales. Nunca llame al 911 real durante un simulacro.",
+            "photos": [
+              {
+                "image": "practical/m12/photo-01.jpg",
+                "answer": "unsafe",
+                "hazard": "Stop the affected work and check the scene. Wash your hands and wear disposable gloves when helping someone else. Apply gentle pressure with clean gauze, rinse with clean running water, and cover with a clean dressing. Do not dig out embedded material. Then complete a practice digital report.",
+                "hazard_es": "Detenga el trabajo afectado y revise la escena. Lávese las manos y use guantes desechables al ayudar a otra persona. Aplique presión suave con gasa limpia, enjuague con agua corriente limpia y cubra con un vendaje limpio. No intente sacar material incrustado. Después complete un reporte digital de práctica."
+              },
+              {
+                "image": "practical/m12/photo-02.jpg",
+                "answer": "unsafe",
+                "hazard": "Do not dismiss symptoms because there is no visible wound. Explain when the symptoms became noticeable and what happened. Notify the supervisor and enter the known facts in the practice system: when and where, what you were doing, the cause, the body part affected, and any witnesses. Do not guess.",
+                "hazard_es": "No ignore los síntomas aunque no haya una herida visible. Explique cuándo se notaron los síntomas y qué ocurrió. Avise al supervisor y registre en el sistema de práctica los hechos conocidos: cuándo y dónde, qué estaba haciendo, la causa, la parte del cuerpo afectada y los testigos. No adivine."
+              },
+              {
+                "image": "practical/m12/photo-03.jpg",
+                "answer": "unsafe",
+                "hazard": "Check and control the scene and keep others clear. Assign separate jobs: one person calls 911, another gets first-aid supplies, another meets the responders, and someone notifies the supervisor and safety officer. Give the address, entrance, exact location, what happened, and remaining hazards, and follow the dispatcher. Do not move the injured person, enter an unsafe area, or reverse machinery.",
+                "hazard_es": "Revise y controle la escena y mantenga alejadas a las demás personas. Asigne trabajos separados: una persona llama al 911, otra consigue los suministros de primeros auxilios, otra recibe a los equipos de emergencia y alguien avisa al supervisor y al oficial de seguridad. Dé la dirección, la entrada, la ubicación exacta, qué ocurrió y los peligros que quedan, y siga las instrucciones del operador. No mueva a la persona lesionada, no entre a un área insegura ni haga funcionar la maquinaria en reversa."
+              },
+              {
+                "image": "practical/m12/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "Start flushing at the eyewash immediately. Do not wait for paperwork or the SDS. While someone else gets the SDS and medical help, keep flushing and follow the product's first-aid instructions.",
+                "hazard_es": "Comience a enjuagar de inmediato en el lavaojos. No espere los papeles ni la SDS. Mientras otra persona consigue la SDS y ayuda médica, siga enjuagando y siga las instrucciones de primeros auxilios del producto."
+              }
+            ],
+            "labels": {
+              "instruction": "Look at each scenario. Press READY TO PRACTICE, then type what you would do, following the four practical items.",
+              "instruction_es": "Mire cada escenario. Presione LISTO PARA PRACTICAR y escriba qué haría, siguiendo los cuatro puntos del ejercicio práctico.",
+              "safe": "NEED A REVIEW FIRST",
+              "safe_es": "NECESITO REPASAR PRIMERO",
+              "unsafe": "READY TO PRACTICE",
+              "unsafe_es": "LISTO PARA PRACTICAR",
+              "hazard_label": "Check yourself:",
+              "hazard_label_es": "Compruebe sus respuestas:",
+              "prompt": "Describe each step you would take for this scenario.",
+              "prompt_es": "Describa cada paso que daría en este escenario.",
+              "not_quite_unsafe": "That is fine. Read the key points below, then type your answer.",
+              "not_quite_unsafe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta.",
+              "not_quite_safe": "That is fine. Read the key points below, then type your answer.",
+              "not_quite_safe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta."
+            }
+          }
+        }
+      ]
     }
   ]
 }
