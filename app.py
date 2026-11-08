@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs
 
 from flask import (
     Flask, session, render_template, redirect,
-    url_for, request, send_file, Response, abort
+    url_for, request, send_file, Response
 )
 from markupsafe import Markup
 
@@ -92,8 +92,7 @@ def localize(obj, lang=None):
 
 @app.context_processor
 def inject_i18n():
-    return {'lang': get_lang(), 't': t,
-            'test_banner': os.environ.get('SITE_TEST_BANNER', '1') != '0'}
+    return {'lang': get_lang(), 't': t}
 
 
 # ---------------------------------------------------------------------------
@@ -269,21 +268,6 @@ def welcome_start():
         'last_name':  last_name,
         'job_title':  job_title,
         'email':      email,
-    }
-    return redirect(url_for('modules'))
-
-
-@app.route('/dev-login')
-def dev_login():
-    """Skip the welcome form with a fixed test learner. Off unless the
-    ENABLE_DEV_LOGIN=1 env var is set (local runs and test/staging hosts)."""
-    if os.environ.get('ENABLE_DEV_LOGIN') != '1':
-        abort(404)
-    session['user'] = {
-        'first_name': 'Test',
-        'last_name':  'Tester',
-        'job_title':  'Test Account',
-        'email':      'test.tester@example.com',
     }
     return redirect(url_for('modules'))
 
