@@ -312,7 +312,7 @@ def start_module(module_id):
         if existing['cert_number']:
             session['cert_number']  = existing['cert_number']
             session['completed_at'] = existing['completed_at']
-            return redirect(url_for('complete', module_id=module_id))
+            return redirect(url_for('step', module_id=module_id, step_num=1))
         return redirect(url_for('step', module_id=module_id, step_num=existing['current_step']))
 
     session['completed_sections'] = []
@@ -361,7 +361,7 @@ def step(module_id, step_num):
 
     # Prev URL
     if step_num == 1:
-        prev_url = url_for('start_module', module_id=module_id)
+        prev_url = url_for('modules')
     else:
         prev_url = url_for('step', module_id=module_id, step_num=step_num - 1)
 
@@ -550,6 +550,16 @@ def restudy(module_id, section_id):
     return redirect(url_for('index'))
 
 
+def next_module_url(module_id):
+    """Start URL of the next module that isn't hidden, else module select."""
+    later = sorted((m for m in load_modules()
+                    if m['id'] > module_id and not m.get('coming_soon')),
+                   key=lambda m: m['id'])
+    if later:
+        return url_for('start_module', module_id=later[0]['id'])
+    return url_for('modules')
+
+
 @app.route('/module/<int:module_id>/complete')
 def complete(module_id):
     module = get_module(module_id)
@@ -581,16 +591,9 @@ def complete(module_id):
         session['completed_at'] = now.strftime('%Y-%m-%d')
         sync_progress()
 
-    steps = build_steps(module)
-    display_num = f"{len(steps) + 2:02d}"
-
-    return render_template('complete.html',
-        module=localize(module),
-        user=session.get('user', {}),
-        cert_number=session.get('cert_number'),
-        completed_at=session.get('completed_at'),
-        display_num=display_num,
-    )
+    # No completion page: go straight into the next available module, or
+    # back to module select after the last one.
+    return redirect(next_module_url(module_id))
 
 
 @app.route('/module/<int:module_id>/certificate')
