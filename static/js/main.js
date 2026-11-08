@@ -303,20 +303,12 @@
 
 })();
 
-// ── Confetti (welcome + finish pages) ──────────────────────────────────────
-// One pop when the welcome or congratulations page first loads (skipped for
+// ── Finish page confetti ──────────────────────────────────────
+// One pop when the congratulations page first loads (skipped for
 // visitors who prefer reduced motion).
 (function () {
   const canvas = document.getElementById('confetti-canvas');
   if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  // Welcome page: pop once per visit, not on every reload or language switch.
-  const once = canvas.getAttribute('data-once');
-  if (once) {
-    try {
-      if (sessionStorage.getItem('confetti-' + once)) return;
-      sessionStorage.setItem('confetti-' + once, '1');
-    } catch (e) { /* storage blocked: just pop */ }
-  }
 
   const ctx = canvas.getContext('2d');
   const colors = ['#1a4fc4', '#f59e0b', '#22a559', '#e5334b', '#ffffff', '#7c3aed'];
