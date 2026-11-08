@@ -238,5 +238,25 @@
   "quiz_kept_answers": {
     "en": "You've already answered {n} of {total} questions correctly. Only the remaining questions are shown.",
     "es": "Ya respondió correctamente {n} de {total} preguntas. Solo se muestran las preguntas restantes."
+  },
+  "finished_page_title": {
+    "en": "You Finished!",
+    "es": "¡Lo logró!"
+  },
+  "finished_step": {
+    "en": "Training Complete",
+    "es": "Capacitación completa"
+  },
+  "finished_title": {
+    "en": "Congratulations, you finished!",
+    "es": "¡Felicidades, terminó!"
+  },
+  "finished_subtitle": {
+    "en": "You completed every module of The Marshall Project. Thank you for taking your safety seriously.",
+    "es": "Completó todos los módulos de The Marshall Project. Gracias por tomarse la seguridad en serio."
+  },
+  "finished_video": {
+    "en": "CLOSING VIDEO",
+    "es": "VIDEO DE CIERRE"
   }
 }

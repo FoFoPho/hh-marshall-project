@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('finished_page_title') }} — {{ t('site_title') }}{% endblock %}
+
+{% block header_right %}
+<div class="step-indicator">
+  {{ t('finished_step') }} <span class="dot"></span> &#10003;
+</div>
+{% endblock %}
+
+{% block body %}
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+<main class="main-content" style="align-items:center;text-align:center;">
+
+  <div class="complete-check">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+
+  <h1 class="page-title">{{ t('finished_title') }}</h1>
+  <p class="complete-subtitle">{{ t('finished_subtitle') }}</p>
+
+  {% if finale_video %}
+  <div class="video-wrapper">
+    <div class="video-label-bar">{{ t('finished_video') }}</div>
+    <iframe
+      class="video-embed"
+      src="{{ youtube_embed(finale_video) }}"
+      allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+    </iframe>
+    <button type="button" class="video-sound-btn" hidden>
+      <svg viewBox="0 0 24 24"><polygon points="4 9 8 9 13 5 13 19 8 15 4 15"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+      {{ t('tap_for_sound') }}
+    </button>
+  </div>
+  {% endif %}
+
+  <a href="{{ url_for('modules') }}" class="cta-btn">
+    {{ t('return_to_modules') }}
+  </a>
+
+</main>
+
+<!-- Navigation -->
+<nav class="nav-bar">
+  <div class="nav-btn-wrap">
+    <a href="{{ url_for('modules') }}" class="nav-btn active" aria-label="Back to modules">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <span class="nav-label">{{ t('back_to_modules') }}</span>
+  </div>
+</nav>
+{% endblock %}

@@ -582,7 +582,7 @@ def restudy(module_id, section_id):
     if idx == 0:
         user = session.get('user')
         earlier = sorted((m for m in load_modules()
-                          if m['id'] < module_id and not m.get('coming_soon')),
+                          if m['id'] < module_id and not m.get('coming_soon') and m.get('sections')),
                          key=lambda m: m['id'])
         if user and earlier:
             prev = db.get_progress(user['email'], earlier[-1]['id'])
@@ -603,11 +603,31 @@ def restudy(module_id, section_id):
 def next_module_url(module_id):
     """Start URL of the next module that isn't hidden, else module select."""
     later = sorted((m for m in load_modules()
-                    if m['id'] > module_id and not m.get('coming_soon')),
+                    if m['id'] > module_id and not m.get('coming_soon') and m.get('sections')),
                    key=lambda m: m['id'])
     if later:
         return url_for('start_module', module_id=later[0]['id'])
-    return url_for('modules')
+    return url_for('finished') if all_modules_done() else url_for('modules')
+
+
+def all_modules_done():
+    """True once the signed-in learner has a certificate for every visible module."""
+    user = session.get('user')
+    if not user:
+        return False
+    done = {p['module_id'] for p in db.get_progress_for_email(user['email'])
+            if p['cert_number']}
+    return all(m['id'] in done for m in load_modules() if not m.get('coming_soon') and m.get('sections'))
+
+
+@app.route('/finished')
+def finished():
+    if not session.get('user'):
+        return redirect(url_for('index'))
+    if not all_modules_done():
+        return redirect(url_for('modules'))
+    return render_template('finished.html',
+                           finale_video=load_content().get('finale_video', ''))
 
 
 @app.route('/module/<int:module_id>/complete')

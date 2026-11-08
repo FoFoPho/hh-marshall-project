@@ -302,3 +302,56 @@
   }
 
 })();
+
+// ── Finish page confetti ──────────────────────────────────────
+// One pop when the congratulations page first loads (skipped for
+// visitors who prefer reduced motion).
+(function () {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const ctx = canvas.getContext('2d');
+  const colors = ['#1a4fc4', '#f59e0b', '#22a559', '#e5334b', '#ffffff', '#7c3aed'];
+  let w, h;
+  function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+  resize();
+  addEventListener('resize', resize);
+
+  const pieces = [];
+  function burst(x, angle) {
+    for (let i = 0; i < 90; i++) {
+      const a = angle + (Math.random() - 0.5) * 1.1;
+      const v = 9 + Math.random() * 11;
+      pieces.push({
+        x: x, y: h * 0.85,
+        vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+        size: 6 + Math.random() * 6,
+        rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.4,
+        color: colors[(Math.random() * colors.length) | 0],
+        life: 0,
+      });
+    }
+  }
+  burst(w * 0.12, -Math.PI * 0.38);
+  burst(w * 0.88, -Math.PI * 0.62);
+  setTimeout(function () { burst(w * 0.5, -Math.PI / 2); }, 350);
+
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = pieces.length - 1; i >= 0; i--) {
+      const p = pieces[i];
+      p.vy += 0.32; p.vx *= 0.99; p.vy *= 0.99;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      const alpha = Math.max(0, 1 - p.life / 190);
+      if (alpha <= 0 || p.y > h + 40) { pieces.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    }
+    if (pieces.length) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
