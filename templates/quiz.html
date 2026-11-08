@@ -13,6 +13,9 @@
   <h1 class="page-title">{{ step.section_title }}</h1>
   <div class="section-badge">{{ t('knowledge_check') }}</div>
   <p class="quiz-instruction">{{ t('select_best_answer') }}</p>
+  {% if done_questions %}
+  <p class="quiz-kept-note">{{ t('quiz_kept_answers', n=done_questions | length, total=step.quiz.questions | length) }}</p>
+  {% endif %}
 
   {% set questions = step.quiz.questions %}
 

@@ -230,5 +230,13 @@
   "photo_label": {
     "en": "Photo {n} of {total}",
     "es": "Foto {n} de {total}"
+  },
+  "module_x_of_y": {
+    "en": "Module {n} of {total}",
+    "es": "Módulo {n} de {total}"
+  },
+  "quiz_kept_answers": {
+    "en": "You've already answered {n} of {total} questions correctly. Only the remaining questions are shown.",
+    "es": "Ya respondió correctamente {n} de {total} preguntas. Solo se muestran las preguntas restantes."
   }
 }

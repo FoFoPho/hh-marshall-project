@@ -28,6 +28,14 @@
     </div>
   </header>
 
+  {% if module_banner %}
+  <div class="module-banner">
+    <span class="module-banner-count">{{ t('module_x_of_y', n=module_banner.n, total=module_banner.total) }}</span>
+    <span class="dot"></span>
+    <span class="module-banner-title">{{ module_banner.title }}</span>
+  </div>
+  {% endif %}
+
   {% block body %}{% endblock %}
 
 </div>

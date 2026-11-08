@@ -90,9 +90,25 @@ def localize(obj, lang=None):
     return out
 
 
+def module_banner():
+    """'Module N of M' + topic title, shown on every lesson/quiz/practical page."""
+    if request.endpoint != 'step':
+        return None
+    module = get_module(session.get('module_id') or 0)
+    if not module:
+        return None
+    module = localize(module)
+    sections = module.get('sections') or []
+    return {
+        'n': module['id'],
+        'total': len(load_modules()),
+        'title': sections[0]['title'] if sections else module.get('title', ''),
+    }
+
+
 @app.context_processor
 def inject_i18n():
-    return {'lang': get_lang(), 't': t}
+    return {'lang': get_lang(), 't': t, 'module_banner': module_banner()}
 
 
 # ---------------------------------------------------------------------------
