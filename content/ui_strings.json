@@ -258,5 +258,29 @@
   "finished_video": {
     "en": "CLOSING VIDEO",
     "es": "VIDEO DE CIERRE"
+  },
+  "drill_learned": {
+    "en": "What did you learn?",
+    "es": "¿Qué aprendió?"
+  },
+  "drill_placeholder": {
+    "en": "Write what you learned from this practice",
+    "es": "Escriba lo que aprendió con esta práctica"
+  },
+  "drill_check": {
+    "en": "I finished this practice",
+    "es": "Terminé esta práctica"
+  },
+  "drill_finish": {
+    "en": "Finish every practice to continue.",
+    "es": "Termine todas las prácticas para continuar."
+  },
+  "drill_progress": {
+    "en": "{done} of {total} practices done",
+    "es": "{done} de {total} prácticas completadas"
+  },
+  "drill_label": {
+    "en": "Practice {n} of {total}",
+    "es": "Práctica {n} de {total}"
   }
 }

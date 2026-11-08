@@ -1721,21 +1721,22 @@
               }
             ],
             "labels": {
-              "instruction": "Look at each scenario. Press READY TO PRACTICE, then type what you would do or find, following the four practical items.",
-              "instruction_es": "Mire cada escenario. Presione LISTO PARA PRACTICAR y escriba qué haría o qué encontraría, siguiendo los cuatro puntos del ejercicio práctico.",
+              "instruction": "Practice each scenario with your instructor. Then write what you learned and check the box to show you finished.",
+              "instruction_es": "Practique cada escenario con su instructor. Luego escriba lo que aprendió y marque la casilla para indicar que terminó.",
               "safe": "NEED A REVIEW FIRST",
               "safe_es": "NECESITO REPASAR PRIMERO",
               "unsafe": "READY TO PRACTICE",
               "unsafe_es": "LISTO PARA PRACTICAR",
-              "hazard_label": "Check yourself:",
-              "hazard_label_es": "Compruebe sus respuestas:",
+              "hazard_label": "What to practice:",
+              "hazard_label_es": "Qué practicar:",
               "prompt": "Describe each step you would take for this scenario.",
               "prompt_es": "Describa cada paso que daría en este escenario.",
               "not_quite_unsafe": "That is fine. Read the key points below, then type your answer.",
               "not_quite_unsafe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta.",
               "not_quite_safe": "That is fine. Read the key points below, then type your answer.",
               "not_quite_safe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta."
-            }
+            },
+            "style": "drill"
           }
         }
       ]
@@ -1864,21 +1865,22 @@
               }
             ],
             "labels": {
-              "instruction": "Look at each scenario. Press READY TO PRACTICE, then type what you would do, following the four practical items.",
-              "instruction_es": "Mire cada escenario. Presione LISTO PARA PRACTICAR y escriba qué haría, siguiendo los cuatro puntos del ejercicio práctico.",
+              "instruction": "Practice each scenario with your instructor. Then write what you learned and check the box to show you finished.",
+              "instruction_es": "Practique cada escenario con su instructor. Luego escriba lo que aprendió y marque la casilla para indicar que terminó.",
               "safe": "NEED A REVIEW FIRST",
               "safe_es": "NECESITO REPASAR PRIMERO",
               "unsafe": "READY TO PRACTICE",
               "unsafe_es": "LISTO PARA PRACTICAR",
-              "hazard_label": "Check yourself:",
-              "hazard_label_es": "Compruebe sus respuestas:",
+              "hazard_label": "What to practice:",
+              "hazard_label_es": "Qué practicar:",
               "prompt": "Describe each step you would take for this scenario.",
               "prompt_es": "Describa cada paso que daría en este escenario.",
               "not_quite_unsafe": "That is fine. Read the key points below, then type your answer.",
               "not_quite_unsafe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta.",
               "not_quite_safe": "That is fine. Read the key points below, then type your answer.",
               "not_quite_safe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta."
-            }
+            },
+            "style": "drill"
           }
         }
       ]

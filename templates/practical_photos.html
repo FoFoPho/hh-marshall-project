@@ -11,13 +11,15 @@
 {% block body %}
 {% set photos = step.practical.photos %}
 {% set L = step.practical.labels or {} %}
+{% set drill = (step.practical.style == 'drill') %}
 <main class="main-content">
   <h1 class="page-title">{{ step.section_title }}</h1>
   <div class="section-badge">{{ t('practical_exercise') }}</div>
 
   <form class="quiz-card practical-card photo-review" id="practical-form" data-audio="{{ practical_audio or '' }}"
         data-total="{{ photos|length }}" data-already="{{ 1 if already_confirmed else 0 }}"
-        data-progress="{{ t('photo_progress', done='{done}', total='{total}') | striptags }}" data-finish="{{ t('photo_finish') | striptags }}"
+        data-style="{{ 'drill' if drill else 'photo' }}"
+        data-progress="{{ t('drill_progress' if drill else 'photo_progress', done='{done}', total='{total}') | striptags }}" data-finish="{{ t('drill_finish' if drill else 'photo_finish') | striptags }}"
         method="POST" action="{{ url_for('submit_practical', module_id=module.id, section_id=step.section_id) }}">
 
     <div class="read-aloud-row">
@@ -31,8 +33,18 @@
 
     {% for p in photos %}
     <section class="photo-item" data-answer="{{ p.answer }}" data-index="{{ loop.index0 }}">
-      <div class="photo-count">{{ t('photo_label', n=loop.index, total=photos|length) }}</div>
+      <div class="photo-count">{{ t('drill_label' if drill else 'photo_label', n=loop.index, total=photos|length) }}</div>
       <img class="photo-img" src="{{ url_for('static', filename=p.image) }}" alt="">
+      {% if drill %}
+      <div class="drill-steps"><strong>{{ L.hazard_label or t('photo_hazard_label') }}</strong> {{ p.hazard }}</div>
+      <label class="drill-label" for="drill-learned-{{ loop.index0 }}">{{ t('drill_learned') }}</label>
+      <textarea class="drill-text" id="drill-learned-{{ loop.index0 }}" rows="3" placeholder="{{ t('drill_placeholder') | striptags }}"></textarea>
+      <label class="drill-check">
+        <input type="checkbox" class="drill-box">
+        <span class="drill-box-ui" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="4 13 10 19 20 6"/></svg></span>
+        <span>{{ t('drill_check') }}</span>
+      </label>
+      {% else %}
       <div class="photo-choices">
         <button type="button" class="photo-btn photo-safe" data-choice="safe" aria-label="{{ (L.safe or t('photo_safe')) | striptags }}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 13 10 19 20 6"/></svg>
@@ -51,6 +63,7 @@
         <label>{{ L.prompt or t('photo_prompt') }}</label>
         <textarea rows="3" placeholder="{{ t('photo_placeholder') | striptags }}"></textarea>
       </div>
+      {% endif %}
     </section>
     {% endfor %}
 
@@ -81,7 +94,9 @@
   var items = Array.prototype.slice.call(form.querySelectorAll('.photo-item')), status = document.getElementById('photo-status');
   var already = form.dataset.already === '1';
   var msgRight = {{ t('photo_right') | striptags | tojson }}, msgUnsafe = {{ (L.not_quite_unsafe or t('photo_not_quite_unsafe')) | striptags | tojson }}, msgSafe = {{ (L.not_quite_safe or t('photo_not_quite_safe')) | striptags | tojson }};
+  var drill = form.dataset.style === 'drill';
   function isDone(it){
+    if (drill) return it.querySelector('.drill-box').checked && it.querySelector('.drill-text').value.trim().length >= 8;
     if (!it.dataset.choice) return false;
     var needText = (it.dataset.answer === 'unsafe');
     if (!needText) return true;
@@ -92,7 +107,14 @@
     status.textContent = all ? '' : form.dataset.finish + '  (' + form.dataset.progress.replace('{done}', done).replace('{total}', items.length) + ')';
     next.disabled = !all; next.classList.toggle('active', all); next.classList.toggle('inactive', !all);
   }
+  if (drill) {
+    items.forEach(function(it){
+      it.querySelector('.drill-box').addEventListener('change', refresh);
+      it.querySelector('.drill-text').addEventListener('input', refresh);
+    });
+  }
   items.forEach(function(it){
+    if (drill) return;
     it.querySelectorAll('.photo-btn').forEach(function(b){
       b.addEventListener('click', function(){
         if (it.dataset.choice) return;
