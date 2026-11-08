@@ -490,8 +490,10 @@ html, body {
 
 /* ── Video Player ────────────────────────────────────────── */
 .video-wrapper {
-  width: 100%;
-  max-width: 640px;
+  /* Grows with the browser: up to 1100px wide, never wider than the
+     window, and never so tall it pushes the page past the screen. */
+  width: min(94vw, max(640px, min(1100px, calc((100vh - 380px) * 16 / 9))));
+  max-width: none;
   background: #000;
   border-radius: 4px;
   overflow: hidden;
