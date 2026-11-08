@@ -92,7 +92,8 @@ def localize(obj, lang=None):
 
 @app.context_processor
 def inject_i18n():
-    return {'lang': get_lang(), 't': t}
+    return {'lang': get_lang(), 't': t,
+            'test_banner': os.environ.get('SITE_TEST_BANNER', '1') != '0'}
 
 
 # ---------------------------------------------------------------------------
