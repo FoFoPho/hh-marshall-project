@@ -38,6 +38,10 @@ def init_db():
                 PRIMARY KEY (email, module_id)
             )
         ''')
+        cols = [r['name'] for r in conn.execute('PRAGMA table_info(progress)')]
+        if 'quiz_correct' not in cols:
+            # {section_id: [question indexes already answered right]}
+            conn.execute('ALTER TABLE progress ADD COLUMN quiz_correct TEXT')
 
 
 def normalize_email(email):
@@ -49,6 +53,7 @@ def _row_to_dict(row):
         return None
     data = dict(row)
     data['completed_sections'] = json.loads(data['completed_sections'])
+    data['quiz_correct'] = json.loads(data.get('quiz_correct') or '{}')
     return data
 
 
@@ -74,7 +79,7 @@ def get_progress_for_email(email):
 
 def save_progress(email, module_id, first_name, last_name, job_title,
                    current_step, completed_sections, quiz_failed_section=None,
-                   cert_number=None, completed_at=None):
+                   cert_number=None, completed_at=None, quiz_correct=None):
     email = normalize_email(email)
     updated_at = datetime.now(timezone.utc).isoformat()
     with get_connection() as conn:
@@ -82,8 +87,8 @@ def save_progress(email, module_id, first_name, last_name, job_title,
             INSERT INTO progress (
                 email, module_id, first_name, last_name, job_title,
                 current_step, completed_sections, quiz_failed_section,
-                cert_number, completed_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                cert_number, completed_at, updated_at, quiz_correct
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT (email, module_id) DO UPDATE SET
                 first_name          = excluded.first_name,
                 last_name           = excluded.last_name,
@@ -93,11 +98,13 @@ def save_progress(email, module_id, first_name, last_name, job_title,
                 quiz_failed_section = excluded.quiz_failed_section,
                 cert_number         = excluded.cert_number,
                 completed_at        = excluded.completed_at,
-                updated_at          = excluded.updated_at
+                updated_at          = excluded.updated_at,
+                quiz_correct        = COALESCE(excluded.quiz_correct, quiz_correct)
         ''', (
             email, module_id, first_name, last_name, job_title,
             current_step, json.dumps(completed_sections), quiz_failed_section,
             cert_number, completed_at, updated_at,
+            None if quiz_correct is None else json.dumps(quiz_correct),
         ))
 
 

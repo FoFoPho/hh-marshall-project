@@ -225,6 +225,7 @@ def sync_progress():
         quiz_failed_section=session.get('quiz_failed_section'),
         cert_number=session.get('cert_number'),
         completed_at=session.get('completed_at'),
+        quiz_correct=session.get('quiz_correct', {}),
     )
 
 
@@ -309,14 +310,20 @@ def start_module(module_id):
         session['current_step']        = existing['current_step']
         session['completed_sections']  = existing['completed_sections']
         session['quiz_failed_section'] = existing['quiz_failed_section']
+        session['quiz_correct']        = existing['quiz_correct']
         if existing['cert_number']:
             session['cert_number']  = existing['cert_number']
             session['completed_at'] = existing['completed_at']
+            # Sent back from a later module's Review & Retry: watch the
+            # lessons only, no quiz or practical again.
+            if request.args.get('review'):
+                session['review_only'] = True
             return redirect(url_for('step', module_id=module_id, step_num=1))
         return redirect(url_for('step', module_id=module_id, step_num=existing['current_step']))
 
     session['completed_sections'] = []
     session['quiz_failed_section'] = None
+    session['quiz_correct'] = {}
     session['current_step'] = 1
     sync_progress()
     return redirect(url_for('step', module_id=module_id, step_num=1))
@@ -370,9 +377,11 @@ def step(module_id, step_num):
     # earlier section after a later quiz failure.
     completed_sections = session.get('completed_sections', [])
     next_step_num = step_num + 1
+    review_only = session.get('review_only')
     while (next_step_num <= len(steps)
-           and steps[next_step_num - 1]['type'] == 'quiz'
-           and steps[next_step_num - 1]['section_id'] in completed_sections):
+           and ((review_only and steps[next_step_num - 1]['type'] != 'lesson')
+                or (steps[next_step_num - 1]['type'] == 'quiz'
+                    and steps[next_step_num - 1]['section_id'] in completed_sections))):
         next_step_num += 1
 
     if next_step_num > len(steps):
@@ -409,6 +418,7 @@ def step(module_id, step_num):
             prev_url=prev_url,
             next_url=next_url,
             quiz_failed=quiz_failed,
+            done_questions=set(session.get('quiz_correct', {}).get(step_data['section_id'], [])),
             restudy_url=restudy_url,
             question_audio=[audio_url(module_id, section_num, f'q{i + 1}')
                             for i in range(len(step_data['quiz']['questions']))],
@@ -458,15 +468,26 @@ def submit_quiz(module_id, section_id):
         return redirect(url_for('step', module_id=module_id, step_num=current))
 
     # Grade every question — all must be correct
+    # Questions already answered right on an earlier try are not asked again.
     questions = quiz_step['quiz']['questions']
+    quiz_correct = dict(session.get('quiz_correct', {}))
+    done = set(quiz_correct.get(section_id, []))
     all_correct = True
     for i, q in enumerate(questions):
+        if i in done:
+            continue
         answer = request.form.get(f'q{i}')
-        if answer is None or int(answer) != q['correct']:
+        if answer is not None and answer.isdigit() and int(answer) == q['correct']:
+            done.add(i)
+        else:
             all_correct = False
-            break
+    if not all_correct:
+        quiz_correct[section_id] = sorted(done)
+        session['quiz_correct'] = quiz_correct
 
     if all_correct:
+        quiz_correct.pop(section_id, None)
+        session['quiz_correct'] = quiz_correct
         session['quiz_failed_section'] = None
         completed = list(session.get('completed_sections', []))
         if section_id not in completed:
@@ -539,6 +560,19 @@ def restudy(module_id, section_id):
     idx = next((i for i, s in enumerate(sections) if s['id'] == section_id), None)
     if idx is None:
         return redirect(url_for('index'))
+
+    # First section: go all the way back to the previous module's lessons,
+    # if the student has already finished it (its quiz is not repeated).
+    if idx == 0:
+        user = session.get('user')
+        earlier = sorted((m for m in load_modules()
+                          if m['id'] < module_id and not m.get('coming_soon')),
+                         key=lambda m: m['id'])
+        if user and earlier:
+            prev = db.get_progress(user['email'], earlier[-1]['id'])
+            if prev and prev['cert_number']:
+                return redirect(url_for('start_module', module_id=earlier[-1]['id'],
+                                        review=1))
     target_section_id = sections[idx - 1]['id'] if idx > 0 else section_id
 
     steps = build_steps(module)
