@@ -811,11 +811,145 @@
       "id": 5,
       "title": "Module 5",
       "title_es": "Módulo 5",
-      "icon": "hardhat",
+      "icon": "lock",
       "estimated_time": "15-30 minutes",
       "estimated_time_es": "15 a 30 minutos",
       "welcome_video": "",
-      "sections": []
+      "sections": [
+        {
+          "id": "lockout-tagout",
+          "title": "Lockout/Tagout",
+          "title_es": "Bloqueo y etiquetado (LOTO)",
+          "pages": [
+            {
+              "type": "lesson",
+              "video_url": "https://www.youtube.com/watch?v=3BnJVuv6RhA",
+              "video_url_es": "https://www.youtube.com/watch?v=WmiXAXCm_ns",
+              "video_label": "LOCKOUT/TAGOUT VIDEO",
+              "video_label_es": "VIDEO DE BLOQUEO Y ETIQUETADO",
+              "brief_label": "SAFETY BRIEF",
+              "brief_label_es": "RESUMEN DE SEGURIDAD",
+              "brief_text": ""
+            }
+          ],
+          "quiz": {
+            "questions": [
+              {
+                "text": "Who performs lockout/tagout?",
+                "text_es": "¿Quién realiza el bloqueo y etiquetado?",
+                "options": [
+                  "Anyone who completes this module.",
+                  "An employee trained and authorized to perform it on the equipment involved."
+                ],
+                "options_es": [
+                  "Cualquier persona que complete este módulo.",
+                  "Un empleado capacitado y autorizado para realizarlo en el equipo involucrado."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "What is the main responsibility of an affected employee?",
+                "text_es": "¿Cuál es la responsabilidad principal de un empleado afectado?",
+                "options": [
+                  "Recognize lockout/tagout and avoid operating or interfering with the equipment.",
+                  "Remove the lock when production needs the machine."
+                ],
+                "options_es": [
+                  "Reconocer el bloqueo y etiquetado y evitar operar el equipo o interferir con él.",
+                  "Quitar el candado cuando producción necesite la máquina."
+                ],
+                "correct": 0
+              },
+              {
+                "text": "A machine jams. What should you do?",
+                "text_es": "Una máquina se atasca. ¿Qué debe hacer?",
+                "options": [
+                  "Press stop and reach inside.",
+                  "Stop the affected work, stay out of the danger area, and contact the supervisor to arrange an authorized employee."
+                ],
+                "options_es": [
+                  "Presionar el botón de paro y meter la mano.",
+                  "Detener el trabajo afectado, mantenerse fuera del área de peligro y comunicarse con el supervisor para que se encargue un empleado autorizado."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "Does a warning tag physically prevent a machine from starting?",
+                "text_es": "¿Una etiqueta de advertencia impide físicamente que una máquina arranque?",
+                "options": [
+                  "Yes, it works the same as a lock.",
+                  "No. It is a warning that must never be ignored or bypassed."
+                ],
+                "options_es": [
+                  "Sí, funciona igual que un candado.",
+                  "No. Es una advertencia que nunca se debe ignorar ni evitar."
+                ],
+                "correct": 1
+              },
+              {
+                "text": "When may an affected employee resume normal operation?",
+                "text_es": "¿Cuándo puede un empleado afectado reanudar la operación normal?",
+                "options": [
+                  "After the equipment has been formally released, notification has been given, and everyone is clear.",
+                  "Whenever the machine looks ready."
+                ],
+                "options_es": [
+                  "Después de que el equipo haya sido liberado formalmente, se haya dado la notificación y todas las personas estén alejadas.",
+                  "Cuando la máquina parezca lista."
+                ],
+                "correct": 0
+              }
+            ]
+          },
+          "practical": {
+            "text": "Use the animated scenarios and training examples to practice these situations. 1. Examine the training examples of a lock, a tag, and a lockout device. Identify what each one does and the employee identification. 2. Review the animated machine-jam scenario. Explain what you would stop, where you would keep clear, and whom you would contact. 3. Review the animated locked-out machine. Identify the attempts to operate, reconnect, or bypass the equipment that must not occur. 4. Explain the difference between an authorized employee and an affected employee, and what must happen before you resume normal operation.",
+            "text_es": "Use los escenarios animados y los ejemplos de capacitación para practicar estas situaciones. 1. Examine los ejemplos de capacitación de un candado, una etiqueta y un dispositivo de bloqueo. Identifique para qué sirve cada uno y la identificación del empleado. 2. Revise el escenario animado de la máquina atascada. Explique qué detendría, dónde se mantendría alejado y con quién se comunicaría. 3. Revise el escenario animado de la máquina bloqueada. Identifique los intentos de operar, reconectar o evitar el equipo que no deben ocurrir. 4. Explique la diferencia entre un empleado autorizado y un empleado afectado, y qué debe ocurrir antes de que reanude la operación normal.",
+            "photos": [
+              {
+                "image": "practical/m5/photo-01.jpg",
+                "answer": "unsafe",
+                "hazard": "Lock, tag and lockout device: a lock holds an energy-isolating device in a safe position. A tag gives a warning not to operate the equipment but does not physically restrain it. Lockout/tagout devices identify the employee who applied them. Never ignore or bypass a lock or tag.",
+                "hazard_es": "Candado, etiqueta y dispositivo de bloqueo: un candado mantiene un dispositivo de aislamiento de energía en una posición segura. Una etiqueta advierte que no se debe operar el equipo, pero no lo sujeta físicamente. Los dispositivos de bloqueo y etiquetado identifican al empleado que los colocó. Nunca ignore ni evite un candado o una etiqueta."
+              },
+              {
+                "image": "practical/m5/photo-02.jpg",
+                "answer": "unsafe",
+                "hazard": "Machine jam: stop the affected work and keep your hands and tools out of the danger area. Contact your supervisor and explain which machine is involved, what happened, and what work is needed. Do not reach inside, remove a guard, or try the lockout yourself. Keep the equipment out of use while help is arranged.",
+                "hazard_es": "Máquina atascada: detenga el trabajo afectado y mantenga las manos y las herramientas fuera del área de peligro. Comuníquese con su supervisor y explíquele qué máquina está involucrada, qué ocurrió y qué trabajo se necesita. No meta la mano, no quite una guarda ni intente realizar el bloqueo usted mismo. Mantenga el equipo fuera de uso mientras se consigue ayuda."
+              },
+              {
+                "image": "practical/m5/photo-03.jpg",
+                "answer": "unsafe",
+                "hazard": "Locked-out machine: do not try the controls, reconnect power, open a valve, or operate the equipment. Do not remove, move, or damage a lock or tag, even for a moment. The lockout may be at a disconnect or valve away from the controls. If you see someone tampering, warn them to stop and notify your supervisor.",
+                "hazard_es": "Máquina bloqueada: no pruebe los controles, no vuelva a conectar la corriente, no abra una válvula y no opere el equipo. No quite, mueva ni dañe un candado o una etiqueta, ni siquiera por un momento. El bloqueo puede estar en un desconector o una válvula alejados de los controles. Si ve que alguien lo manipula, adviértale que se detenga y avise a su supervisor."
+              },
+              {
+                "image": "practical/m5/photo-04.jpg",
+                "answer": "unsafe",
+                "hazard": "Authorized and affected employees: an authorized employee is trained and assigned to perform lockout/tagout. An affected employee operates the equipment or works in the area and must recognize and respect lockout/tagout. Before you resume normal operation, the equipment must be formally released, you must be notified, and everyone nearby must be clear.",
+                "hazard_es": "Empleados autorizados y afectados: un empleado autorizado está capacitado y asignado para realizar el bloqueo y etiquetado. Un empleado afectado opera el equipo o trabaja en el área y debe reconocer y respetar el bloqueo y etiquetado. Antes de reanudar la operación normal, el equipo debe haber sido liberado formalmente, usted debe haber sido notificado y todas las personas cercanas deben estar alejadas."
+              }
+            ],
+            "labels": {
+              "instruction": "Practice each scenario with your instructor. Then write what you learned and check the box to show you finished.",
+              "instruction_es": "Practique cada escenario con su instructor. Luego escriba lo que aprendió y marque la casilla para indicar que terminó.",
+              "safe": "NEED A REVIEW FIRST",
+              "safe_es": "NECESITO REPASAR PRIMERO",
+              "unsafe": "READY TO PRACTICE",
+              "unsafe_es": "LISTO PARA PRACTICAR",
+              "hazard_label": "What to practice:",
+              "hazard_label_es": "Qué practicar:",
+              "prompt": "Describe each step you would take for this scenario.",
+              "prompt_es": "Describa cada paso que daría en este escenario.",
+              "not_quite_unsafe": "That is fine. Read the key points below, then type your answer.",
+              "not_quite_unsafe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta.",
+              "not_quite_safe": "That is fine. Read the key points below, then type your answer.",
+              "not_quite_safe_es": "Está bien. Lea los puntos clave y luego escriba su respuesta."
+            },
+            "style": "drill"
+          }
+        }
+      ]
     },
     {
       "id": 6,
