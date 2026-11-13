@@ -38,11 +38,10 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
-            <th>Module</th>
             <th>Progress</th>
-            <th>Current Section</th>
+            <th>Current</th>
             <th>Status</th>
-            <th>Cert Number</th>
+            <th>Cert Numbers</th>
             <th>Last Updated</th>
           </tr>
         </thead>
@@ -52,9 +51,8 @@
             <td>{{ row.first_name }}</td>
             <td>{{ row.last_name }}</td>
             <td>{{ row.email }}</td>
-            <td>{{ row.module_title }}</td>
             <td>{{ row.progress }}</td>
-            <td>{{ row.section }}</td>
+            <td>{{ row.current }}</td>
             <td>{{ row.status }}</td>
             <td>{{ row.cert_number }}</td>
             <td>{{ row.updated_at }}</td>
@@ -73,8 +71,8 @@
           <tr class="{{ row.status_class }}">
             <td class="dashboard-row-actions">
               <a href="{{ url_for('supervisor_edit', email=row.email) }}" class="row-action-link">Edit</a>
-              <form method="POST" action="{{ url_for('supervisor_delete', email=row.email, module_id=row.module_id) }}"
-                    onsubmit="return confirm('Permanently delete this progress record? This cannot be undone.') && confirm('Are you absolutely sure? This record cannot be recovered once deleted.');">
+              <form method="POST" action="{{ url_for('supervisor_delete_student', email=row.email) }}"
+                    onsubmit="return confirm('Permanently delete this person and ALL their module progress? This cannot be undone.') && confirm('Are you absolutely sure? Their records and certificates cannot be recovered once deleted.');">
                 <button type="submit" class="row-action-btn row-action-delete">Delete</button>
               </form>
             </td>
@@ -94,7 +92,7 @@
   var POLL_MS = 7000;
   var dataUrl = {{ url_for('supervisor_data') | tojson }};
   var editUrlTemplate = {{ url_for('supervisor_edit', email='EMAIL_TOKEN') | tojson }};
-  var deleteUrlTemplate = {{ url_for('supervisor_delete', email='EMAIL_TOKEN', module_id=999999) | tojson }};
+  var deleteUrlTemplate = {{ url_for('supervisor_delete_student', email='EMAIL_TOKEN') | tojson }};
   var tbody = document.getElementById('progress-tbody');
   var actionsTbody = document.getElementById('actions-tbody');
   var tableWrap = document.getElementById('table-wrap');
@@ -113,10 +111,8 @@
     return editUrlTemplate.replace('EMAIL_TOKEN', encodeURIComponent(email));
   }
 
-  function deleteUrl(email, moduleId) {
-    return deleteUrlTemplate
-      .replace('EMAIL_TOKEN', encodeURIComponent(email))
-      .replace('999999', String(moduleId));
+  function deleteUrl(email) {
+    return deleteUrlTemplate.replace('EMAIL_TOKEN', encodeURIComponent(email));
   }
 
   // Row matches only if every whitespace-separated search word appears
@@ -152,9 +148,8 @@
           + '<td>' + escapeHtml(r.first_name) + '</td>'
           + '<td>' + escapeHtml(r.last_name) + '</td>'
           + '<td>' + escapeHtml(r.email) + '</td>'
-          + '<td>' + escapeHtml(r.module_title) + '</td>'
           + '<td>' + escapeHtml(r.progress) + '</td>'
-          + '<td>' + escapeHtml(r.section) + '</td>'
+          + '<td>' + escapeHtml(r.current) + '</td>'
           + '<td>' + escapeHtml(r.status) + '</td>'
           + '<td>' + escapeHtml(r.cert_number) + '</td>'
           + '<td>' + escapeHtml(r.updated_at) + '</td>'
@@ -164,8 +159,8 @@
         return '<tr class="' + escapeHtml(r.status_class) + '">'
           + '<td class="dashboard-row-actions">'
           +   '<a href="' + escapeHtml(editUrl(r.email)) + '" class="row-action-link">Edit</a>'
-          +   '<form method="POST" action="' + escapeHtml(deleteUrl(r.email, r.module_id)) + '" '
-          +     'onsubmit="return confirm(\'Permanently delete this progress record? This cannot be undone.\') && confirm(\'Are you absolutely sure? This record cannot be recovered once deleted.\');">'
+          +   '<form method="POST" action="' + escapeHtml(deleteUrl(r.email)) + '" '
+          +     'onsubmit="return confirm(\'Permanently delete this person and ALL their module progress? This cannot be undone.\') && confirm(\'Are you absolutely sure? Their records and certificates cannot be recovered once deleted.\');">'
           +     '<button type="submit" class="row-action-btn row-action-delete">Delete</button>'
           +   '</form>'
           + '</td>'

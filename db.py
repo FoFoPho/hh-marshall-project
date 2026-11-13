@@ -117,6 +117,12 @@ def delete_progress(email, module_id):
         )
 
 
+def delete_student(email):
+    email = normalize_email(email)
+    with get_connection() as conn:
+        conn.execute('DELETE FROM progress WHERE email = ?', (email,))
+
+
 def rename_student(old_email, first_name, last_name, new_email):
     """Rename a student's identity across every module row they have.
 

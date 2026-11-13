@@ -728,7 +728,7 @@ def section_index_by_id(module, section_id):
     return None
 
 
-def build_dashboard_rows():
+def build_module_rows():
     rows = []
     for p in db.get_all_progress():
         module = get_module(p['module_id'])
@@ -784,6 +784,49 @@ def build_dashboard_rows():
     return rows
 
 
+TOTAL_MODULES = 12
+
+
+def build_dashboard_rows():
+    """One row per person: completed modules out of TOTAL_MODULES, plus
+    whatever they are working on right now."""
+    people = {}
+    order = []
+    for r in build_module_rows():
+        key = r['email'].lower()
+        if key not in people:
+            people[key] = []
+            order.append(key)
+        people[key].append(r)
+
+    rows = []
+    for key in order:
+        recs = people[key]
+        done = sorted((r for r in recs if r['status'] == 'Completed'), key=lambda r: r['module_id'])
+        active = [r for r in recs if r['status'] != 'Completed']
+        newest = max(recs, key=lambda r: r['updated_at'] or '')
+        cur = max(active, key=lambda r: r['updated_at'] or '') if active else None
+        if cur:
+            status, status_class = cur['status'], cur['status_class']
+            current = f"{cur['module_title']} — {cur['section']}" if cur['section'] != '—' else cur['module_title']
+        else:
+            status = 'Completed' if len(done) >= TOTAL_MODULES else 'Between modules'
+            status_class = 'completed' if len(done) >= TOTAL_MODULES else 'in_progress'
+            current = '—'
+        rows.append({
+            'first_name': newest['first_name'],
+            'last_name': newest['last_name'],
+            'email': newest['email'],
+            'progress': f"{len(done)}/{TOTAL_MODULES}",
+            'current': current,
+            'status': status,
+            'status_class': status_class,
+            'cert_number': ', '.join(r['cert_number'] for r in done if r['cert_number']),
+            'updated_at': newest['updated_at'],
+        })
+    return rows
+
+
 @app.route('/supervisor/login', methods=['GET', 'POST'])
 def supervisor_login():
     error = None
@@ -819,11 +862,11 @@ def supervisor_data():
 def supervisor_export_csv():
     buf = io.StringIO()
     writer = csv.writer(buf)
-    writer.writerow(['First Name', 'Last Name', 'Email', 'Module', 'Progress', 'Current Section',
-                      'Status', 'Cert Number', 'Last Updated'])
+    writer.writerow(['First Name', 'Last Name', 'Email', 'Progress', 'Current',
+                      'Status', 'Cert Numbers', 'Last Updated'])
     for r in build_dashboard_rows():
-        writer.writerow([r['first_name'], r['last_name'], r['email'], r['module_title'],
-                          r['progress'], r['section'], r['status'], r['cert_number'], r['updated_at']])
+        writer.writerow([r['first_name'], r['last_name'], r['email'], r['progress'],
+                          r['current'], r['status'], r['cert_number'], r['updated_at']])
 
     return Response(
         buf.getvalue(),
@@ -863,6 +906,13 @@ def supervisor_edit(email):
         return redirect(url_for('supervisor_dashboard'))
 
     return render_template('supervisor_edit.html', record=current)
+
+
+@app.route('/supervisor/delete/<email>', methods=['POST'])
+@supervisor_required
+def supervisor_delete_student(email):
+    db.delete_student(email)
+    return redirect(url_for('supervisor_dashboard'))
 
 
 @app.route('/supervisor/delete/<email>/<int:module_id>', methods=['POST'])
