@@ -788,8 +788,8 @@ TOTAL_MODULES = 12
 
 
 def build_dashboard_rows():
-    """One row per person: completed modules out of TOTAL_MODULES, plus
-    whatever they are working on right now."""
+    """One row per person: the furthest module they have reached (started or
+    completed) out of TOTAL_MODULES, plus what they are working on now."""
     people = {}
     order = []
     for r in build_module_rows():
@@ -817,7 +817,7 @@ def build_dashboard_rows():
             'first_name': newest['first_name'],
             'last_name': newest['last_name'],
             'email': newest['email'],
-            'progress': f"{len(done)}/{TOTAL_MODULES}",
+            'progress': f"{max(r['module_id'] for r in recs)}/{TOTAL_MODULES}",
             'current': current,
             'status': status,
             'status_class': status_class,
