@@ -56,9 +56,6 @@
         </button>
       </div>
       <p class="photo-feedback" hidden></p>
-      <div class="photo-explain" hidden>
-        <p class="photo-hazard"><strong>{{ L.hazard_label or t('photo_hazard_label') }}</strong> {{ p.hazard }}</p>
-      </div>
       <div class="photo-answer" hidden>
         <label>{{ L.prompt or t('photo_prompt') }}</label>
         <textarea rows="3" placeholder="{{ t('photo_placeholder') | striptags }}"></textarea>
@@ -123,7 +120,7 @@
         var right = (choice === it.dataset.answer), fb = it.querySelector('.photo-feedback');
         fb.textContent = right ? msgRight : (it.dataset.answer === 'unsafe' ? msgUnsafe : msgSafe);
         fb.className = 'photo-feedback ' + (right ? 'ok' : 'bad'); fb.setAttribute('data-icon', right ? '\u2713' : '\u2717'); fb.hidden = false;
-        if (it.dataset.answer === 'unsafe') { it.querySelector('.photo-explain').hidden = false; it.querySelector('.photo-answer').hidden = false; }
+        if (it.dataset.answer === 'unsafe') { it.querySelector('.photo-answer').hidden = false; }
         refresh();
       });
     });
